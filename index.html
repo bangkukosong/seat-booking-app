@@ -53,13 +53,14 @@
     }
 
     .office-layout-container {
-      max-width: 900px;
+      max-width: 765px;
       margin: 20px auto;
       background: rgba(255,255,255,0.12);
       backdrop-filter: blur(12px);
       border-radius: 20px;
       padding: 20px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+	  display: none;
     }
 
     .office-image-wrapper {
@@ -68,7 +69,6 @@
       padding: 15px;
       border-radius: 15px;
       margin-bottom: 15px;
-	  position: relative;
     }
 
     .office-image {
@@ -817,13 +817,6 @@
       background: rgba(255,255,255,0.2);
     }
 
-.view-toggle {
-    background: red;
-}
-.view-toggle button {
-    background: blue !important;
-}
-
     .admin-only {
       display: none;
     }
@@ -861,8 +854,8 @@
 
     @media (max-width: 768px) {
       .office-layout-container {
-        max-width: 100%;
-        margin: 20px auto;
+        max-width: 90%;
+        margin: 15px auto;
         padding: 15px;
       }
     }
@@ -879,7 +872,7 @@
 	  
 	/* Office layout container - tambahkan ini */
 	.office-layout-container {
-		max-width: calc(100% - 20px);
+		max-width: 95%;
 		margin: 10px auto;
 		padding: 10px;
 	}
