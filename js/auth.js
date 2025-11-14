@@ -1,5 +1,4 @@
 // js/auth.js - Firebase Authentication Version
-let currentUser = null;
 
 // Login with Firebase Auth
 document.getElementById('loginForm').addEventListener('submit', async e => {
