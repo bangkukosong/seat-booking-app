@@ -1,5 +1,4 @@
 // js/app.js
-let currentUser = null; 
 // ==================== CORE APP VARIABLES ====================
 const API_URL = "https://script.google.com/macros/s/AKfycbzqcu9ZSgpR5iGm4dMKC-S6GeG4lbYlsxMt_kBJBeHW7vEYcJpJHh1-CsunO5uOsYt6YQ/exec";
 const CACHE_DURATION = 120000;
@@ -82,3 +81,4 @@ function refreshBookings() {
   showMessage("🔄 Data Refreshed!", "success");
 
 }
+
