@@ -108,7 +108,7 @@ function showMainApp() {
     });
   }
 
-  setupDatePicker();
+  //setupDatePicker();
   showLoader(true);
   loadBookings();
   showLoader(false);
