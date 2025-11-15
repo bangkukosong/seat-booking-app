@@ -8,6 +8,9 @@ export const state = window.bangkuKosongState = window.bangkuKosongState || {
     currentView: 'grid'
 };
 
+// EKSPORT currentDate secara terpisah
+export const currentDate = state.currentDate;
+
 // Team and Seat Configuration - TETAP SAMA SEPERTI SEBELUMNYA
 export const TEAMS_CONFIG = [
     { name: "ITPM", seats: 4 },
