@@ -1,29 +1,15 @@
 // js/firestore-api.js
 import { db } from './firebase-config.js';
-import { 
-    collection, 
-    addDoc, 
-    getDocs, 
-    query, 
-    where, 
-    orderBy,
-    deleteDoc,
-    doc,
-    updateDoc,
-    Timestamp
-} from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
 
 export class FirestoreAPI {
     
     // ==================== AUTHENTICATION ====================
     static async login(username, password) {
         try {
-            const q = query(
-                collection(db, 'users'),
-                where('username', '==', username),
-                where('password', '==', password)
-            );
-            const snapshot = await getDocs(q);
+            const snapshot = await db.collection('users')
+                .where('username', '==', username)
+                .where('password', '==', password)
+                .get();
             
             if (!snapshot.empty) {
                 const userDoc = snapshot.docs[0];
@@ -48,12 +34,11 @@ export class FirestoreAPI {
     // ==================== BOOKINGS MANAGEMENT ====================
     static async getBookings(day) {
         try {
-            const q = query(
-                collection(db, 'bookings'),
-                where('day', '==', day),
-                orderBy('timestamp', 'asc')
-            );
-            const snapshot = await getDocs(q);
+            const snapshot = await db.collection('bookings')
+                .where('day', '==', day)
+                .orderBy('timestamp', 'asc')
+                .get();
+                
             const bookings = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
@@ -69,13 +54,12 @@ export class FirestoreAPI {
 
     static async getAllBookings(userName) {
         try {
-            const q = query(
-                collection(db, 'bookings'),
-                where('userName', '==', userName),
-                orderBy('day', 'desc'),
-                orderBy('timestamp', 'desc')
-            );
-            const snapshot = await getDocs(q);
+            const snapshot = await db.collection('bookings')
+                .where('userName', '==', userName)
+                .orderBy('day', 'desc')
+                .orderBy('timestamp', 'desc')
+                .get();
+                
             const bookings = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
@@ -92,12 +76,10 @@ export class FirestoreAPI {
     static async submitBooking(seat, userName, day) {
         try {
             // Check if seat already booked for this day
-            const existingQuery = query(
-                collection(db, 'bookings'),
-                where('day', '==', day),
-                where('seat', '==', seat)
-            );
-            const existingSnapshot = await getDocs(existingQuery);
+            const existingSnapshot = await db.collection('bookings')
+                .where('day', '==', day)
+                .where('seat', '==', seat)
+                .get();
             
             if (!existingSnapshot.empty) {
                 const existingBooking = existingSnapshot.docs[0].data();
@@ -108,14 +90,12 @@ export class FirestoreAPI {
             }
 
             // Create new booking
-            const bookingData = {
+            await db.collection('bookings').add({
                 seat,
                 userName,
                 day,
-                timestamp: Timestamp.now()
-            };
-
-            await addDoc(collection(db, 'bookings'), bookingData);
+                timestamp: firebase.firestore.Timestamp.now()
+            });
             
             return { success: true, message: 'Booking successful' };
         } catch (error) {
@@ -127,13 +107,11 @@ export class FirestoreAPI {
     static async cancelBooking(seat, userName, day) {
         try {
             // Find the booking to cancel
-            const q = query(
-                collection(db, 'bookings'),
-                where('day', '==', day),
-                where('seat', '==', seat),
-                where('userName', '==', userName)
-            );
-            const snapshot = await getDocs(q);
+            const snapshot = await db.collection('bookings')
+                .where('day', '==', day)
+                .where('seat', '==', seat)
+                .where('userName', '==', userName)
+                .get();
             
             if (snapshot.empty) {
                 return { success: false, message: 'Booking not found' };
@@ -141,7 +119,7 @@ export class FirestoreAPI {
 
             // Delete the booking
             const bookingDoc = snapshot.docs[0];
-            await deleteDoc(doc(db, 'bookings', bookingDoc.id));
+            await db.collection('bookings').doc(bookingDoc.id).delete();
             
             return { success: true, message: 'Booking cancelled successfully' };
         } catch (error) {
@@ -154,26 +132,22 @@ export class FirestoreAPI {
     static async addUser(username, password, name, role = 'user') {
         try {
             // Check if username already exists
-            const existingQuery = query(
-                collection(db, 'users'),
-                where('username', '==', username)
-            );
-            const existingSnapshot = await getDocs(existingQuery);
+            const existingSnapshot = await db.collection('users')
+                .where('username', '==', username)
+                .get();
             
             if (!existingSnapshot.empty) {
                 return { success: false, message: 'Username already exists' };
             }
 
             // Create new user
-            const userData = {
+            await db.collection('users').add({
                 username,
-                password, // Note: In production, hash this password!
+                password,
                 name,
                 role,
-                createdAt: Timestamp.now()
-            };
-
-            await addDoc(collection(db, 'users'), userData);
+                createdAt: firebase.firestore.Timestamp.now()
+            });
             
             return { success: true, message: 'User created successfully' };
         } catch (error) {
@@ -185,12 +159,10 @@ export class FirestoreAPI {
     static async changePassword(username, currentPassword, newPassword) {
         try {
             // Find user and verify current password
-            const q = query(
-                collection(db, 'users'),
-                where('username', '==', username),
-                where('password', '==', currentPassword)
-            );
-            const snapshot = await getDocs(q);
+            const snapshot = await db.collection('users')
+                .where('username', '==', username)
+                .where('password', '==', currentPassword)
+                .get();
             
             if (snapshot.empty) {
                 return { success: false, message: 'Current password is incorrect' };
@@ -198,7 +170,7 @@ export class FirestoreAPI {
 
             // Update password
             const userDoc = snapshot.docs[0];
-            await updateDoc(doc(db, 'users', userDoc.id), {
+            await db.collection('users').doc(userDoc.id).update({
                 password: newPassword
             });
             
@@ -212,8 +184,10 @@ export class FirestoreAPI {
     // ==================== ADMIN FUNCTIONS ====================
     static async getAllUsers() {
         try {
-            const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
-            const snapshot = await getDocs(q);
+            const snapshot = await db.collection('users')
+                .orderBy('createdAt', 'desc')
+                .get();
+                
             const users = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
@@ -229,8 +203,11 @@ export class FirestoreAPI {
 
     static async getAllBookingsAdmin() {
         try {
-            const q = query(collection(db, 'bookings'), orderBy('day', 'desc'), orderBy('timestamp', 'desc'));
-            const snapshot = await getDocs(q);
+            const snapshot = await db.collection('bookings')
+                .orderBy('day', 'desc')
+                .orderBy('timestamp', 'desc')
+                .get();
+                
             const bookings = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
