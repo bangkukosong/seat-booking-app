@@ -448,7 +448,7 @@ export function showGridView() {
     state.currentView = 'grid';
 }
 
-function showMapView() {
+export function showMapView() {
     document.getElementById('gridView').style.display = 'none';
     document.getElementById('mapView').style.display = 'block';
     document.getElementById('historicalPanel').style.display = 'none';
@@ -458,22 +458,3 @@ function showMapView() {
     state.currentView = 'map';
 }
 
-// Export semua functions
-export {
-    initializeBookings,
-    setupDatePicker,
-    updateDateDisplay,
-    changeDate,
-    loadBookings,
-    loadHistoricalBookings,
-    renderSeatGrid,
-    showBookingForm,
-    showCancelBookingForm,
-    processBooking,
-    processCancelBooking,
-    toggleHistorical,
-    renderHistoricalBookings,
-    showGridView,
-    showMapView
-
-};
