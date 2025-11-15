@@ -1,9 +1,9 @@
-// js/firebase-config.js - VERSI DIPERBAIKI
+// js/firebase-config.js - PASTI WORK VERSION
 import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js';
 import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js';
-import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js'; // ✅ TAMBAH INI
+import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js';
 
-// Your Firebase configuration
+// Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyALdxLc87bsjCc4ZyQ_HWPuhE07p4jq54s",
     authDomain: "bangku-kosong.firebaseapp.com",
@@ -14,12 +14,15 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
-// Initialize Cloud Firestore
-export const db = firebase.firestore();
+// Export services
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-// ✅ TAMBAH INI: Initialize Firebase Authentication
-export const auth = firebase.auth();
+// ✅ EKSPOR EXPLICIT
+export { db, auth };
 
-console.log('🔥 Firebase Firestore & Auth initialized successfully!');
+console.log('🔥 Firebase Auth & Firestore exported successfully!');
