@@ -1,66 +1,134 @@
-// js/auth.js - FIXED IMPORTS
-import { optimizedPost } from './api-manager.js';
+// js/auth.js - FIREBASE SEAT BOOKING AUTH
+import { auth, db } from './firebase-config.js';
 import { showLoader, showMessage } from './utils.js';
-import { initializeBookings } from './bookings.js';
-import { initAdmin } from './admin.js'; // ✅ GANTI: initializeAdmin → initAdmin
-import { initUser } from './user.js';   // ✅ GANTI: initializeUser → initUser
 import { state } from './constants.js';
 
 export function initializeAuth() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
+        console.log('✅ Firebase auth initialized');
     }
+    
+    // Check if user already logged in
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // User sudah login, load user data
+            loadUserData(user.email);
+        }
+    });
 }
 
 async function handleLogin(e) {
     e.preventDefault();
-    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
     
-    if (!username || !password) {
-        document.getElementById('loginMessage').innerText = '⚠️ User ID dan password harus diisi';
+    if (!email || !password) {
+        showMessage('⚠️ Email dan password harus diisi', 'error');
         return;
     }
 
     showLoader(true);
     try {
-        const result = await optimizedPost('login', { username, password });
-        showLoader(false);
-
-        if (result.success && result.user) {
-            state.currentUser = result.user;
-            await showMainApp(); // ✅ TAMBAH 'await'
-        } else {
-            document.getElementById('loginMessage').innerText = result.message || 'Login gagal';
-        }
+        // Firebase Authentication
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        console.log('✅ Firebase login successful:', email);
+        
+        // Load user data dari Firestore
+        await loadUserData(email);
+        
     } catch (error) {
+        console.error('❌ Login error:', error);
+        showMessage('❌ Login failed: ' + error.message, 'error');
+    } finally {
         showLoader(false);
-        document.getElementById('loginMessage').innerText = '❌ Error connecting to server';
     }
 }
 
-async function showMainApp() {
-    document.getElementById('loginFormContainer').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-    document.getElementById('userInfo').innerHTML = `🧑‍💻 <strong>${state.currentUser.name}</strong>`;
-
-    // ✅ FIX: Initialize modules dengan await
-    await initializeBookings();
-    await initAdmin();    // ✅ GANTI: initializeAdmin → initAdmin
-    await initUser();     // ✅ GANTI: initializeUser → initUser
-    
-    showLoader(false);
+async function loadUserData(email) {
+    try {
+        const userDoc = await db.collection('users').doc(email).get();
+        if (userDoc.exists) {
+            state.currentUser = {
+                username: email,
+                name: userDoc.data().name,
+                role: userDoc.data().role || 'user'
+            };
+            console.log('✅ User data loaded:', state.currentUser);
+            showMainApp();
+        } else {
+            showMessage('❌ User data not found in database', 'error');
+            await auth.signOut(); // Logout jika data user tidak ada
+        }
+    } catch (error) {
+        console.error('❌ Error loading user data:', error);
+        showMessage('❌ Error loading user data', 'error');
+    }
 }
 
-export function logout() {
-    state.currentUser = null;
-    document.getElementById('mainApp').style.display = 'none';
-    document.getElementById('loginFormContainer').style.display = 'flex';
-    document.getElementById('username').value = '';
-    document.getElementById('password').value = '';
+function showMainApp() {
+    const loginContainer = document.getElementById('loginFormContainer');
+    const mainApp = document.getElementById('mainApp');
     
-    import('./api-manager.js').then(({ clearCache }) => {
-        clearCache();
+    if (loginContainer) loginContainer.style.display = 'none';
+    if (mainApp) mainApp.style.display = 'block';
+    
+    // Update user info
+    const userInfo = document.getElementById('userInfo');
+    if (userInfo && state.currentUser) {
+        userInfo.innerHTML = `🧑‍💻 <strong>${state.currentUser.name}</strong>`;
+    }
+    
+    // Show admin panel jika admin
+    if (state.currentUser && state.currentUser.role === 'admin') {
+        const adminPanel = document.getElementById('adminPanel');
+        if (adminPanel) {
+            adminPanel.style.display = 'block';
+            console.log('✅ Admin panel shown');
+        }
+        
+        // Show admin-only buttons
+        document.querySelectorAll('.admin-only').forEach(el => {
+            el.style.display = 'block';
+        });
+    }
+    
+    // Initialize bookings system
+    initializeBookingsSystem();
+}
+
+function initializeBookingsSystem() {
+    import('./bookings.js').then(module => {
+        if (module.initializeBookings) {
+            module.initializeBookings();
+            console.log('✅ Bookings system initialized');
+        }
+    }).catch(error => {
+        console.error('❌ Bookings module error:', error);
     });
 }
+
+// Global logout function
+window.logout = async function() {
+    try {
+        await auth.signOut();
+        state.currentUser = null;
+        
+        const loginContainer = document.getElementById('loginFormContainer');
+        const mainApp = document.getElementById('mainApp');
+        
+        if (loginContainer) loginContainer.style.display = 'flex';
+        if (mainApp) mainApp.style.display = 'none';
+        
+        // Clear form
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        if (usernameInput) usernameInput.value = '';
+        if (passwordInput) passwordInput.value = '';
+        
+        console.log('✅ User logged out');
+    } catch (error) {
+        console.error('❌ Logout error:', error);
+    }
+};
