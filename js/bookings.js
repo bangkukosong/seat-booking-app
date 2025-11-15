@@ -207,7 +207,7 @@ export function showBookingForm(seatCode) {
         return;
     }
 
-    // ✅ LANJUT KE FORM JIKA SEMUA CEK PASS
+    // ✅ IMPROVED UI - SERUPA DENGAN CANCEL FORM
     const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
         weekday: 'long', 
         year: 'numeric', 
@@ -223,25 +223,26 @@ export function showBookingForm(seatCode) {
             📅 ${dateDisplay}
         </p>
         
-        <div style="background: rgba(0, 255, 128, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid rgba(0, 255, 128, 0.3);">
-            <p style="margin: 0; font-size: 0.9rem; color: var(--primary-green);">
-                ✅ <strong>Available Seats</strong> - Your Booking Confirmation
+        <div style="background: rgba(0, 255, 128, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(0, 255, 128, 0.3);">
+            <h3 style="color: var(--primary-green); margin-bottom: 10px; text-align: center;">${seatCode}</h3>
+            <p><strong>Pemesan:</strong> ${state.currentUser.name}</p>
+            <p><strong>User ID:</strong> ${state.currentUser.username}</p>
+            <p><strong>Status:</strong> <span style="color: var(--primary-green);">✅ Available</span></p>
+        </div>
+        
+        <div style="background: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 215, 0, 0.3);">
+            <p style="margin: 0; font-size: 0.9rem; color: var(--gold); text-align: center;">
+                ⚠️ <strong>Perhatian:</strong> Anda hanya bisa booking 1 seat per hari
             </p>
         </div>
         
-        <div class="form-group">
-            <label>Order Name</label>
-            <input type="text" value="${state.currentUser.name}" readonly style="background: rgba(255,255,255,0.3); color: #fff;">
-        </div>
-        
-        <div class="form-group">
-            <label>User ID</label>
-            <input type="text" value="${state.currentUser.username}" readonly style="background: rgba(255,255,255,0.3); color: #fff;">
-        </div>
+        <p style="text-align: center; margin-bottom: 20px; color: #88ff88;">
+            ✅ Confirm booking untuk seat ini?
+        </p>
         
         <div class="btn-group">
             <button type="button" class="btn btn-success" onclick="window.processBooking('${seatCode}')">
-                ✅ Booking Confirmation
+                ✅ Confirm Booking
             </button>
             <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
                 ❌ Batal
