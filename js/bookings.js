@@ -397,7 +397,6 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
     try {
         showFormMessage("⏳ Cancelling booking...", "info");
         
-        // Step 1: Cancel the existing booking
         const cancelResult = await optimizedPost('cancelBooking', { 
             seat: seatCode, 
             userName: state.currentUser.username, 
@@ -409,14 +408,10 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
             return;
         }
 
-        showFormMessage("✅ Booking cancelled! Processing replacement...", "success");
-        
-        // Step 2: If this is a replace operation, book the new seat
         if (newSeatCode) {
+            showFormMessage("✅ Cancelled! Booking new seat...", "success");
+            
             try {
-                // Small delay to ensure server processed the cancellation
-                await new Promise(resolve => setTimeout(resolve, 300));
-                
                 const bookingResult = await optimizedPost('submitBooking', { 
                     seat: newSeatCode, 
                     userName: state.currentUser.username, 
@@ -425,64 +420,46 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
                 
                 if (bookingResult.success) {
                     showFormMessage("✅ Successfully replaced booking!", "success");
-                    
                     setTimeout(async () => {
                         hideBookingForm();
                         showMessage(`✅ Successfully replaced ${seatCode} with ${newSeatCode}!`, "success");
-                        
-                        // Refresh all data
-                        const { clearCache } = await import('./api-manager.js');
-                        clearCache();
-                        await loadBookings();
-                        await loadHistoricalBookings();
+                        await refreshAllData();
                     }, 1000);
-                    
                 } else {
-                    // Booking failed after successful cancellation
                     showFormMessage(`⚠️ Cancelled but booking failed: ${bookingResult.message}`, "error");
-                    
                     setTimeout(async () => {
                         hideBookingForm();
                         showMessage(`⚠️ ${seatCode} cancelled but failed to book ${newSeatCode}. Please try again.`, "warning");
-                        
-                        const { clearCache } = await import('./api-manager.js');
-                        clearCache();
-                        await loadBookings();
-                        await loadHistoricalBookings();
+                        await refreshAllData();
                     }, 1500);
                 }
-                
-            } catch (bookingError) {
-                // Network error during booking
+            } catch (error) {
                 showFormMessage("❌ Network error during booking", "error");
-                
                 setTimeout(async () => {
                     hideBookingForm();
                     showMessage(`⚠️ ${seatCode} cancelled but booking failed due to network error.`, "warning");
-                    
-                    const { clearCache } = await import('./api-manager.js');
-                    clearCache();
-                    await loadBookings();
-                    await loadHistoricalBookings();
+                    await refreshAllData();
                 }, 1500);
             }
-            
         } else {
-            // Normal cancellation flow (no replacement)
+            showFormMessage("✅ Booking successfully cancelled!", "success");
             setTimeout(async () => {
                 hideBookingForm();
                 showMessage("✅ Booking successfully cancelled!", "success");
-                
-                const { clearCache } = await import('./api-manager.js');
-                clearCache();
-                await loadBookings();
-                await loadHistoricalBookings();
+                await refreshAllData();
             }, 1000);
         }
-        
     } catch (error) {
         showFormMessage("❌ Error: Failed to connect to server", "error");
     }
+}
+
+// Helper function untuk refresh data
+async function refreshAllData() {
+    const { clearCache } = await import('./api-manager.js');
+    clearCache();
+    await loadBookings();
+    await loadHistoricalBookings();
 }
 
 // Helper function for form messages
