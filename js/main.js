@@ -801,6 +801,7 @@ function getRangeDisplayName(range, startDate, endDate) {
     }
 }
 }
+}
 // DI AKHIR main.js - SEKALI PAKSA
 window.showExportModal = showExportModal;
 window.showUserManagementModal = showUserManagementModal; 
