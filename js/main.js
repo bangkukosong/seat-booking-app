@@ -799,16 +799,17 @@ function getRangeDisplayName(range, startDate, endDate) {
         default:
             return 'All Data';
     }
+	}
+    // ==================== WINDOW ASSIGNMENTS ====================
+    window.showExportModal = showExportModal;
+    window.showUserManagementModal = showUserManagementModal; 
+    window.showAllBookingsModal = showAllBookingsModal;
+    window.generateExport = generateExport;
+    window.exportToCSV = exportToCSV;
+    window.exportToJSON = exportToJSON;
+    window.getRangeDisplayName = getRangeDisplayName;
+	console.log('🔥 ALL FUNCTIONS FORCED TO WINDOW!');
 }
 }
-}
-// DI AKHIR main.js - SEKALI PAKSA
-window.showExportModal = showExportModal;
-window.showUserManagementModal = showUserManagementModal; 
-window.showAllBookingsModal = showAllBookingsModal;
-window.generateExport = generateExport;
-window.exportToCSV = exportToCSV;
-window.exportToJSON = exportToJSON;
-window.getRangeDisplayName = getRangeDisplayName;
 
-console.log('🔥 ALL FUNCTIONS FORCED TO WINDOW!');
+
