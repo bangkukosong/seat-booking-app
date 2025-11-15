@@ -810,6 +810,7 @@ function getRangeDisplayName(range, startDate, endDate) {
     window.getRangeDisplayName = getRangeDisplayName;
 	console.log('🔥 ALL FUNCTIONS FORCED TO WINDOW!');
 }
-}
+
+
 
 
