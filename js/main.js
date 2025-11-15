@@ -555,8 +555,7 @@ function setupGlobalFunctions() {
 // ==================== EXPORT FUNCTIONS ====================
 window.exportBookings = async function() {
     try {
-        showMessage('⏳ Preparing export data...', 'info');
-        
+         
         // Create export modal
         showExportModal();
         
