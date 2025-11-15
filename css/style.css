@@ -1,4 +1,3 @@
-  <style>
     :root {
       --primary-green: #00ff80;
       --primary-red: #ff5555;
@@ -653,7 +652,7 @@
     .booked-box { background: var(--primary-red); }
     .mybooking-box { background: var(--gold); }
 
-      /* Modal Styles */
+      /* Modal Styles 
     .modal-overlay {
       display: none;
       position: fixed;
@@ -714,7 +713,64 @@
     .close-btn:hover {
       background: rgba(255,255,255,0.1);
     }
+	*/
 	
+	/* Export Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: rgba(45, 45, 45, 0.95);
+    padding: 0;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+    color: var(--gold);
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
 	    .form-group {
       margin-bottom: 20px;
     }
@@ -960,4 +1016,3 @@
 		border: 1px solid rgba(0, 255, 128, 0.3);
 	}
     }
-  </style>
