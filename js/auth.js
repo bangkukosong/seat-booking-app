@@ -1,10 +1,10 @@
-// js/auth.js - UPDATED FOR STATE OBJECT
+// js/auth.js - FIXED IMPORTS
 import { optimizedPost } from './api-manager.js';
 import { showLoader, showMessage } from './utils.js';
 import { initializeBookings } from './bookings.js';
-import { initializeAdmin } from './admin.js';
-import { initializeUser } from './user.js';
-import { state } from './constants.js'; // ✅ IMPORT STATE
+import { initAdmin } from './admin.js'; // ✅ GANTI: initializeAdmin → initAdmin
+import { initUser } from './user.js';   // ✅ GANTI: initializeUser → initUser
+import { state } from './constants.js';
 
 export function initializeAuth() {
     const loginForm = document.getElementById('loginForm');
@@ -29,9 +29,8 @@ async function handleLogin(e) {
         showLoader(false);
 
         if (result.success && result.user) {
-            // ✅ FIX: Assign to state object
             state.currentUser = result.user;
-            showMainApp();
+            await showMainApp(); // ✅ TAMBAH 'await'
         } else {
             document.getElementById('loginMessage').innerText = result.message || 'Login gagal';
         }
@@ -46,10 +45,10 @@ async function showMainApp() {
     document.getElementById('mainApp').style.display = 'block';
     document.getElementById('userInfo').innerHTML = `🧑‍💻 <strong>${state.currentUser.name}</strong>`;
 
-    // Initialize all modules
-    initializeBookings();
-    initializeAdmin();
-    initializeUser();
+    // ✅ FIX: Initialize modules dengan await
+    await initializeBookings();
+    await initAdmin();    // ✅ GANTI: initializeAdmin → initAdmin
+    await initUser();     // ✅ GANTI: initializeUser → initUser
     
     showLoader(false);
 }
