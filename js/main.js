@@ -289,7 +289,7 @@ function setupGlobalFunctions() {
 	}
 	
 	// Modal untuk User Management
-	function showUserManagementModal(users) {
+	window.showUserManagementModal = function(users) {
 		const modal = document.createElement('div');
 		modal.className = 'modal-overlay';
 		modal.innerHTML = `
