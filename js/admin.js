@@ -1,5 +1,5 @@
 // js/admin.js - FULL VERSION WITH NULL CHECKS
-import { auth, db } from './firebase-config.js';
+import { db, auth } from './firebase-config.js';
 import { 
     showLoader, 
     showMessage,

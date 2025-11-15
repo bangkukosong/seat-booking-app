@@ -1,6 +1,7 @@
-// js/firebase-config.js
+// js/firebase-config.js - VERSI DIPERBAIKI
 import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js';
 import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js';
+import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js'; // ✅ TAMBAH INI
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -18,4 +19,7 @@ const app = firebase.initializeApp(firebaseConfig);
 // Initialize Cloud Firestore
 export const db = firebase.firestore();
 
-console.log('🔥 Firebase Firestore initialized successfully!');
+// ✅ TAMBAH INI: Initialize Firebase Authentication
+export const auth = firebase.auth();
+
+console.log('🔥 Firebase Firestore & Auth initialized successfully!');
