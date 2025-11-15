@@ -139,7 +139,7 @@
   <h3 style="color: var(--gold); margin-bottom: 15px; text-align: center;">🗺️ Office Layout</h3>
   
     <div class="office-image-wrapper">
-      <img src="./images/Office-Layout-full.jpg" alt="Office Layout" class="office-image" style="max-width: 100%;">
+      <img src="images/Office-Layout-full.jpg" alt="Office Layout" class="office-image" style="max-width: 100%;">
     </div>
 
     <div style="text-align: center; margin: 15px 0; color: rgba(255,255,255,0.8);">
@@ -232,48 +232,21 @@
     </div>
   </div>
 
+  <!-- Load semua JavaScript modules -->
+  <script type="module">
+    import './js/firebase-config.js';
+    import './js/constants.js';
+    import './js/api-manager.js';
+    import './js/utils.js';
+    import './js/ui.js';
+    import './js/auth.js';
+    import './js/bookings.js';
+    import './js/admin.js';
+    import './js/user.js';
+    import './js/main.js';
+
+    console.log('🎯 All modules loaded successfully!');
+    console.log('🔥 Firestore integration: ACTIVE');
+  </script>
 </body>
-<!-- Firebase Scripts untuk Firestore dan Auth -->
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-<script>
-  // Firebase Configuration untuk Firestore
-  const firebaseConfig = {
-    apiKey: "AIzaSyALdxLc87bsjCc4ZyQ_HWPuhE07p4jq54s",
-    authDomain: "bangku-kosong.firebaseapp.com",
-    projectId: "bangku-kosong",
-    storageBucket: "bangku-kosong.firebasestorage.app",
-    messagingSenderId: "802646179240",
-    appId: "1:802646179240:web:de9f330d278a6ca49ff19d"
-  };
-
-  // Initialize Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  
-  // Initialize Firestore dan Auth
-  const db = firebase.firestore();
-  const auth = firebase.auth();
-  
-  console.log('✅ Firebase Firestore & Auth initialized!');
-</script>
-
-<!-- App Scripts -->
-<script src="js/app.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/bookings.js"></script>
-
-<script>
-  // Test Firestore Connection
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 App loaded, testing Firestore...');
-    
-    // Simple test - coba baca collection (jika ada)
-    db.collection('users').get().then(snapshot => {
-      console.log(`✅ Firestore OK! Found ${snapshot.size} users`);
-    }).catch(error => {
-      console.log('❌ Firestore error (mungkin rules atau collection belum ada):', error);
-    });
-  });
-</script>
 </html>
