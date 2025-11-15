@@ -9,13 +9,19 @@ export const STATE = {
     candidates: []
 };
 
-// ✅ Gunakan state.currentDate dari constants.js
 export function formatLocalDate(date) {
-    const targetDate = date || state.currentDate;
+    if (!date) return '';
+    
+    // ✅ FIX: Ensure we're using the correct date
+    const targetDate = date instanceof Date ? date : new Date(date);
+    
     const year = targetDate.getFullYear();
     const month = String(targetDate.getMonth() + 1).padStart(2, '0');
     const day = String(targetDate.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    
+    const formatted = `${year}-${month}-${day}`;
+    console.log('📅 Formatting date:', date, '→', formatted);
+    return formatted;
 }
 
 export function showLoader(show = true) {

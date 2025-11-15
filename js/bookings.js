@@ -13,10 +13,16 @@ export function initializeBookings() {
 // Date Management
 export function setupDatePicker() {
     const datePicker = document.getElementById('datePicker');
-    const todayStr = formatLocalDate(new Date());
+    const today = new Date();
+    
+    // ✅ FIX: Format today's date correctly
+    const todayStr = formatLocalDate(today);
     datePicker.min = todayStr;
     datePicker.value = todayStr;
+    
+    // ✅ FIX: Set current date to TODAY, not some random 2025 date!
     state.currentDate = new Date(todayStr + 'T00:00:00');
+    
     updateDateDisplay();
     updateNavigationButtons();
     
@@ -26,6 +32,8 @@ export function setupDatePicker() {
         updateNavigationButtons();
         loadBookings();
     });
+    
+    console.log('✅ Date picker initialized to:', todayStr);
 }
 
 export function updateDateDisplay() {
