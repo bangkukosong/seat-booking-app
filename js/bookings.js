@@ -240,7 +240,7 @@ export function showBookingForm(seatCode) {
 			</p>
 			
 			<div class="btn-group">
-				<button type="button" class="btn btn-success" onclick="window.processCancelBooking('${userExistingBooking.seat}', '${seatCode}')">
+				<button type="button" class="btn btn-success" onclick="console.log('🔍 BUTTON CLICKED:', 'oldSeat=${userExistingBooking.seat}', 'newSeat=${seatCode}'); window.processCancelBooking('${userExistingBooking.seat}', '${seatCode}')">
 					🔄 Replace with ${seatCode}
 				</button>
 				<button type="button" class="btn btn-danger" onclick="window.showCancelBookingForm('${userExistingBooking.seat}')">
