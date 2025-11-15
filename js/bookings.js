@@ -1,5 +1,5 @@
-// js/bookings.js
-import { currentUser, currentDate, currentBookings, historicalBookings, TEAMS_CONFIG } from './constants.js';
+// js/bookings.js - COMPLETE UPDATED VERSION
+import { state, TEAMS_CONFIG } from './constants.js';
 import { optimizedFetch, optimizedPost } from './api-manager.js';
 import { showLoader, showMessage, formatLocalDate, updateLastUpdate } from './utils.js';
 import { showFormMessage, hideBookingForm } from './ui.js';
@@ -17,12 +17,12 @@ export function setupDatePicker() {
     const todayStr = formatLocalDate(new Date());
     datePicker.min = todayStr;
     datePicker.value = todayStr;
-    currentDate = new Date(todayStr + 'T00:00:00');
+    state.currentDate = new Date(todayStr + 'T00:00:00');
     updateDateDisplay();
     updateNavigationButtons();
     
     datePicker.addEventListener('change', function(e) {
-        currentDate = new Date(e.target.value + 'T00:00:00');
+        state.currentDate = new Date(e.target.value + 'T00:00:00');
         updateDateDisplay();
         updateNavigationButtons();
         loadBookings();
@@ -37,9 +37,9 @@ export function updateDateDisplay() {
         day: 'numeric'
     };
     
-    const dateString = currentDate.toLocaleDateString('en-US', options);
+    const dateString = state.currentDate.toLocaleDateString('en-US', options);
     document.getElementById('selectedDateDisplay').textContent = dateString;
-    document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('en-US');
+    document.getElementById('currentDate').textContent = state.currentDate.toLocaleDateString('en-US');
     updateNavigationButtons();
 }
 
@@ -48,7 +48,7 @@ export function updateNavigationButtons() {
     today.setHours(0, 0, 0, 0);
     
     const prevDayBtn = document.getElementById('prevDayBtn');
-    const isToday = currentDate.getTime() === today.getTime();
+    const isToday = state.currentDate.getTime() === today.getTime();
     prevDayBtn.disabled = isToday;
     
     if (isToday) {
@@ -61,15 +61,15 @@ export function updateNavigationButtons() {
 }
 
 export function changeDate(days) {
-    const newDate = new Date(currentDate);
+    const newDate = new Date(state.currentDate);
     newDate.setDate(newDate.getDate() + days);
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
     if (newDate >= today) {
-        currentDate = newDate;
-        document.getElementById('datePicker').value = formatLocalDate(currentDate);
+        state.currentDate = newDate;
+        document.getElementById('datePicker').value = formatLocalDate(state.currentDate);
         updateDateDisplay();
         updateNavigationButtons();
         loadBookings();
@@ -80,10 +80,10 @@ export function changeDate(days) {
 
 // Bookings Data Management
 export async function loadBookings() {
-    const day = formatLocalDate(currentDate);
+    const day = formatLocalDate(state.currentDate);
     try {
         const result = await optimizedFetch('getBookings', { day }, true);
-        currentBookings = result.bookings || [];
+        state.currentBookings = result.bookings || [];
         renderSeatGrid();
         updateLastUpdate();
     } catch (error) {
@@ -93,8 +93,8 @@ export async function loadBookings() {
 
 export async function loadHistoricalBookings() {
     try {
-        const result = await optimizedFetch('getAllBookings', { userName: currentUser.name }, true);
-        historicalBookings = result.bookings || [];
+        const result = await optimizedFetch('getAllBookings', { userName: state.currentUser.name }, true);
+        state.historicalBookings = result.bookings || [];
     } catch (error) {
         console.error('Failed to load historical bookings:', error);
     }
@@ -121,10 +121,10 @@ export function renderSeatGrid() {
         for (let i = 1; i <= team.seats; i++) {
             const seatCode = `${team.name}-${String(i).padStart(2, '0')}`;
             const seat = document.createElement('div');
-            const booking = currentBookings.find(b => b.seat === seatCode);
+            const booking = state.currentBookings.find(b => b.seat === seatCode);
             
             if (booking) {
-                const isMyBooking = booking.userName === currentUser.name;
+                const isMyBooking = booking.userName === state.currentUser.name;
                 seat.className = isMyBooking ? 'seat my-booking' : 'seat booked';
                 seat.innerHTML = `
                     ${seatCode}
@@ -164,14 +164,14 @@ export function renderSeatGrid() {
 
 // Booking Forms and Processing
 export function showBookingForm(seatCode) {
-    const existingBooking = currentBookings.find(b => b.seat === seatCode);
+    const existingBooking = state.currentBookings.find(b => b.seat === seatCode);
     if (existingBooking) {
         showMessage(`❌ Maaf, kursi ${seatCode} sudah dibooking oleh ${existingBooking.userName || 'orang lain'}`, "error");
         loadBookings();
         return;
     }
 
-    const dateDisplay = currentDate.toLocaleDateString('en-US', { 
+    const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
         weekday: 'long', 
         year: 'numeric', 
         month: 'long', 
@@ -194,12 +194,12 @@ export function showBookingForm(seatCode) {
         
         <div class="form-group">
             <label>Order Name</label>
-            <input type="text" value="${currentUser.name}" readonly style="background: rgba(255,255,255,0.3); color: #fff;">
+            <input type="text" value="${state.currentUser.name}" readonly style="background: rgba(255,255,255,0.3); color: #fff;">
         </div>
         
         <div class="form-group">
             <label>User ID</label>
-            <input type="text" value="${currentUser.username}" readonly style="background: rgba(255,255,255,0.3); color: #fff;">
+            <input type="text" value="${state.currentUser.username}" readonly style="background: rgba(255,255,255,0.3); color: #fff;">
         </div>
         
         <div class="btn-group">
@@ -216,14 +216,14 @@ export function showBookingForm(seatCode) {
 }
 
 export function showCancelBookingForm(seatCode) {
-    const booking = currentBookings.find(b => b.seat === seatCode && b.userName === currentUser.name);
+    const booking = state.currentBookings.find(b => b.seat === seatCode && b.userName === state.currentUser.name);
     if (!booking) {
         showMessage("❌ Booking is not found", "error");
         loadBookings();
         return;
     }
 
-    const dateDisplay = currentDate.toLocaleDateString('en-US', { 
+    const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
         weekday: 'long', 
         year: 'numeric', 
         month: 'long', 
@@ -239,8 +239,8 @@ export function showCancelBookingForm(seatCode) {
         </p>
         <div style="background: rgba(255, 85, 85, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255, 85, 85, 0.3);">
             <h3 style="color: #ff5555; margin-bottom: 10px; text-align: center;">${seatCode}</h3>
-            <p><strong>Pemesan:</strong> ${currentUser.name}</p>
-            <p><strong>User ID:</strong> ${currentUser.username}</p>
+            <p><strong>Pemesan:</strong> ${state.currentUser.name}</p>
+            <p><strong>User ID:</strong> ${state.currentUser.username}</p>
         </div>
         <p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
             ⚠️ Are you sure want to cancel this booking?
@@ -258,13 +258,13 @@ export function showCancelBookingForm(seatCode) {
 }
 
 export async function processBooking(seatCode) {
-    const day = formatLocalDate(currentDate);
+    const day = formatLocalDate(state.currentDate);
     
     try {
         showFormMessage("⏳ Processing booking...", "info");
         const result = await optimizedPost('submitBooking', { 
             seat: seatCode, 
-            userName: currentUser.name, 
+            userName: state.currentUser.name, 
             day 
         });
         
@@ -275,7 +275,6 @@ export async function processBooking(seatCode) {
                 hideBookingForm();
                 showMessage("✅ Booking has been successfully saved!", "success");
                 
-                // Clear cache and reload data
                 import('./api-manager.js').then(({ clearCache }) => clearCache());
                 await loadBookings();
                 await loadHistoricalBookings();
@@ -290,13 +289,13 @@ export async function processBooking(seatCode) {
 }
 
 export async function processCancelBooking(seatCode) {
-    const day = formatLocalDate(currentDate);
+    const day = formatLocalDate(state.currentDate);
     
     try {
         showFormMessage("⏳ Cancelling booking...", "info");
         const result = await optimizedPost('cancelBooking', { 
             seat: seatCode, 
-            userName: currentUser.name, 
+            userName: state.currentUser.name, 
             day 
         });
         
@@ -307,7 +306,6 @@ export async function processCancelBooking(seatCode) {
                 hideBookingForm();
                 showMessage("✅ Booking has been successfully cancelled!", "success");
                 
-                // Clear cache and reload data
                 import('./api-manager.js').then(({ clearCache }) => clearCache());
                 await loadBookings();
                 await loadHistoricalBookings();
@@ -337,7 +335,7 @@ export function toggleHistorical() {
         document.getElementById('mapViewBtn').classList.remove('active');
     } else {
         panel.style.display = 'none';
-        if (currentView === 'grid') {
+        if (state.currentView === 'grid') {
             gridView.style.display = 'block';
             document.getElementById('gridViewBtn').classList.add('active');
         } else {
@@ -350,7 +348,7 @@ export function toggleHistorical() {
 export function renderHistoricalBookings() {
     const content = document.getElementById('historicalContent');
     
-    if (!historicalBookings || historicalBookings.length === 0) {
+    if (!state.historicalBookings || state.historicalBookings.length === 0) {
         content.innerHTML = `
             <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.7);">
                 <p>📭 You don't have any booking history yet.</p>
@@ -360,7 +358,7 @@ export function renderHistoricalBookings() {
     }
     
     const bookingsByDate = {};
-    historicalBookings.forEach(booking => {
+    state.historicalBookings.forEach(booking => {
         if (booking && booking.day) {
             if (!bookingsByDate[booking.day]) {
                 bookingsByDate[booking.day] = [];
@@ -414,7 +412,7 @@ export function showGridView() {
     
     document.getElementById('gridViewBtn').classList.add('active');
     document.getElementById('mapViewBtn').classList.remove('active');
-    currentView = 'grid';
+    state.currentView = 'grid';
 }
 
 export function showMapView() {
@@ -424,5 +422,5 @@ export function showMapView() {
     
     document.getElementById('mapViewBtn').classList.add('active');
     document.getElementById('gridViewBtn').classList.remove('active');
-    currentView = 'map';
+    state.currentView = 'map';
 }
