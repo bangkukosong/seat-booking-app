@@ -121,9 +121,14 @@ function setupGlobalFunctions() {
 	// ==================== ADMIN FUNCTIONS ====================
 	window.showUserManagement = async function() {
 		try {
-			showMessage('⏳ Loading user management...', 'info');
+			// Show loading modal instead of yellow message
+			showUserManagementLoadingModal();
+			
 			const { FirestoreAPI } = await import('./firestore-api.js');
 			const result = await FirestoreAPI.getAllUsers();
+			
+			// Remove loading modal
+			document.querySelector('.modal-overlay')?.remove();
 			
 			if (result.success) {
 				showUserManagementModal(result.users);
@@ -132,15 +137,39 @@ function setupGlobalFunctions() {
 			}
 		} catch (error) {
 			console.error('User Management Error:', error);
+			document.querySelector('.modal-overlay')?.remove();
 			showMessage('❌ Error loading users', 'error');
 		}
 	};
 	
+	// Loading modal untuk user management
+	function showUserManagementLoadingModal() {
+		const modal = document.createElement('div');
+		modal.className = 'modal-overlay';
+		modal.innerHTML = `
+			<div class="modal-content" style="max-width: 300px; text-align: center;">
+				<div class="modal-header">
+					<h3 class="modal-title">⏳ Loading</h3>
+				</div>
+				<div style="padding: 30px;">
+					<div class="spinner"></div>
+					<p style="margin-top: 15px; color: rgba(255,255,255,0.8);">Loading user management...</p>
+				</div>
+			</div>
+		`;
+		document.body.appendChild(modal);
+	}
+		
 	window.showAllBookings = async function() {
 		try {
-			showMessage('⏳ Loading all bookings...', 'info');
+			// Show loading modal
+			showAllBookingsLoadingModal();
+			
 			const { FirestoreAPI } = await import('./firestore-api.js');
 			const result = await FirestoreAPI.getAllBookingsAdmin();
+			
+			// Remove loading modal
+			document.querySelector('.modal-overlay')?.remove();
 			
 			if (result.success) {
 				showAllBookingsModal(result.bookings);
@@ -149,17 +178,44 @@ function setupGlobalFunctions() {
 			}
 		} catch (error) {
 			console.error('All Bookings Error:', error);
+			document.querySelector('.modal-overlay')?.remove();
 			showMessage('❌ Error loading bookings', 'error');
 		}
 	};
+	
+	// Loading modal untuk all bookings
+	function showAllBookingsLoadingModal() {
+		const modal = document.createElement('div');
+		modal.className = 'modal-overlay';
+		modal.innerHTML = `
+			<div class="modal-content" style="max-width: 300px; text-align: center;">
+				<div class="modal-header">
+					<h3 class="modal-title">⏳ Loading</h3>
+				</div>
+				<div style="padding: 30px;">
+					<div class="spinner"></div>
+					<p style="margin-top: 15px; color: rgba(255,255,255,0.8);">Loading all bookings...</p>
+				</div>
+			</div>
+		`;
+		document.body.appendChild(modal);
+	}
 	
 	window.showAddUserForm = function() {
 		const form = document.getElementById('addUserFormContainer');
 		if (form) {
 			form.style.display = 'block';
-			form.reset();
+			
+			// ✅ CLEAR MANUAL SEMUA FIELD
+			document.getElementById('newUserUsername').value = '';
+			document.getElementById('newUserPassword').value = '';
+			document.getElementById('newUserName').value = '';
+			document.getElementById('newUserRole').value = 'user';
+			
 			const messageEl = document.getElementById('addUserMessage');
 			if (messageEl) messageEl.innerHTML = '';
+			
+			console.log('✅ Add user form cleared and shown');
 		}
 	};
 	
