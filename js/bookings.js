@@ -395,47 +395,90 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
     
     try {
         showFormMessage("⏳ Cancelling booking...", "info");
-        const result = await optimizedPost('cancelBooking', { 
+        
+        // Step 1: Cancel the existing booking
+        const cancelResult = await optimizedPost('cancelBooking', { 
             seat: seatCode, 
             userName: state.currentUser.username, 
             day 
         });
         
-        if (result.success) {
-            showFormMessage("✅ Booking successfully cancelled!", "success");
+        if (!cancelResult.success) {
+            showFormMessage(`❌ Cancel failed: ${cancelResult.message}`, "error");
+            return;
+        }
+
+        showFormMessage("✅ Booking cancelled! Processing replacement...", "success");
+        
+        // Step 2: If this is a replace operation, book the new seat
+        if (newSeatCode) {
+            try {
+                // Small delay to ensure server processed the cancellation
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                const bookingResult = await optimizedPost('submitBooking', { 
+                    seat: newSeatCode, 
+                    userName: state.currentUser.username, 
+                    day 
+                });
+                
+                if (bookingResult.success) {
+                    showFormMessage("✅ Successfully replaced booking!", "success");
+                    
+                    setTimeout(async () => {
+                        hideBookingForm();
+                        showMessage(`✅ Successfully replaced ${seatCode} with ${newSeatCode}!`, "success");
+                        
+                        // Refresh all data
+                        const { clearCache } = await import('./api-manager.js');
+                        clearCache();
+                        await loadBookings();
+                        await loadHistoricalBookings();
+                    }, 1000);
+                    
+                } else {
+                    // Booking failed after successful cancellation
+                    showFormMessage(`⚠️ Cancelled but booking failed: ${bookingResult.message}`, "error");
+                    
+                    setTimeout(async () => {
+                        hideBookingForm();
+                        showMessage(`⚠️ ${seatCode} cancelled but failed to book ${newSeatCode}. Please try again.`, "warning");
+                        
+                        const { clearCache } = await import('./api-manager.js');
+                        clearCache();
+                        await loadBookings();
+                        await loadHistoricalBookings();
+                    }, 1500);
+                }
+                
+            } catch (bookingError) {
+                // Network error during booking
+                showFormMessage("❌ Network error during booking", "error");
+                
+                setTimeout(async () => {
+                    hideBookingForm();
+                    showMessage(`⚠️ ${seatCode} cancelled but booking failed due to network error.`, "warning");
+                    
+                    const { clearCache } = await import('./api-manager.js');
+                    clearCache();
+                    await loadBookings();
+                    await loadHistoricalBookings();
+                }, 1500);
+            }
             
+        } else {
+            // Normal cancellation flow (no replacement)
             setTimeout(async () => {
                 hideBookingForm();
+                showMessage("✅ Booking successfully cancelled!", "success");
                 
-                // Clear cache and refresh data
                 const { clearCache } = await import('./api-manager.js');
                 clearCache();
                 await loadBookings();
                 await loadHistoricalBookings();
-                
-                // ✅ SAFE AUTO-BOOKING: ONLY IF newSeatCode PROVIDED AND FOR SAME DAY
-                if (newSeatCode) {
-                    // Double check: ensure the cancellation was for today's booking
-                    const wasTodaysBooking = state.currentBookings.some(
-                        b => b.seat === seatCode && b.userName === state.currentUser.username
-                    );
-                    
-                    if (wasTodaysBooking) {
-                        setTimeout(() => {
-                            showBookingForm(newSeatCode);
-                        }, 500);
-                    } else {
-                        showMessage("✅ Booking cancelled! Please manually book your new seat.", "success");
-                    }
-                } else {
-                    // Normal cancellation flow
-                    showMessage("✅ Booking has been successfully cancelled!", "success");
-                }
             }, 1000);
-            
-        } else {
-            showFormMessage(`❌ ${result.message}`, "error");
         }
+        
     } catch (error) {
         showFormMessage("❌ Error: Failed to connect to server", "error");
     }
