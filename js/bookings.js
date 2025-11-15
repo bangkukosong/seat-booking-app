@@ -448,7 +448,7 @@ export function showGridView() {
     state.currentView = 'grid';
 }
 
-export function showMapView() {
+function showMapView() {
     document.getElementById('gridView').style.display = 'none';
     document.getElementById('mapView').style.display = 'block';
     document.getElementById('historicalPanel').style.display = 'none';
@@ -475,4 +475,5 @@ export {
     renderHistoricalBookings,
     showGridView,
     showMapView
+
 };
