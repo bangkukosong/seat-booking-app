@@ -413,12 +413,22 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
                 await loadBookings();
                 await loadHistoricalBookings();
                 
-                // ✅ AUTO SHOW BOOKING FORM FOR NEW SEAT IF PROVIDED
+                // ✅ SAFE AUTO-BOOKING: ONLY IF newSeatCode PROVIDED AND FOR SAME DAY
                 if (newSeatCode) {
-                    setTimeout(() => {
-                        showBookingForm(newSeatCode);
-                    }, 500);
+                    // Double check: ensure the cancellation was for today's booking
+                    const wasTodaysBooking = state.currentBookings.some(
+                        b => b.seat === seatCode && b.userName === state.currentUser.username
+                    );
+                    
+                    if (wasTodaysBooking) {
+                        setTimeout(() => {
+                            showBookingForm(newSeatCode);
+                        }, 500);
+                    } else {
+                        showMessage("✅ Booking cancelled! Please manually book your new seat.", "success");
+                    }
                 } else {
+                    // Normal cancellation flow
                     showMessage("✅ Booking has been successfully cancelled!", "success");
                 }
             }, 1000);
@@ -482,6 +492,7 @@ export function toggleHistorical() {
     }
 }
 
+// Dalam renderHistoricalBookings - pastikan cancel dari history tidak pakai replace
 export function renderHistoricalBookings() {
     const content = document.getElementById('historicalContent');
     
@@ -516,12 +527,25 @@ export function renderHistoricalBookings() {
             day: 'numeric' 
         });
         
+        // ✅ CHECK IF BOOKING IS FOR TODAY
+        const isToday = date === formatLocalDate(state.currentDate);
+        
         return `
             <div class="historical-item">
-                <div class="historical-date">${dateDisplay}</div>
+                <div class="historical-date">
+                    ${dateDisplay}
+                    ${isToday ? '<span style="color: var(--primary-green); margin-left: 10px;">(Today)</span>' : ''}
+                </div>
                 <div class="historical-seats">
                     ${bookings.map(booking => `
-                        <span class="historical-seat">${booking.seat || 'Unknown'}</span>
+                        <span class="historical-seat ${isToday ? 'today-booking' : ''}">
+                            ${booking.seat || 'Unknown'}
+                            ${isToday ? `
+                                <button class="cancel-btn-small" onclick="window.showCancelBookingForm('${booking.seat}')">
+                                    ❌
+                                </button>
+                            ` : ''}
+                        </span>
                     `).join('')}
                 </div>
             </div>
