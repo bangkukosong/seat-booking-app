@@ -392,6 +392,7 @@ export async function processBooking(seatCode) {
 }
 
 // ✅ SOLUSI: Ganti nama parameter
+delete window.processCancelBooking;
 export async function processCancelBooking(seatToCancel, seatToBook = null) {
     const day = formatLocalDate(state.currentDate);
     
@@ -511,6 +512,7 @@ export async function processCancelBooking(seatToCancel, seatToBook = null) {
     
     console.log('🔍 [END] processCancelBooking COMPLETE');
 }
+window.processCancelBooking = processCancelBooking;
 
 // Helper function untuk refresh data
 async function refreshAllData() {
