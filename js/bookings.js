@@ -203,12 +203,12 @@ export function showBookingForm(seatCode) {
     // ✅ CEK 2: User sudah booking seat lain hari ini (CLIENT-SIDE)
     const userExistingBooking = state.currentBookings.find(b => b.userName === state.currentUser.username);
     if (userExistingBooking) {
-        // ✅ DIGANTI: TAMPILKAN FORM INFORMATIF BUKAN MESSAGE BIASA
+        // ✅ TAMPILKAN FORM INFORMATIF (FIXED)
         showAlreadyBookedForm(userExistingBooking.seat);
         return;
     }
 
-    // ✅ LANJUT KE FORM BOOKING NORMAL JIKA SEMUA CEK PASS
+    // ✅ LANJUT KE FORM BOOKING NORMAL
     const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
         weekday: 'long', 
         year: 'numeric', 
@@ -254,6 +254,55 @@ export function showBookingForm(seatCode) {
     `;
 }
 
+// ✅ FUNCTION BARU: FORM INFORMATIF UNTUK USER YANG SUDAH BOOKING
+function showAlreadyBookedForm(existingSeat) {
+    const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+
+    const formContainer = document.getElementById("bookingFormContainer");
+    formContainer.style.display = "block";
+    formContainer.innerHTML = `
+        <h2 style="color: #ff5555; text-align: center;">⚠️ Sudah Ada Booking</h2>
+        <p style="text-align: center; margin-bottom: 15px; color: var(--gold);">
+            📅 ${dateDisplay}
+        </p>
+        
+        <div style="background: rgba(255, 85, 85, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255, 85, 85, 0.3);">
+            <h3 style="color: #ff5555; margin-bottom: 10px; text-align: center;">${existingSeat}</h3>
+            <p><strong>Pemesan:</strong> ${state.currentUser.name}</p>
+            <p><strong>User ID:</strong> ${state.currentUser.username}</p>
+            <p><strong>Status:</strong> <span style="color: #ff5555;">❌ Already Booked</span></p>
+        </div>
+        
+        <div style="background: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 215, 0, 0.3);">
+            <p style="margin: 0; font-size: 0.9rem; color: var(--gold); text-align: center;">
+                ⚠️ <strong>Kebijakan Booking:</strong> Setiap user hanya dapat booking 1 seat per hari
+            </p>
+        </div>
+        
+        <p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
+            Silakan batalkan booking existing terlebih dahulu untuk melakukan booking baru.
+        </p>
+        
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger" onclick="window.showCancelBookingForm('${existingSeat}')">
+                🗑️ Batalkan Booking Existing
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
+                ✅ Tutup
+            </button>
+        </div>
+        
+        <div id="message" class="message"></div>
+    `;
+}
+
+// ✅ PASTIKAN SEMUA FUNCTION DIEKSPOR KE WINDOW
+window.showAlreadyBookedForm = showAlreadyBookedForm;
 // ✅ FUNGSI BARU: FORM INFORMATIF UNTUK USER YANG SUDAH BOOKING
 function showAlreadyBookedForm(existingSeat) {
     const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
