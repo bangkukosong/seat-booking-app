@@ -136,34 +136,43 @@ function setupGlobalFunctions() {
     };
     
     // ==================== PASSWORD CHANGE ====================
-    window.showChangePasswordModal = function() {
-        if (!state.currentUser) {
-            showMessage('❌ Please login first', 'error');
-            return;
-        }
-        
-        const modal = document.getElementById('changePasswordModal');
-        const usernameField = document.getElementById('changePasswordUsername');
-        
-        if (modal && usernameField) {
-            // Set username current user
-            usernameField.value = state.currentUser.username;
-            modal.style.display = 'block';
-            
-            // Reset form
-            const form = document.getElementById('changePasswordForm');
-            if (form) form.reset();
-            
-            // Clear message
-            const messageEl = document.getElementById('changePasswordMessage');
-            if (messageEl) messageEl.innerHTML = '';
-            
-            console.log('🔐 Change password modal shown for:', state.currentUser.username);
-        } else {
-            console.error('❌ Change password modal elements not found');
-            showMessage('❌ Change password form not available', 'error');
-        }
-    };
+	// Di main.js - bagian showChangePasswordModal
+	window.showChangePasswordModal = async function() {
+		try {
+			// Import state dari constants.js
+			const { state } = await import('./constants.js');
+			
+			if (!state.currentUser) {
+				showMessage('❌ Please login first', 'error');
+				return;
+			}
+			
+			const modal = document.getElementById('changePasswordModal');
+			const usernameField = document.getElementById('changePasswordUsername');
+			
+			if (modal && usernameField) {
+				// ✅ FIX: Set username current user
+				usernameField.value = state.currentUser.username;
+				modal.style.display = 'block';
+				
+				// Reset form
+				const form = document.getElementById('changePasswordForm');
+				if (form) form.reset();
+				
+				// Clear message
+				const messageEl = document.getElementById('changePasswordMessage');
+				if (messageEl) messageEl.innerHTML = '';
+				
+				console.log('🔐 Change password modal shown for:', state.currentUser.username);
+			} else {
+				console.error('❌ Change password modal elements not found');
+				showMessage('❌ Change password form not available', 'error');
+			}
+		} catch (error) {
+			console.error('Error showing change password modal:', error);
+			showMessage('❌ Error loading user data', 'error');
+		}
+	};
 
     window.hideChangePasswordModal = function() {
         const modal = document.getElementById('changePasswordModal');
@@ -195,7 +204,11 @@ function setupGlobalFunctions() {
     }
 
     // Handle change password
-    async function handleChangePassword() {
+		async function handleChangePassword() {
+		try {
+        // Import state
+        const { state } = await import('./constants.js');
+        
         if (!state.currentUser) {
             showChangePasswordMessage('❌ Please login first', 'error');
             return;
@@ -276,7 +289,12 @@ function setupGlobalFunctions() {
                 submitBtn.textContent = 'Update Password';
             }
         }
+     } catch (error) {
+        // Error di outer try (import state)
+        console.error('Error in handleChangePassword:', error);
+        showChangePasswordMessage('❌ Error processing request', 'error');
     }
+}
 
     function showChangePasswordMessage(text, type) {
         const messageEl = document.getElementById('changePasswordMessage');
