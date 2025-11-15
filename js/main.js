@@ -117,23 +117,206 @@ function setupGlobalFunctions() {
         });
     };
     
-    // ==================== ADMIN FUNCTIONS ====================
-    window.showUserManagement = function() {
-        showMessage('👥 User management - Firebase version coming soon...', 'info');
-    };
-    
-    window.showAllBookings = function() {
-        showMessage('📊 All bookings - Firebase version coming soon...', 'info');
-    };
-    
-    window.showAddUserForm = function() {
-        showMessage('➕ Add user - Firebase version coming soon...', 'info');
-    };
-    
-    window.hideAddUserForm = function() {
-        const form = document.getElementById('addUserFormContainer');
-        if (form) form.style.display = 'none';
-    };
+
+	// ==================== ADMIN FUNCTIONS ====================
+	window.showUserManagement = async function() {
+		try {
+			showMessage('⏳ Loading user management...', 'info');
+			const { FirestoreAPI } = await import('./firestore-api.js');
+			const result = await FirestoreAPI.getAllUsers();
+			
+			if (result.success) {
+				showUserManagementModal(result.users);
+			} else {
+				showMessage('❌ Failed to load users', 'error');
+			}
+		} catch (error) {
+			console.error('User Management Error:', error);
+			showMessage('❌ Error loading users', 'error');
+		}
+	};
+	
+	window.showAllBookings = async function() {
+		try {
+			showMessage('⏳ Loading all bookings...', 'info');
+			const { FirestoreAPI } = await import('./firestore-api.js');
+			const result = await FirestoreAPI.getAllBookingsAdmin();
+			
+			if (result.success) {
+				showAllBookingsModal(result.bookings);
+			} else {
+				showMessage('❌ Failed to load bookings', 'error');
+			}
+		} catch (error) {
+			console.error('All Bookings Error:', error);
+			showMessage('❌ Error loading bookings', 'error');
+		}
+	};
+	
+	window.showAddUserForm = function() {
+		const form = document.getElementById('addUserFormContainer');
+		if (form) {
+			form.style.display = 'block';
+			form.reset();
+			const messageEl = document.getElementById('addUserMessage');
+			if (messageEl) messageEl.innerHTML = '';
+		}
+	};
+	
+	window.hideAddUserForm = function() {
+		const form = document.getElementById('addUserFormContainer');
+		if (form) form.style.display = 'none';
+	};
+	
+	// Setup Add User Form
+	function setupAddUserForm() {
+		const form = document.getElementById('addUserForm');
+		if (form) {
+			form.addEventListener('submit', async function(e) {
+				e.preventDefault();
+				await handleAddUser();
+			});
+		}
+	}
+	
+	async function handleAddUser() {
+		try {
+			const username = document.getElementById('newUserUsername').value;
+			const password = document.getElementById('newUserPassword').value;
+			const name = document.getElementById('newUserName').value;
+			const role = document.getElementById('newUserRole').value;
+	
+			if (!username || !password || !name) {
+				showAddUserMessage('❌ Please fill all fields', 'error');
+				return;
+			}
+	
+			if (password.length < 6) {
+				showAddUserMessage('❌ Password must be at least 6 characters', 'error');
+				return;
+			}
+	
+			showAddUserMessage('⏳ Adding user...', 'info');
+	
+			const { FirestoreAPI } = await import('./firestore-api.js');
+			const result = await FirestoreAPI.addUser(username, password, name, role);
+	
+			if (result.success) {
+				showAddUserMessage('✅ User added successfully!', 'success');
+				setTimeout(() => {
+					hideAddUserForm();
+					showMessage('✅ User added successfully', 'success');
+				}, 1500);
+			} else {
+				showAddUserMessage(`❌ ${result.message}`, 'error');
+			}
+	
+		} catch (error) {
+			console.error('Add User Error:', error);
+			showAddUserMessage('❌ Error adding user', 'error');
+		}
+	}
+	
+	function showAddUserMessage(text, type) {
+		const messageEl = document.getElementById('addUserMessage');
+		if (messageEl) {
+			messageEl.textContent = text;
+			messageEl.style.color = type === 'error' ? '#ff5555' : 
+								type === 'success' ? '#00ff80' : '#ffd700';
+			messageEl.style.padding = '10px';
+			messageEl.style.borderRadius = '8px';
+			messageEl.style.background = type === 'error' ? 'rgba(255,85,85,0.1)' : 
+									type === 'success' ? 'rgba(0,255,128,0.1)' : 'rgba(255,215,0,0.1)';
+			messageEl.style.border = type === 'error' ? '1px solid rgba(255,85,85,0.3)' : 
+								type === 'success' ? '1px solid rgba(0,255,128,0.3)' : '1px solid rgba(255,215,0,0.3)';
+		}
+	}
+	
+	// Modal untuk User Management
+	function showUserManagementModal(users) {
+		const modal = document.createElement('div');
+		modal.className = 'modal-overlay';
+		modal.innerHTML = `
+			<div class="modal-content" style="max-width: 800px;">
+				<div class="modal-header">
+					<h3 class="modal-title">👥 User Management</h3>
+					<button class="close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+				</div>
+				<div style="padding: 20px; max-height: 60vh; overflow-y: auto;">
+					<div style="display: grid; grid-template-columns: 1fr auto auto; gap: 10px; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px; font-weight: bold;">
+						<div>User</div>
+						<div>Role</div>
+						<div>Actions</div>
+					</div>
+					${users.map(user => `
+						<div style="display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center;">
+							<div>
+								<strong>${user.username}</strong><br>
+								<small style="opacity: 0.7;">${user.name}</small>
+							</div>
+							<div>
+								<span style="padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; background: ${user.role === 'admin' ? 'var(--admin-purple)' : 'var(--primary-green)'};">
+									${user.role}
+								</span>
+							</div>
+							<div>
+								<button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;" 
+										onclick="changeUserRole('${user.id}', '${user.role}')">
+									Change Role
+								</button>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+				<div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+					<button class="btn btn-primary" onclick="showAddUserForm(); this.closest('.modal-overlay').remove()">
+						➕ Add New User
+					</button>
+				</div>
+			</div>
+		`;
+		document.body.appendChild(modal);
+	}
+	
+	// Modal untuk All Bookings
+	function showAllBookingsModal(bookings) {
+		const modal = document.createElement('div');
+		modal.className = 'modal-overlay';
+		modal.innerHTML = `
+			<div class="modal-content" style="max-width: 900px;">
+				<div class="modal-header">
+					<h3 class="modal-title">📊 All Bookings</h3>
+					<button class="close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+				</div>
+				<div style="padding: 20px; max-height: 60vh; overflow-y: auto;">
+					<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px; font-weight: bold;">
+						<div>Date</div>
+						<div>Seat</div>
+						<div>User</div>
+						<div>Time</div>
+					</div>
+					${bookings.map(booking => `
+						<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center;">
+							<div>${booking.day}</div>
+							<div><strong>${booking.seat}</strong></div>
+							<div>${booking.userName}</div>
+							<div><small>${booking.timestamp ? new Date(booking.timestamp).toLocaleString('en-US') : 'N/A'}</small></div>
+						</div>
+					`).join('')}
+				</div>
+				<div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+					<button class="btn btn-primary" onclick="exportBookings(); this.closest('.modal-overlay').remove()">
+						📤 Export to CSV
+					</button>
+				</div>
+			</div>
+		`;
+		document.body.appendChild(modal);
+	}
+	
+	// Initialize admin forms
+	setTimeout(setupAddUserForm, 1000);
+	
     
     // ==================== PASSWORD CHANGE ====================
 	window.showChangePasswordModal = async function() {
