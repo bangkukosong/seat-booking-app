@@ -1,8 +1,7 @@
-// js/constants.js - SIMPLE WINDOW OBJECT
-// Just export the window object directly
+// js/constants.js - FIX DATE INIT
 export const state = window.bangkuKosongState = window.bangkuKosongState || {
     currentUser: null,
-    currentDate: new Date(),
+    currentDate: new Date(new Date().toDateString()), // ✅ FIX: Force today at midnight
     currentBookings: [],
     historicalBookings: [],
     currentView: 'grid'

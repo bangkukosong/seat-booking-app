@@ -13,27 +13,21 @@ export function initializeBookings() {
 // Date Management
 export function setupDatePicker() {
     const datePicker = document.getElementById('datePicker');
-    const today = new Date();
     
-    // ✅ FIX: Format today's date correctly
+    // ✅ FIX: Always use today's date
+    const today = new Date();
     const todayStr = formatLocalDate(today);
+    
     datePicker.min = todayStr;
     datePicker.value = todayStr;
     
-    // ✅ FIX: Set current date to TODAY, not some random 2025 date!
+    // ✅ FIX: Reset to today, not cached wrong date
     state.currentDate = new Date(todayStr + 'T00:00:00');
     
     updateDateDisplay();
     updateNavigationButtons();
     
-    datePicker.addEventListener('change', function(e) {
-        state.currentDate = new Date(e.target.value + 'T00:00:00');
-        updateDateDisplay();
-        updateNavigationButtons();
-        loadBookings();
-    });
-    
-    console.log('✅ Date picker initialized to:', todayStr);
+    console.log('✅ Date initialized to TODAY:', todayStr);
 }
 
 export function updateDateDisplay() {
