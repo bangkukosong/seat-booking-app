@@ -1,4 +1,4 @@
-// js/bookings.js - COMPLETE FIXED VERSION
+// js/bookings.js - COMPLETE FIXED VERSION (ENGLISH)
 import { state, TEAMS_CONFIG } from './constants.js';
 import { optimizedFetch, optimizedPost } from './api-manager.js';
 import { showLoader, showMessage, formatLocalDate, updateLastUpdate } from './utils.js';
@@ -33,7 +33,7 @@ export function setupDatePicker() {
     updateDateDisplay();
     updateNavigationButtons();
     
-    // ✅ FIX: ADD PROPER EVENT LISTENER (SUDAH TERBUKTI WORK)
+    // ✅ FIX: ADD PROPER EVENT LISTENER
     newDatePicker.addEventListener('change', async function(e) {
         console.log('🎯 DATE PICKER CHANGE:', e.target.value);
         
@@ -54,6 +54,7 @@ export function setupDatePicker() {
     
     console.log('✅ Date picker setup completed with working event listener');
 }
+
 export function updateDateDisplay() {
     const options = { 
         weekday: 'long', 
@@ -157,7 +158,7 @@ export function renderSeatGrid() {
                 seat.innerHTML = `
                     ${seatCode}
                     <span class="tooltip">
-                        <strong>${isMyBooking ? '📌 Booking Anda' : 'Dibooking oleh:'}</strong><br>
+                        <strong>${isMyBooking ? '📌 Your Booking' : 'Booked by:'}</strong><br>
                         ${booking.userName || 'Unknown'}<br>
                         ${booking.timestamp ? new Date(booking.timestamp).toLocaleString('en-US') : 'Today'}
                     </span>
@@ -192,23 +193,65 @@ export function renderSeatGrid() {
 
 // Booking Forms and Processing
 export function showBookingForm(seatCode) {
-    // ✅ CEK 1: Seat sudah dibooking orang lain (CLIENT-SIDE)
+    // ✅ CHECK 1: Seat already booked by someone else (CLIENT-SIDE)
     const existingBooking = state.currentBookings.find(b => b.seat === seatCode);
     if (existingBooking) {
-        showMessage(`❌ Maaf, kursi ${seatCode} sudah dibooking oleh ${existingBooking.userName || 'orang lain'}`, "error");
+        showMessage(`❌ Sorry, seat ${seatCode} is already booked by ${existingBooking.userName || 'someone else'}`, "error");
         loadBookings(); // Refresh to show current status
         return;
     }
 
-    // ✅ CEK 2: User sudah booking seat lain hari ini (CLIENT-SIDE)
+    // ✅ CHECK 2: User already booked another seat today (CLIENT-SIDE)
     const userExistingBooking = state.currentBookings.find(b => b.userName === state.currentUser.username);
     if (userExistingBooking) {
-        // ✅ TAMPILKAN FORM INFORMATIF (FIXED)
-        showAlreadyBookedForm(userExistingBooking.seat);
+        // ✅ SHOW INFORMATIVE FORM INSTEAD OF SIMPLE MESSAGE
+        const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+
+        const formContainer = document.getElementById("bookingFormContainer");
+        formContainer.style.display = "block";
+        formContainer.innerHTML = `
+            <h2 style="color: #ff5555; text-align: center;">⚠️ Already Have Booking</h2>
+            <p style="text-align: center; margin-bottom: 15px; color: var(--gold);">
+                📅 ${dateDisplay}
+            </p>
+            
+            <div style="background: rgba(255, 85, 85, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255, 85, 85, 0.3);">
+                <h3 style="color: #ff5555; margin-bottom: 10px; text-align: center;">${userExistingBooking.seat}</h3>
+                <p><strong>Booked by:</strong> ${state.currentUser.name}</p>
+                <p><strong>User ID:</strong> ${state.currentUser.username}</p>
+                <p><strong>Status:</strong> <span style="color: #ff5555;">❌ Already Booked</span></p>
+            </div>
+            
+            <div style="background: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                <p style="margin: 0; font-size: 0.9rem; color: var(--gold); text-align: center;">
+                    ⚠️ <strong>Booking Policy:</strong> Each user can only book 1 seat per day
+                </p>
+            </div>
+            
+            <p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
+                Please cancel your existing booking first to make a new booking.
+            </p>
+            
+            <div class="btn-group">
+                <button type="button" class="btn btn-danger" onclick="window.showCancelBookingForm('${userExistingBooking.seat}')">
+                    🗑️ Cancel Existing Booking
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
+                    ✅ Close
+                </button>
+            </div>
+            
+            <div id="message" class="message"></div>
+        `;
         return;
     }
 
-    // ✅ LANJUT KE FORM BOOKING NORMAL
+    // ✅ CONTINUE TO NORMAL BOOKING FORM IF ALL CHECKS PASS
     const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
         weekday: 'long', 
         year: 'numeric', 
@@ -219,26 +262,26 @@ export function showBookingForm(seatCode) {
     const formContainer = document.getElementById("bookingFormContainer");
     formContainer.style.display = "block";
     formContainer.innerHTML = `
-        <h2 style="color: var(--primary-green); text-align: center;">💺 Booking ${seatCode}</h2>
+        <h2 style="color: var(--primary-green); text-align: center;">💺 Book ${seatCode}</h2>
         <p style="text-align: center; margin-bottom: 15px; color: var(--gold);">
             📅 ${dateDisplay}
         </p>
         
         <div style="background: rgba(0, 255, 128, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(0, 255, 128, 0.3);">
             <h3 style="color: var(--primary-green); margin-bottom: 10px; text-align: center;">${seatCode}</h3>
-            <p><strong>Pemesan:</strong> ${state.currentUser.name}</p>
+            <p><strong>Booked by:</strong> ${state.currentUser.name}</p>
             <p><strong>User ID:</strong> ${state.currentUser.username}</p>
             <p><strong>Status:</strong> <span style="color: var(--primary-green);">✅ Available</span></p>
         </div>
         
         <div style="background: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 215, 0, 0.3);">
             <p style="margin: 0; font-size: 0.9rem; color: var(--gold); text-align: center;">
-                ⚠️ <strong>Perhatian:</strong> Anda hanya bisa booking 1 seat per hari
+                ⚠️ <strong>Note:</strong> You can only book 1 seat per day
             </p>
         </div>
         
         <p style="text-align: center; margin-bottom: 20px; color: #88ff88;">
-            ✅ Confirm booking untuk seat ini?
+            ✅ Confirm booking for this seat?
         </p>
         
         <div class="btn-group">
@@ -246,103 +289,7 @@ export function showBookingForm(seatCode) {
                 ✅ Confirm Booking
             </button>
             <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
-                ❌ Batal
-            </button>
-        </div>
-        
-        <div id="message" class="message"></div>
-    `;
-}
-
-// ✅ FUNCTION BARU: FORM INFORMATIF UNTUK USER YANG SUDAH BOOKING
-function showAlreadyBookedForm(existingSeat) {
-    const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-
-    const formContainer = document.getElementById("bookingFormContainer");
-    formContainer.style.display = "block";
-    formContainer.innerHTML = `
-        <h2 style="color: #ff5555; text-align: center;">⚠️ Sudah Ada Booking</h2>
-        <p style="text-align: center; margin-bottom: 15px; color: var(--gold);">
-            📅 ${dateDisplay}
-        </p>
-        
-        <div style="background: rgba(255, 85, 85, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255, 85, 85, 0.3);">
-            <h3 style="color: #ff5555; margin-bottom: 10px; text-align: center;">${existingSeat}</h3>
-            <p><strong>Pemesan:</strong> ${state.currentUser.name}</p>
-            <p><strong>User ID:</strong> ${state.currentUser.username}</p>
-            <p><strong>Status:</strong> <span style="color: #ff5555;">❌ Already Booked</span></p>
-        </div>
-        
-        <div style="background: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 215, 0, 0.3);">
-            <p style="margin: 0; font-size: 0.9rem; color: var(--gold); text-align: center;">
-                ⚠️ <strong>Kebijakan Booking:</strong> Setiap user hanya dapat booking 1 seat per hari
-            </p>
-        </div>
-        
-        <p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
-            Silakan batalkan booking existing terlebih dahulu untuk melakukan booking baru.
-        </p>
-        
-        <div class="btn-group">
-            <button type="button" class="btn btn-danger" onclick="window.showCancelBookingForm('${existingSeat}')">
-                🗑️ Batalkan Booking Existing
-            </button>
-            <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
-                ✅ Tutup
-            </button>
-        </div>
-        
-        <div id="message" class="message"></div>
-    `;
-}
-
-// ✅ PASTIKAN SEMUA FUNCTION DIEKSPOR KE WINDOW
-window.showAlreadyBookedForm = showAlreadyBookedForm;
-// ✅ FUNGSI BARU: FORM INFORMATIF UNTUK USER YANG SUDAH BOOKING
-function showAlreadyBookedForm(existingSeat) {
-    const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-
-    const formContainer = document.getElementById("bookingFormContainer");
-    formContainer.style.display = "block";
-    formContainer.innerHTML = `
-        <h2 style="color: #ff5555; text-align: center;">⚠️ Sudah Ada Booking</h2>
-        <p style="text-align: center; margin-bottom: 15px; color: var(--gold);">
-            📅 ${dateDisplay}
-        </p>
-        
-        <div style="background: rgba(255, 85, 85, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255, 85, 85, 0.3);">
-            <h3 style="color: #ff5555; margin-bottom: 10px; text-align: center;">${existingSeat}</h3>
-            <p><strong>Pemesan:</strong> ${state.currentUser.name}</p>
-            <p><strong>User ID:</strong> ${state.currentUser.username}</p>
-            <p><strong>Status:</strong> <span style="color: #ff5555;">❌ Already Booked</span></p>
-        </div>
-        
-        <div style="background: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 215, 0, 0.3);">
-            <p style="margin: 0; font-size: 0.9rem; color: var(--gold); text-align: center;">
-                ⚠️ <strong>Kebijakan Booking:</strong> Setiap user hanya dapat booking 1 seat per hari
-            </p>
-        </div>
-        
-        <p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
-            Silakan batalkan booking existing terlebih dahulu untuk melakukan booking baru.
-        </p>
-        
-        <div class="btn-group">
-            <button type="button" class="btn btn-danger" onclick="window.showCancelBookingForm('${existingSeat}')">
-                🗑️ Batalkan Booking Existing
-            </button>
-            <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
-                ✅ Tutup
+                ❌ Cancel
             </button>
         </div>
         
@@ -353,7 +300,7 @@ function showAlreadyBookedForm(existingSeat) {
 export function showCancelBookingForm(seatCode) {
     const booking = state.currentBookings.find(b => b.seat === seatCode && b.userName === state.currentUser.username);
     if (!booking) {
-        showMessage("❌ Booking is not found", "error");
+        showMessage("❌ Booking not found", "error");
         loadBookings();
         return;
     }
@@ -374,11 +321,11 @@ export function showCancelBookingForm(seatCode) {
         </p>
         <div style="background: rgba(255, 85, 85, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255, 85, 85, 0.3);">
             <h3 style="color: #ff5555; margin-bottom: 10px; text-align: center;">${seatCode}</h3>
-            <p><strong>Pemesan:</strong> ${state.currentUser.name}</p>
+            <p><strong>Booked by:</strong> ${state.currentUser.name}</p>
             <p><strong>User ID:</strong> ${state.currentUser.username}</p>
         </div>
         <p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
-            ⚠️ Are you sure want to cancel this booking?
+            ⚠️ Are you sure you want to cancel this booking?
         </p>
         <div class="btn-group">
             <button type="button" class="btn btn-danger" onclick="window.processCancelBooking('${seatCode}')">
@@ -404,7 +351,7 @@ export async function processBooking(seatCode) {
         });
         
         if (result.success) {
-            showFormMessage("✅ Success Booking!", "success");
+            showFormMessage("✅ Booking Successful!", "success");
             
             setTimeout(async () => {
                 hideBookingForm();
@@ -429,7 +376,7 @@ export async function processBooking(seatCode) {
             }, 1500);
         }
     } catch (error) {
-        showFormMessage("❌ Error: Gagal terhubung ke server", "error");
+        showFormMessage("❌ Error: Failed to connect to server", "error");
     }
 }
 
@@ -445,13 +392,12 @@ export async function processCancelBooking(seatCode) {
         });
         
         if (result.success) {
-            showFormMessage("✅ Booking has been successfully cancelled!", "success");
+            showFormMessage("✅ Booking successfully cancelled!", "success");
             
             setTimeout(async () => {
                 hideBookingForm();
                 showMessage("✅ Booking has been successfully cancelled!", "success");
                 
-                // FIX: Direct import tanpa dynamic
                 const { clearCache } = await import('./api-manager.js');
                 clearCache();
                 await loadBookings();
@@ -462,11 +408,11 @@ export async function processCancelBooking(seatCode) {
             showFormMessage(`❌ ${result.message}`, "error");
         }
     } catch (error) {
-        showFormMessage("❌ Error: Gagal terhubung ke server", "error");
+        showFormMessage("❌ Error: Failed to connect to server", "error");
     }
 }
 
-// Helper function untuk form messages
+// Helper function for form messages
 function showFormMessage(text, type) {
     const messageEl = document.getElementById("message");
     if (messageEl) {
@@ -597,3 +543,13 @@ export function showMapView() {
     state.currentView = 'map';
 }
 
+// ✅ EXPORT FUNCTIONS TO WINDOW OBJECT
+window.showBookingForm = showBookingForm;
+window.hideBookingForm = hideBookingForm;
+window.processBooking = processBooking;
+window.processCancelBooking = processCancelBooking;
+window.showCancelBookingForm = showCancelBookingForm;
+window.changeDate = changeDate;
+window.toggleHistorical = toggleHistorical;
+window.showGridView = showGridView;
+window.showMapView = showMapView;
