@@ -553,17 +553,6 @@ function setupGlobalFunctions() {
     setTimeout(setupChangePasswordForm, 1000);
     
 // ==================== EXPORT FUNCTIONS ====================
-window.exportBookings = async function() {
-    try {
-         
-        // Create export modal
-        showExportModal();
-        
-    } catch (error) {
-        console.error('Export Error:', error);
-        showMessage('❌ Export failed: ' + error.message, 'error');
-    }
-};
 
 function showExportModal() {
     const modal = document.createElement('div');
@@ -637,7 +626,17 @@ function showExportModal() {
         }
     });
 }
-
+	window.exportBookings = async function() {
+		try {
+			
+			// Create export modal
+			showExportModal();
+			
+		} catch (error) {
+			console.error('Export Error:', error);
+			showMessage('❌ Export failed: ' + error.message, 'error');
+		}
+	};
 async function generateExport() {
     try {
         const range = document.getElementById('exportRange').value;
