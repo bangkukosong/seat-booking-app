@@ -13,23 +13,47 @@ export function initializeBookings() {
 // Date Management
 export function setupDatePicker() {
     const datePicker = document.getElementById('datePicker');
+    if (!datePicker) {
+        console.error('❌ Date picker element not found!');
+        return;
+    }
     
-    // ✅ FIX: Always use today's date
-    const today = new Date();
-    const todayStr = formatLocalDate(today);
+    console.log('🔧 Setting up date picker...');
     
-    datePicker.min = todayStr;
-    datePicker.value = todayStr;
+    // ✅ FIX: CLEAN SLATE - REMOVE EXISTING & CREATE NEW
+    const newDatePicker = datePicker.cloneNode(true);
+    datePicker.parentNode.replaceChild(newDatePicker, datePicker);
     
-    // ✅ FIX: Reset to today, not cached wrong date
+    // Set initial date
+    const todayStr = formatLocalDate(new Date());
+    newDatePicker.min = todayStr;
+    newDatePicker.value = todayStr;
     state.currentDate = new Date(todayStr + 'T00:00:00');
     
     updateDateDisplay();
     updateNavigationButtons();
     
-    console.log('✅ Date initialized to TODAY:', todayStr);
+    // ✅ FIX: ADD PROPER EVENT LISTENER (SUDAH TERBUKTI WORK)
+    newDatePicker.addEventListener('change', async function(e) {
+        console.log('🎯 DATE PICKER CHANGE:', e.target.value);
+        
+        // UPDATE STATE
+        state.currentDate = new Date(e.target.value + 'T00:00:00');
+        console.log('📅 State updated to:', state.currentDate);
+        
+        // UPDATE UI AND LOAD DATA
+        try {
+            updateDateDisplay();
+            updateNavigationButtons();
+            await loadBookings();
+            console.log('✅ Date change completed successfully!');
+        } catch (error) {
+            console.error('❌ Date change failed:', error);
+        }
+    });
+    
+    console.log('✅ Date picker setup completed with working event listener');
 }
-
 export function updateDateDisplay() {
     const options = { 
         weekday: 'long', 
