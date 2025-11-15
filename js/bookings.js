@@ -192,13 +192,22 @@ export function renderSeatGrid() {
 
 // Booking Forms and Processing
 export function showBookingForm(seatCode) {
+    // ✅ CEK 1: Seat sudah dibooking orang lain (CLIENT-SIDE)
     const existingBooking = state.currentBookings.find(b => b.seat === seatCode);
     if (existingBooking) {
         showMessage(`❌ Maaf, kursi ${seatCode} sudah dibooking oleh ${existingBooking.userName || 'orang lain'}`, "error");
-        loadBookings();
+        loadBookings(); // Refresh to show current status
         return;
     }
 
+    // ✅ CEK 2: User sudah booking seat lain hari ini (CLIENT-SIDE)
+    const userExistingBooking = state.currentBookings.find(b => b.userName === state.currentUser.username);
+    if (userExistingBooking) {
+        showMessage(`❌ Anda sudah booking ${userExistingBooking.seat} untuk hari ini. Batalkan dulu untuk booking baru.`, "error");
+        return;
+    }
+
+    // ✅ LANJUT KE FORM JIKA SEMUA CEK PASS
     const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
         weekday: 'long', 
         year: 'numeric', 
@@ -303,7 +312,7 @@ export async function processBooking(seatCode) {
                 hideBookingForm();
                 showMessage("✅ Booking has been successfully saved!", "success");
                 
-                // FIX: Direct import tanpa dynamic
+                // Clear cache and refresh data
                 const { clearCache } = await import('./api-manager.js');
                 clearCache();
                 await loadBookings();
@@ -311,7 +320,15 @@ export async function processBooking(seatCode) {
             }, 1000);
             
         } else {
+            // ✅ HANDLE DOUBLE BOOKING ERRORS FROM SERVER
             showFormMessage(`❌ ${result.message}`, "error");
+            
+            // Refresh data to show current status
+            setTimeout(async () => {
+                const { clearCache } = await import('./api-manager.js');
+                clearCache();
+                await loadBookings();
+            }, 1500);
         }
     } catch (error) {
         showFormMessage("❌ Error: Gagal terhubung ke server", "error");

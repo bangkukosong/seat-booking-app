@@ -72,37 +72,58 @@ export class FirestoreAPI {
             return { success: false, bookings: [], message: error.message };
         }
     }
-
-    static async submitBooking(seat, userName, day) {
-        try {
-            // Check if seat already booked for this day
-            const existingSnapshot = await db.collection('bookings')
-                .where('day', '==', day)
-                .where('seat', '==', seat)
-                .get();
-            
-            if (!existingSnapshot.empty) {
-                const existingBooking = existingSnapshot.docs[0].data();
-                return { 
-                    success: false, 
-                    message: `Seat ${seat} already booked by ${existingBooking.userName}` 
-                };
-            }
-
-            // Create new booking
-            await db.collection('bookings').add({
-                seat,
-                userName,
-                day,
-                timestamp: firebase.firestore.Timestamp.now()
-            });
-            
-            return { success: true, message: 'Booking successful' };
-        } catch (error) {
-            console.error('Firestore SubmitBooking Error:', error);
-            return { success: false, message: 'Booking failed: ' + error.message };
+	
+static async submitBooking(seat, userName, day) {
+    try {
+        console.log('🔍 Checking for duplicate bookings...', { seat, userName, day });
+        
+        // ✅ CEK 1: Seat sudah dibooking orang lain hari ini
+        const seatSnapshot = await db.collection('bookings')
+            .where('day', '==', day)
+            .where('seat', '==', seat)
+            .get();
+        
+        if (!seatSnapshot.empty) {
+            const existingBooking = seatSnapshot.docs[0].data();
+            console.log('❌ Seat already booked by:', existingBooking.userName);
+            return { 
+                success: false, 
+                message: `Kursi ${seat} sudah dibooking oleh ${existingBooking.userName}` 
+            };
         }
+
+        // ✅ CEK 2: User sudah booking seat lain hari ini
+        const userSnapshot = await db.collection('bookings')
+            .where('day', '==', day)
+            .where('userName', '==', userName)
+            .get();
+            
+        if (!userSnapshot.empty) {
+            const userBooking = userSnapshot.docs[0].data();
+            console.log('❌ User already booked:', userBooking.seat);
+            return { 
+                success: false, 
+                message: `Anda sudah booking kursi ${userBooking.seat} untuk hari ini` 
+            };
+        }
+
+        console.log('✅ No duplicates, creating booking...');
+        
+        // ✅ CREATE NEW BOOKING
+        await db.collection('bookings').add({
+            seat,
+            userName,
+            day,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        return { success: true, message: 'Booking successful' };
+        
+    } catch (error) {
+        console.error('Firestore SubmitBooking Error:', error);
+        return { success: false, message: 'Booking failed: ' + error.message };
     }
+}
 
     static async cancelBooking(seat, userName, day) {
         try {
