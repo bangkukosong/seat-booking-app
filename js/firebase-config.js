@@ -1,8 +1,4 @@
 // js/firebase-config.js - PASTI WORK VERSION
-import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js';
-import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js';
-import 'https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js';
-
 // Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyALdxLc87bsjCc4ZyQ_HWPuhE07p4jq54s",
