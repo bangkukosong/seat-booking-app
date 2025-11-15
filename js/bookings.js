@@ -215,49 +215,50 @@ export function showBookingForm(seatCode) {
 
         const formContainer = document.getElementById("bookingFormContainer");
         formContainer.style.display = "block";
-        formContainer.innerHTML = `
-            <h2 style="color: #ff5555; text-align: center;">⚠️ Already Have Booking</h2>
-            <p style="text-align: center; margin-bottom: 15px; color: var(--gold);">
-                📅 ${dateDisplay}
-            </p>
-            
-            <div style="background: rgba(255, 85, 85, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255, 85, 85, 0.3);">
-                <h3 style="color: #ff5555; margin-bottom: 10px; text-align: center;">${userExistingBooking.seat}</h3>
-                <p><strong>Booked by:</strong> ${state.currentUser.name}</p>
-                <p><strong>User ID:</strong> ${state.currentUser.username}</p>
-                <p><strong>Status:</strong> <span style="color: #ff5555;">❌ Already Booked</span></p>
-            </div>
-            
-            <div style="background: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 215, 0, 0.3);">
-                <p style="margin: 0; font-size: 0.9rem; color: var(--gold); text-align: center;">
-                    ⚠️ <strong>Booking Policy:</strong> Each user can only book 1 seat per day
-                </p>
-            </div>
-            
-            <p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
-                Cancel your existing booking and automatically book <strong>${seatCode}</strong>?
-            </p>
-            
-            <div class="btn-group">
-                <button type="button" class="btn btn-success" onclick="window.processCancelBooking('${userExistingBooking.seat}', '${seatCode}')">
-                    🔄 Replace with ${seatCode}
-                </button>
-                <button type="button" class="btn btn-danger" onclick="window.showCancelBookingForm('${userExistingBooking.seat}')">
-                    🗑️ Cancel Only
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
-                    ✅ Close
-                </button>
-            </div>
-            
-            <div style="background: rgba(0, 255, 128, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(0, 255, 128, 0.3);">
-                <p style="margin: 0; font-size: 0.8rem; color: var(--primary-green); text-align: center;">
-                    💡 <strong>Pro Tip:</strong> "Replace" will cancel your current booking and immediately book the new seat
-                </p>
-            </div>
-            
-            <div id="message" class="message"></div>
-        `;
+		// In showBookingForm - replace booking section
+		formContainer.innerHTML = `
+			<h2 style="color: #ff5555; text-align: center;">⚠️ Already Have Booking</h2>
+			<p style="text-align: center; margin-bottom: 15px; color: var(--gold);">
+				📅 ${dateDisplay}
+			</p>
+			
+			<div style="background: rgba(255, 85, 85, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255, 85, 85, 0.3);">
+				<h3 style="color: #ff5555; margin-bottom: 10px; text-align: center;">${userExistingBooking.seat}</h3>
+				<p><strong>Booked by:</strong> ${state.currentUser.name}</p>
+				<p><strong>User ID:</strong> ${state.currentUser.username}</p>
+				<p><strong>Status:</strong> <span style="color: #ff5555;">❌ Already Booked</span></p>
+			</div>
+			
+			<div style="background: rgba(255, 215, 0, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255, 215, 0, 0.3);">
+				<p style="margin: 0; font-size: 0.9rem; color: var(--gold); text-align: center;">
+					⚠️ <strong>Booking Policy:</strong> Each user can only book 1 seat per day
+				</p>
+			</div>
+			
+			<p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
+				Replace your current booking <strong>${userExistingBooking.seat}</strong> with <strong>${seatCode}</strong>?
+			</p>
+			
+			<div class="btn-group">
+				<button type="button" class="btn btn-success" onclick="window.processCancelBooking('${userExistingBooking.seat}', '${seatCode}')">
+					🔄 Replace with ${seatCode}
+				</button>
+				<button type="button" class="btn btn-danger" onclick="window.showCancelBookingForm('${userExistingBooking.seat}')">
+					🗑️ Cancel Only
+				</button>
+				<button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
+					✅ Keep Current
+				</button>
+			</div>
+			
+			<div style="background: rgba(255, 215, 0, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(255, 215, 0, 0.3);">
+				<p style="margin: 0; font-size: 0.8rem; color: var(--gold); text-align: center;">
+					💡 <strong>Replace Feature:</strong> Automatically cancels your current booking and books the new seat in one action
+				</p>
+			</div>
+			
+			<div id="message" class="message"></div>
+		`;
         return;
     }
 
