@@ -136,10 +136,10 @@ function setupGlobalFunctions() {
     };
     
     // ==================== PASSWORD CHANGE ====================
-	// Di main.js - bagian showChangePasswordModal
 	window.showChangePasswordModal = async function() {
+		console.log('🎯 showChangePasswordModal CALLED!');
+		
 		try {
-			// Import state dari constants.js
 			const { state } = await import('./constants.js');
 			
 			if (!state.currentUser) {
@@ -151,26 +151,25 @@ function setupGlobalFunctions() {
 			const usernameField = document.getElementById('changePasswordUsername');
 			
 			if (modal && usernameField) {
-				// ✅ FIX: Set username current user
-				usernameField.value = state.currentUser.username;
+				// ✅ SOLUTION: PAKAI requestAnimationFrame UNTUK PASTIKAN DOM READY
+				requestAnimationFrame(() => {
+					usernameField.value = state.currentUser.username;
+					console.log('✅ Username set to:', usernameField.value);
+				});
+				
 				modal.style.display = 'block';
 				
 				// Reset form
 				const form = document.getElementById('changePasswordForm');
 				if (form) form.reset();
 				
-				// Clear message
 				const messageEl = document.getElementById('changePasswordMessage');
 				if (messageEl) messageEl.innerHTML = '';
 				
 				console.log('🔐 Change password modal shown for:', state.currentUser.username);
-			} else {
-				console.error('❌ Change password modal elements not found');
-				showMessage('❌ Change password form not available', 'error');
 			}
 		} catch (error) {
-			console.error('Error showing change password modal:', error);
-			showMessage('❌ Error loading user data', 'error');
+			console.error('Error:', error);
 		}
 	};
 
