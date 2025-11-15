@@ -1,10 +1,20 @@
-// js/utils.js
-import { currentDate } from './constants.js';
+// js/utils.js - VERSI DIPERBAIKI
+import { state } from './constants.js';
 
+// ✅ STATE object untuk kompatibilitas dengan admin.js dan user.js
+export const STATE = {
+    currentUser: null,
+    adminEmail: 'admin@voting.com',
+    hasVoted: false,
+    candidates: []
+};
+
+// ✅ Gunakan state.currentDate dari constants.js
 export function formatLocalDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const targetDate = date || state.currentDate;
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const day = String(targetDate.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
 
@@ -58,4 +68,27 @@ export function refreshBookings() {
         loadHistoricalBookings();
     });
     showMessage("🔄 Data Refreshed!", "success");
+}
+
+// ✅ Fungsi tambahan untuk kompatibilitas
+export function showSection(sectionId) {
+    // Hide all sections
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Show target section
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.style.display = 'block';
+    }
+}
+
+export function showLoading() {
+    showLoader(true);
+}
+
+export function hideLoading() {
+    showLoader(false);
 }
