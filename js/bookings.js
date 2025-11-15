@@ -192,6 +192,7 @@ export function renderSeatGrid() {
 }
 
 // Booking Forms and Processing
+// Dalam showBookingForm - bagian "Already Have Booking"
 export function showBookingForm(seatCode) {
     // ✅ CHECK 1: Seat already booked by someone else (CLIENT-SIDE)
     const existingBooking = state.currentBookings.find(b => b.seat === seatCode);
@@ -204,7 +205,7 @@ export function showBookingForm(seatCode) {
     // ✅ CHECK 2: User already booked another seat today (CLIENT-SIDE)
     const userExistingBooking = state.currentBookings.find(b => b.userName === state.currentUser.username);
     if (userExistingBooking) {
-        // ✅ SHOW INFORMATIVE FORM INSTEAD OF SIMPLE MESSAGE
+        // ✅ SHOW INFORMATIVE FORM WITH AUTO-BOOKING FEATURE
         const dateDisplay = state.currentDate.toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
@@ -234,16 +235,25 @@ export function showBookingForm(seatCode) {
             </div>
             
             <p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
-                Please cancel your existing booking first to make a new booking.
+                Cancel your existing booking and automatically book <strong>${seatCode}</strong>?
             </p>
             
             <div class="btn-group">
+                <button type="button" class="btn btn-success" onclick="window.processCancelBooking('${userExistingBooking.seat}', '${seatCode}')">
+                    🔄 Replace with ${seatCode}
+                </button>
                 <button type="button" class="btn btn-danger" onclick="window.showCancelBookingForm('${userExistingBooking.seat}')">
-                    🗑️ Cancel Existing Booking
+                    🗑️ Cancel Only
                 </button>
                 <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
                     ✅ Close
                 </button>
+            </div>
+            
+            <div style="background: rgba(0, 255, 128, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(0, 255, 128, 0.3);">
+                <p style="margin: 0; font-size: 0.8rem; color: var(--primary-green); text-align: center;">
+                    💡 <strong>Pro Tip:</strong> "Replace" will cancel your current booking and immediately book the new seat
+                </p>
             </div>
             
             <div id="message" class="message"></div>
@@ -380,7 +390,7 @@ export async function processBooking(seatCode) {
     }
 }
 
-export async function processCancelBooking(seatCode) {
+export async function processCancelBooking(seatCode, newSeatCode = null) {
     const day = formatLocalDate(state.currentDate);
     
     try {
@@ -396,12 +406,21 @@ export async function processCancelBooking(seatCode) {
             
             setTimeout(async () => {
                 hideBookingForm();
-                showMessage("✅ Booking has been successfully cancelled!", "success");
                 
+                // Clear cache and refresh data
                 const { clearCache } = await import('./api-manager.js');
                 clearCache();
                 await loadBookings();
                 await loadHistoricalBookings();
+                
+                // ✅ AUTO SHOW BOOKING FORM FOR NEW SEAT IF PROVIDED
+                if (newSeatCode) {
+                    setTimeout(() => {
+                        showBookingForm(newSeatCode);
+                    }, 500);
+                } else {
+                    showMessage("✅ Booking has been successfully cancelled!", "success");
+                }
             }, 1000);
             
         } else {
