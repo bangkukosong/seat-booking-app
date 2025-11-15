@@ -240,7 +240,7 @@ export function showBookingForm(seatCode) {
 			</p>
 			
 			<div class="btn-group">
-				<button type="button" class="btn btn-success" onclick="console.log('🔍 BUTTON CLICKED:', 'oldSeat=${userExistingBooking.seat}', 'newSeat=${seatCode}'); window.processCancelBooking('${userExistingBooking.seat}', '${seatCode}')">
+				<button type="button" class="btn btn-success" onclick="console.log('🔍 BUTTON CLICKED:', '${userExistingBooking.seat}', '${seatCode}'); window.processCancelBooking('${userExistingBooking.seat}', '${seatCode}')">
 					🔄 Replace with ${seatCode}
 				</button>
 				<button type="button" class="btn btn-danger" onclick="window.showCancelBookingForm('${userExistingBooking.seat}')">
@@ -391,12 +391,13 @@ export async function processBooking(seatCode) {
     }
 }
 
-export async function processCancelBooking(seatCode, newSeatCode = null) {
+// ✅ SOLUSI: Ganti nama parameter
+export async function processCancelBooking(seatToCancel, seatToBook = null) {
     const day = formatLocalDate(state.currentDate);
     
     console.log('🔍 [1] processCancelBooking START:', { 
-        seatCode, 
-        newSeatCode, 
+        seatToCancel, 
+        seatToBook, 
         day,
         currentUser: state.currentUser.username 
     });
@@ -405,9 +406,9 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
         showFormMessage("⏳ Cancelling booking...", "info");
         
         // Step 1: Cancel existing booking
-        console.log('📤 [2] Sending CANCEL request for:', seatCode);
+        console.log('📤 [2] Sending CANCEL request for:', seatToCancel);
         const cancelResult = await optimizedPost('cancelBooking', { 
-            seat: seatCode, 
+            seat: seatToCancel, 
             userName: state.currentUser.username, 
             day 
         });
@@ -420,10 +421,10 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
             return;
         }
 
-        console.log('✅ [4] Cancel successful, proceeding to new seat:', newSeatCode);
+        console.log('✅ [4] Cancel successful, proceeding to new seat:', seatToBook);
         
         // Step 2: If replacement, book new seat
-        if (newSeatCode) {
+        if (seatToBook) {
             showFormMessage("✅ Cancelled! Booking new seat...", "success");
             
             // Add delay to ensure cancel is processed
@@ -431,10 +432,10 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
             await new Promise(resolve => setTimeout(resolve, 500));
             
             try {
-                console.log('📤 [6] Sending BOOKING request for new seat:', newSeatCode);
+                console.log('📤 [6] Sending BOOKING request for new seat:', seatToBook);
                 
                 const bookingResult = await optimizedPost('submitBooking', { 
-                    seat: newSeatCode, 
+                    seat: seatToBook, 
                     userName: state.currentUser.username, 
                     day 
                 });
@@ -448,7 +449,7 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
                     setTimeout(async () => {
                         console.log('🔄 [9] Refreshing data...');
                         hideBookingForm();
-                        showMessage(`✅ Successfully replaced ${seatCode} with ${newSeatCode}!`, "success");
+                        showMessage(`✅ Successfully replaced ${seatToCancel} with ${seatToBook}!`, "success");
                         
                         const { clearCache } = await import('./api-manager.js');
                         clearCache();
@@ -463,7 +464,7 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
                     
                     setTimeout(async () => {
                         hideBookingForm();
-                        showMessage(`⚠️ ${seatCode} cancelled but failed to book ${newSeatCode}. Please try again.`, "warning");
+                        showMessage(`⚠️ ${seatToCancel} cancelled but failed to book ${seatToBook}. Please try again.`, "warning");
                         
                         const { clearCache } = await import('./api-manager.js');
                         clearCache();
@@ -478,7 +479,7 @@ export async function processCancelBooking(seatCode, newSeatCode = null) {
                 
                 setTimeout(async () => {
                     hideBookingForm();
-                    showMessage(`⚠️ ${seatCode} cancelled but booking failed due to network error.`, "warning");
+                    showMessage(`⚠️ ${seatToCancel} cancelled but booking failed due to network error.`, "warning");
                     
                     const { clearCache } = await import('./api-manager.js');
                     clearCache();
