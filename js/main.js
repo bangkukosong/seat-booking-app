@@ -71,11 +71,13 @@ function setupGlobalFunctions() {
     };
     
     // Date Navigation
-    window.changeDate = function(days) {
-        console.log(`📅 Changing date by ${days} days`);
-        // Akan dihandle oleh bookings.js
-        showMessage('Date change feature loading...', 'info');
-    };
+	window.changeDate = function(days) {
+		import('./bookings.js').then(module => {
+			if (module.changeDate) {
+				module.changeDate(days);
+			}
+		});
+	};
     
     // Admin Functions
     window.showUserManagement = function() {
@@ -105,14 +107,25 @@ function setupGlobalFunctions() {
         if (modal) modal.style.display = 'none';
     };
     
-    // Refresh Bookings
-    window.refreshBookings = function() {
-        showMessage('🔄 Refresh - Firebase real-time updates active', 'info');
-    };
-    
-    window.toggleHistorical = function() {
-        showMessage('📚 History - Firebase version coming soon...', 'info');
-    };
+	// Historical Toggle FIX  
+	window.toggleHistorical = function() {
+		import('./bookings.js').then(module => {
+			if (module.toggleHistorical) {
+				module.toggleHistorical();
+			}
+		});
+	};
+	
+	// Refresh Bookings FIX
+	window.refreshBookings = function() {
+		import('./bookings.js').then(module => {
+			if (module.loadBookings && module.loadHistoricalBookings) {
+				module.loadBookings();
+				module.loadHistoricalBookings();
+				showMessage('🔄 Data refreshed!', 'success');
+			}
+		});
+	};
     
     window.exportBookings = function() {
         showMessage('📤 Export data - Firebase version coming soon...', 'info');
