@@ -28,7 +28,7 @@ async function showPublicResults() {
   showSection('publicResults');
   
   try {
-    const db = (await import('./firebase.js')).db;
+    const db = (await import('./firebase-config.js')).db;
     const snapshot = await db.collection('candidates').get();
     const candidates = snapshot.docs.map(doc => ({
       id: doc.id,
