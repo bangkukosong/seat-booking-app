@@ -1,4 +1,4 @@
-// js/auth.js - FINAL VERSION (Simple User ID Login)
+// js/auth.js - FIXED VERSION (User ID Issue Fixed)
 import { auth, db } from './firebase-config.js';
 import { showLoader, showMessage } from './utils.js';
 import { state } from './constants.js';
@@ -72,7 +72,8 @@ async function loadUserData(email) {
             const userData = userDoc.data();
             state.currentUser = {
                 userId: userId, // "dendy"
-                email: email,   // "dendy@bangkukosong.internal"  
+                username: userId, // ✅ FIX: Tambah username untuk compatibility
+                email: email,  
                 name: userData.name || userId,
                 role: userData.role || 'user',
                 firebaseUID: auth.currentUser.uid
@@ -81,6 +82,7 @@ async function loadUserData(email) {
             // ✅ Create default user profile jika belum ada
             state.currentUser = {
                 userId: userId,
+                username: userId, // ✅ FIX: Tambah username untuk compatibility
                 email: email,
                 name: userId, // Default name sama dengan User ID
                 role: 'user',
@@ -89,6 +91,7 @@ async function loadUserData(email) {
             
             // Save ke Firestore untuk pertama kali
             await db.collection('users').doc(email).set({
+                username: userId, // ✅ FIX: Tambah username
                 name: userId,
                 email: email,
                 role: 'user',
@@ -97,7 +100,7 @@ async function loadUserData(email) {
             });
         }
         
-        console.log('✅ User profile loaded:', state.currentUser.name);
+        console.log('✅ User profile loaded:', state.currentUser);
         showMainApp();
         
     } catch (error) {

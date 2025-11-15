@@ -1,8 +1,7 @@
-// js/bookings.js - COMPLETE UPDATED VERSION
+// js/bookings.js - COMPLETE FIXED VERSION
 import { state, TEAMS_CONFIG } from './constants.js';
 import { optimizedFetch, optimizedPost } from './api-manager.js';
 import { showLoader, showMessage, formatLocalDate, updateLastUpdate } from './utils.js';
-import { showFormMessage, hideBookingForm } from './ui.js';
 
 export function initializeBookings() {
     setupDatePicker();
@@ -74,7 +73,7 @@ export function changeDate(days) {
         updateNavigationButtons();
         loadBookings();
     } else {
-        showMessage("❌ Tidak bisa memilih tanggal yang sudah lewat", "error");
+        showMessage("❌ Cannot select past dates", "error");
     }
 }
 
@@ -82,18 +81,21 @@ export function changeDate(days) {
 export async function loadBookings() {
     const day = formatLocalDate(state.currentDate);
     try {
+        showLoader(true);
         const result = await optimizedFetch('getBookings', { day }, true);
         state.currentBookings = result.bookings || [];
         renderSeatGrid();
         updateLastUpdate();
     } catch (error) {
         showMessage('❌ Failed to load bookings', 'error');
+    } finally {
+        showLoader(false);
     }
 }
 
 export async function loadHistoricalBookings() {
     try {
-        const result = await optimizedFetch('getAllBookings', { userName: state.currentUser.name }, true);
+        const result = await optimizedFetch('getAllBookings', { userName: state.currentUser.username }, true);
         state.historicalBookings = result.bookings || [];
     } catch (error) {
         console.error('Failed to load historical bookings:', error);
@@ -124,7 +126,7 @@ export function renderSeatGrid() {
             const booking = state.currentBookings.find(b => b.seat === seatCode);
             
             if (booking) {
-                const isMyBooking = booking.userName === state.currentUser.name;
+                const isMyBooking = booking.userName === state.currentUser.username;
                 seat.className = isMyBooking ? 'seat my-booking' : 'seat booked';
                 seat.innerHTML = `
                     ${seatCode}
@@ -203,10 +205,10 @@ export function showBookingForm(seatCode) {
         </div>
         
         <div class="btn-group">
-            <button type="button" class="btn btn-success" onclick="import('./bookings.js').then(m => m.processBooking('${seatCode}'))">
+            <button type="button" class="btn btn-success" onclick="window.processBooking('${seatCode}')">
                 ✅ Booking Confirmation
             </button>
-            <button type="button" class="btn btn-secondary" onclick="import('./ui.js').then(m => m.hideBookingForm())">
+            <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
                 ❌ Batal
             </button>
         </div>
@@ -216,7 +218,7 @@ export function showBookingForm(seatCode) {
 }
 
 export function showCancelBookingForm(seatCode) {
-    const booking = state.currentBookings.find(b => b.seat === seatCode && b.userName === state.currentUser.name);
+    const booking = state.currentBookings.find(b => b.seat === seatCode && b.userName === state.currentUser.username);
     if (!booking) {
         showMessage("❌ Booking is not found", "error");
         loadBookings();
@@ -246,10 +248,10 @@ export function showCancelBookingForm(seatCode) {
             ⚠️ Are you sure want to cancel this booking?
         </p>
         <div class="btn-group">
-            <button type="button" class="btn btn-danger" onclick="import('./bookings.js').then(m => m.processCancelBooking('${seatCode}'))">
+            <button type="button" class="btn btn-danger" onclick="window.processCancelBooking('${seatCode}')">
                 ✅ Yes, Cancel
             </button>
-            <button type="button" class="btn btn-secondary" onclick="import('./ui.js').then(m => m.hideBookingForm())">
+            <button type="button" class="btn btn-secondary" onclick="window.hideBookingForm()">
                 ❌ No
             </button>
         </div>
@@ -264,7 +266,7 @@ export async function processBooking(seatCode) {
         showFormMessage("⏳ Processing booking...", "info");
         const result = await optimizedPost('submitBooking', { 
             seat: seatCode, 
-            userName: state.currentUser.name, 
+            userName: state.currentUser.username, 
             day 
         });
         
@@ -275,7 +277,9 @@ export async function processBooking(seatCode) {
                 hideBookingForm();
                 showMessage("✅ Booking has been successfully saved!", "success");
                 
-                import('./api-manager.js').then(({ clearCache }) => clearCache());
+                // FIX: Direct import tanpa dynamic
+                const { clearCache } = await import('./api-manager.js');
+                clearCache();
                 await loadBookings();
                 await loadHistoricalBookings();
             }, 1000);
@@ -295,7 +299,7 @@ export async function processCancelBooking(seatCode) {
         showFormMessage("⏳ Cancelling booking...", "info");
         const result = await optimizedPost('cancelBooking', { 
             seat: seatCode, 
-            userName: state.currentUser.name, 
+            userName: state.currentUser.username, 
             day 
         });
         
@@ -306,7 +310,9 @@ export async function processCancelBooking(seatCode) {
                 hideBookingForm();
                 showMessage("✅ Booking has been successfully cancelled!", "success");
                 
-                import('./api-manager.js').then(({ clearCache }) => clearCache());
+                // FIX: Direct import tanpa dynamic
+                const { clearCache } = await import('./api-manager.js');
+                clearCache();
                 await loadBookings();
                 await loadHistoricalBookings();
             }, 1000);
@@ -316,6 +322,31 @@ export async function processCancelBooking(seatCode) {
         }
     } catch (error) {
         showFormMessage("❌ Error: Gagal terhubung ke server", "error");
+    }
+}
+
+// Helper function untuk form messages
+function showFormMessage(text, type) {
+    const messageEl = document.getElementById("message");
+    if (messageEl) {
+        messageEl.textContent = text;
+        messageEl.style.background = type === "error" ? "rgba(255,85,85,0.3)" : 
+                                type === "info" ? "rgba(255,215,0,0.3)" : "rgba(0,255,128,0.3)";
+        messageEl.style.color = type === "error" ? "#ff5555" : 
+                           type === "info" ? "#ffd700" : "#00ff80";
+        messageEl.style.padding = "12px";
+        messageEl.style.borderRadius = "8px";
+        messageEl.style.textAlign = "center";
+        messageEl.style.marginTop = "15px";
+        messageEl.style.border = type === "error" ? "1px solid rgba(255,85,85,0.5)" : 
+                             type === "info" ? "1px solid rgba(255,215,0,0.5)" : "1px solid rgba(0,255,128,0.5)";
+    }
+}
+
+function hideBookingForm() {
+    const formContainer = document.getElementById("bookingFormContainer");
+    if (formContainer) {
+        formContainer.style.display = "none";
     }
 }
 
@@ -424,3 +455,22 @@ export function showMapView() {
     document.getElementById('gridViewBtn').classList.remove('active');
     state.currentView = 'map';
 }
+
+// Export semua functions
+export {
+    initializeBookings,
+    setupDatePicker,
+    updateDateDisplay,
+    changeDate,
+    loadBookings,
+    loadHistoricalBookings,
+    renderSeatGrid,
+    showBookingForm,
+    showCancelBookingForm,
+    processBooking,
+    processCancelBooking,
+    toggleHistorical,
+    renderHistoricalBookings,
+    showGridView,
+    showMapView
+};

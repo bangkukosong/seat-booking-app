@@ -1,4 +1,4 @@
-// js/main.js - FIREBASE SEAT BOOKING MAIN
+// js/main.js - FIXED VERSION (Global Functions Added)
 import { initializeAuth } from './auth.js';
 import { showLoader, showMessage } from './utils.js';
 
@@ -31,7 +31,7 @@ function initializeApp() {
 function setupGlobalFunctions() {
     console.log('🔧 Setting up global functions...');
     
-    // View Toggles
+    // ==================== VIEW TOGGLES ====================
     window.showGridView = function() {
         const gridView = document.getElementById('gridView');
         const mapView = document.getElementById('mapView');
@@ -70,16 +70,53 @@ function setupGlobalFunctions() {
         console.log('🗺️ Map view shown');
     };
     
-    // Date Navigation
-	window.changeDate = function(days) {
-		import('./bookings.js').then(module => {
-			if (module.changeDate) {
-				module.changeDate(days);
-			}
-		});
-	};
+    // ==================== DATE NAVIGATION ====================
+    window.changeDate = function(days) {
+        import('./bookings.js').then(module => {
+            if (module.changeDate) {
+                module.changeDate(days);
+            }
+        });
+    };
     
-    // Admin Functions
+    // ==================== BOOKING FUNCTIONS ====================
+    window.processBooking = async function(seatCode) {
+        const { processBooking } = await import('./bookings.js');
+        processBooking(seatCode);
+    };
+    
+    window.processCancelBooking = async function(seatCode) {
+        const { processCancelBooking } = await import('./bookings.js');
+        processCancelBooking(seatCode);
+    };
+    
+    window.hideBookingForm = function() {
+        const formContainer = document.getElementById("bookingFormContainer");
+        if (formContainer) {
+            formContainer.style.display = "none";
+        }
+    };
+    
+    // ==================== HISTORICAL & REFRESH ====================
+    window.toggleHistorical = function() {
+        import('./bookings.js').then(module => {
+            if (module.toggleHistorical) {
+                module.toggleHistorical();
+            }
+        });
+    };
+    
+    window.refreshBookings = function() {
+        import('./bookings.js').then(module => {
+            if (module.loadBookings && module.loadHistoricalBookings) {
+                module.loadBookings();
+                module.loadHistoricalBookings();
+                showMessage('🔄 Data refreshed!', 'success');
+            }
+        });
+    };
+    
+    // ==================== ADMIN FUNCTIONS ====================
     window.showUserManagement = function() {
         showMessage('👥 User management - Firebase version coming soon...', 'info');
     };
@@ -97,7 +134,7 @@ function setupGlobalFunctions() {
         if (form) form.style.display = 'none';
     };
     
-    // Password Change
+    // ==================== PASSWORD CHANGE ====================
     window.showChangePasswordModal = function() {
         showMessage('🔐 Change password - Firebase version coming soon...', 'info');
     };
@@ -107,26 +144,7 @@ function setupGlobalFunctions() {
         if (modal) modal.style.display = 'none';
     };
     
-	// Historical Toggle FIX  
-	window.toggleHistorical = function() {
-		import('./bookings.js').then(module => {
-			if (module.toggleHistorical) {
-				module.toggleHistorical();
-			}
-		});
-	};
-	
-	// Refresh Bookings FIX
-	window.refreshBookings = function() {
-		import('./bookings.js').then(module => {
-			if (module.loadBookings && module.loadHistoricalBookings) {
-				module.loadBookings();
-				module.loadHistoricalBookings();
-				showMessage('🔄 Data refreshed!', 'success');
-			}
-		});
-	};
-    
+    // ==================== EXPORT ====================
     window.exportBookings = function() {
         showMessage('📤 Export data - Firebase version coming soon...', 'info');
     };
