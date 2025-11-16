@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Bangku Kosong – Seat Booking System</title>
+
+  <!-- index.html verion 1.0.0 -->
     <!-- ✅ FIREBASE SCRIPTS - LOAD DI HEADER -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <!-- Tambahkan CSS -->
-  <link rel="stylesheet" href="css/admin-modals.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-modals.css?v=1.0.0">
+  <link rel="stylesheet" href="css/styles.css?v=1.0.0">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22> 🪑</text></svg>">
 </head>
 <body>
@@ -90,7 +95,7 @@
 
     <!-- View Toggle -->
     <div class="view-toggle">
-      <button class="view-btn active" id="gridViewBtn" onclick="showGridView()">📊 Grid View</button>
+      <button class="view-btn active" id="gridViewBtn" onclick="showGridView()">💺 Seats View</button>
       <button class="view-btn" id="mapViewBtn" onclick="showMapView()">🗺️ Office Layout</button>
     </div>
 
@@ -134,9 +139,6 @@
       <button class="control-btn success admin-only" onclick="exportBookings()" id="exportBtn">
         📤 Export Data
       </button>
-      <button class="control-btn admin-only" onclick="showAllBookings()">
-        📊 All Bookings
-      </button>
     </div>
   </div>
 
@@ -150,7 +152,7 @@
 
     <div style="text-align: center; margin: 15px 0; color: rgba(255,255,255,0.8);">
       <div style="background: rgba(255,215,0,0.1); padding: 12px; border-radius: 8px; border-left: 4px solid var(--gold); font-size: 0.85rem;">
-        <strong>💡 Tips:</strong> Use <strong>the Grid View</strong> to book seats based on this layout.
+        <strong>💡 Tips:</strong> Use <strong>the Seats View</strong> to book seats based on this layout.
       </div>
     </div>
     <div class="map-legend">
@@ -160,7 +162,7 @@
     </div>
 		<div style="text-align: center; margin-top: 15px;">
 		<button onclick="showGridView()" class="btn btn-primary" style="font-size: 0.9rem;">
-			💺 Open Grid View to Book Seat
+			💺 Open Seats View
 		</button>
 		</div>
   </div>
@@ -174,15 +176,15 @@
     <form id="addUserForm">
       <div class="form-group">
         <label>Username</label>
-        <input type="text" id="newUserUsername" required placeholder="username (1 kata)">
+        <input type="text" id="newUserUsername" required placeholder="username">
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="newUserPassword" required placeholder="password">
+        <input type="password" id="newUserPassword" required placeholder="password (min. 6 Characters)">
       </div>
       <div class="form-group">
         <label>Full Name</label>
-        <input type="text" id="newUserName" required placeholder="Nama Lengkap">
+        <input type="text" id="newUserName" required placeholder="Full Name">
       </div>
       <div class="form-group">
         <label>Role</label>
@@ -240,14 +242,14 @@
 
   <!-- Load semua JavaScript modules -->
   <script type="module">
-    import './js/firebase-config.js';
-    import './js/constants.js';
-    import './js/api-manager.js';
-    import './js/utils.js';
-    import './js/ui.js';
-    import './js/auth.js';
-    import './js/bookings.js';
-    import './js/main.js';
+    import './js/firebase-config.js?v=1.0.0';
+    import './js/constants.js?v=1.0.0';
+    import './js/api-manager.js?v=1.0.0';
+    import './js/utils.js?v=1.0.0';
+    import './js/ui.js?v=1.0.0';
+    import './js/auth.js?v=1.0.0';
+    import './js/bookings.js?v=1.0.0';
+    import './js/main.js?v=1.0.0';
 
     console.log('🎯 All modules loaded successfully!');
     console.log('🔥 Firestore integration: ACTIVE');
