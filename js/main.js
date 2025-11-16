@@ -317,33 +317,34 @@ function showAllBookingsLoadingModal() {
 	
 	// Modal untuk User Management
 	window.showUserManagementModal = function(users) {
+		document.querySelectorAll('.modal-overlay').forEach(modal => modal.remove());
+		
 		const modal = document.createElement('div');
-		modal.className = 'modal-overlay';
+		modal.className = 'modal-overlay admin-modal';
+		
 		modal.innerHTML = `
-			<div class="modal-content" style="max-width: 800px;">
-				<div class="modal-header">
-					<h3 class="modal-title">👥 User Management</h3>
-					<button class="close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+			<div class="admin-modal-content">
+				<div class="admin-modal-header">
+					<h3 class="admin-modal-title">👥 User Management</h3>
+					<button class="admin-close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
 				</div>
-				<div style="padding: 20px; max-height: 60vh; overflow-y: auto;">
-					<div style="display: grid; grid-template-columns: 1fr auto auto; gap: 10px; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px; font-weight: bold;">
+				<div class="admin-modal-body">
+					<div class="users-grid-header">
 						<div>User</div>
 						<div>Role</div>
 						<div>Actions</div>
 					</div>
 					${users.map(user => `
-						<div style="display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center;">
-							<div>
-								<strong>${user.username}</strong><br>
-								<small style="opacity: 0.7;">${user.name}</small>
+						<div class="user-row">
+							<div class="user-info">
+								<strong>${user.username}</strong>
+								<small>${user.name}</small>
 							</div>
-							<div>
-								<span style="padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; background: ${user.role === 'admin' ? 'var(--admin-purple)' : 'var(--primary-green)'};">
-									${user.role}
-								</span>
+							<div class="user-role">
+								<span class="role-badge ${user.role}">${user.role}</span>
 							</div>
-							<div>
-								<button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;" 
+							<div class="user-actions">
+								<button class="admin-btn admin-btn-secondary admin-btn-sm" 
 										onclick="changeUserRole('${user.id}', '${user.role}')">
 									Change Role
 								</button>
@@ -351,16 +352,17 @@ function showAllBookingsLoadingModal() {
 						</div>
 					`).join('')}
 				</div>
-				<div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-					<button class="btn btn-primary" onclick="showAddUserForm(); this.closest('.modal-overlay').remove()">
+				<div class="admin-modal-footer">
+					<button class="admin-btn admin-btn-primary" 
+							onclick="showAddUserForm(); this.closest('.modal-overlay').remove()">
 						➕ Add New User
 					</button>
 				</div>
 			</div>
 		`;
+		
 		document.body.appendChild(modal);
-	}
-	
+	};
 	// Modal untuk All Bookings
 	function showAllBookingsModal(bookings) {
 		const modal = document.createElement('div');
