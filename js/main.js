@@ -290,20 +290,6 @@ function showAllBookingsLoadingModal() {
 		}
 	}
 	
-	function showAddUserMessage(text, type) {
-		const messageEl = document.getElementById('addUserMessage');
-		if (messageEl) {
-			messageEl.textContent = text;
-			messageEl.style.color = type === 'error' ? '#ff5555' : 
-								type === 'success' ? '#00ff80' : '#ffd700';
-			messageEl.style.padding = '10px';
-			messageEl.style.borderRadius = '8px';
-			messageEl.style.background = type === 'error' ? 'rgba(255,85,85,0.1)' : 
-									type === 'success' ? 'rgba(0,255,128,0.1)' : 'rgba(255,215,0,0.1)';
-			messageEl.style.border = type === 'error' ? '1px solid rgba(255,85,85,0.3)' : 
-								type === 'success' ? '1px solid rgba(0,255,128,0.3)' : '1px solid rgba(255,215,0,0.3)';
-		}
-	}
 	
 	// Modal untuk User Management
 	window.showUserManagementModal = function(users) {
@@ -975,6 +961,21 @@ setTimeout(() => {
     setTimeout(healthCheck, 3000);
 }, 1500);
 
+	function showAddUserMessage(text, type) {
+		const messageEl = document.getElementById('addUserMessage');
+		if (messageEl) {
+			messageEl.textContent = text;
+			messageEl.style.color = type === 'error' ? '#ff5555' : 
+								type === 'success' ? '#00ff80' : '#ffd700';
+			messageEl.style.padding = '10px';
+			messageEl.style.borderRadius = '8px';
+			messageEl.style.background = type === 'error' ? 'rgba(255,85,85,0.1)' : 
+									type === 'success' ? 'rgba(0,255,128,0.1)' : 'rgba(255,215,0,0.1)';
+			messageEl.style.border = type === 'error' ? '1px solid rgba(255,85,85,0.3)' : 
+								type === 'success' ? '1px solid rgba(0,255,128,0.3)' : '1px solid rgba(255,215,0,0.3)';
+		}
+	}
+	
 // ✅ TARUH DI SINI - DI AKHIR FILE, DI LUAR FUNCTION APAPUN
 window.handleAddUser = async function() {
     try {
