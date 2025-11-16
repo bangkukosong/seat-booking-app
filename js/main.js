@@ -119,87 +119,114 @@ function setupGlobalFunctions() {
     
 
 	// ==================== ADMIN FUNCTIONS ====================
-	window.showUserManagement = async function() {
-		try {
-			// Show loading modal instead of yellow message
-			showUserManagementLoadingModal();
-			
-			const { FirestoreAPI } = await import('./firestore-api.js');
-			const result = await FirestoreAPI.getAllUsers();
-			
-			// Remove loading modal
-			document.querySelector('.modal-overlay')?.remove();
-			
-			if (result.success) {
-				showUserManagementModal(result.users);
-			} else {
-				showMessage('❌ Failed to load users', 'error');
-			}
-		} catch (error) {
-			console.error('User Management Error:', error);
-			document.querySelector('.modal-overlay')?.remove();
-			showMessage('❌ Error loading users', 'error');
-		}
-	};
-	
-	// Loading modal untuk user management
-	function showUserManagementLoadingModal() {
-		const modal = document.createElement('div');
-		modal.className = 'modal-overlay';
-		modal.innerHTML = `
-			<div class="modal-content" style="max-width: 300px; text-align: center;">
-				<div class="modal-header">
-					<h3 class="modal-title">⏳ Loading</h3>
-				</div>
-				<div style="padding: 30px;">
-					<div class="spinner"></div>
-					<p style="margin-top: 15px; color: rgba(255,255,255,0.8);">Loading user management...</p>
-				</div>
-			</div>
-		`;
-		document.body.appendChild(modal);
-	}
+window.showUserManagement = async function() {
+    console.log('🎯 showUserManagement STARTED');
+    
+    try {
+        // IMPORT STATE DI DALAM FUNCTION - ini yang bener!
+        const { state } = await import('./constants.js');
+        console.log('State loaded:', state.currentUser);
+        
+        // Show loading
+        const loadingModal = document.createElement('div');
+        loadingModal.className = 'modal-overlay';
+        loadingModal.innerHTML = `
+            <div class="modal-content" style="max-width: 300px; text-align: center;">
+                <div class="modal-header">
+                    <h3 class="modal-title">⏳ Loading</h3>
+                </div>
+                <div style="padding: 30px;">
+                    <div class="spinner"></div>
+                    <p>Loading user management...</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(loadingModal);
+
+        // Check user role - PAKAI STATE YANG BARU DI IMPORT
+        console.log('User role:', state.currentUser?.role);
+        if (!state.currentUser || (state.currentUser.role !== 'admin' && state.currentUser.role !== 'super_admin')) {
+            loadingModal.remove();
+            showMessage('❌ Admin access required', 'error');
+            return;
+        }
+
+        // Call API
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.getAllUsers();
+        console.log('API Result:', result);
+
+        loadingModal.remove();
+
+        if (result.success) {
+            console.log('Showing user modal with', result.users?.length, 'users');
+            showUserManagementModal(result.users);
+        } else {
+            showMessage('❌ ' + (result.message || 'Failed to load users'), 'error');
+        }
+
+    } catch (error) {
+        console.error('🔥 showUserManagement ERROR:', error);
+        document.querySelector('.modal-overlay')?.remove();
+        showMessage('❌ Error: ' + error.message, 'error');
+    }
+};
 		
 	window.showAllBookings = async function() {
-		try {
-			// Show loading modal
-			showAllBookingsLoadingModal();
-			
-			const { FirestoreAPI } = await import('./firestore-api.js');
-			const result = await FirestoreAPI.getAllBookingsAdmin();
-			
-			// Remove loading modal
-			document.querySelector('.modal-overlay')?.remove();
-			
-			if (result.success) {
-				showAllBookingsModal(result.bookings);
-			} else {
-				showMessage('❌ Failed to load bookings', 'error');
-			}
-		} catch (error) {
-			console.error('All Bookings Error:', error);
-			document.querySelector('.modal-overlay')?.remove();
-			showMessage('❌ Error loading bookings', 'error');
-		}
-	};
-	
-	// Loading modal untuk all bookings
-	function showAllBookingsLoadingModal() {
-		const modal = document.createElement('div');
-		modal.className = 'modal-overlay';
-		modal.innerHTML = `
-			<div class="modal-content" style="max-width: 300px; text-align: center;">
-				<div class="modal-header">
-					<h3 class="modal-title">⏳ Loading</h3>
-				</div>
-				<div style="padding: 30px;">
-					<div class="spinner"></div>
-					<p style="margin-top: 15px; color: rgba(255,255,255,0.8);">Loading all bookings...</p>
-				</div>
-			</div>
-		`;
-		document.body.appendChild(modal);
-	}
+    console.log('🎯 showAllBookings STARTED');
+    
+    try {
+        // IMPORT STATE DI DALAM FUNCTION
+        const { state } = await import('./constants.js');
+        
+        // ✅ PAKE FUNCTION YANG UDAH ADA - lebih clean
+        showAllBookingsLoadingModal();
+
+        // Check admin access
+        if (!state.currentUser || (state.currentUser.role !== 'admin' && state.currentUser.role !== 'super_admin')) {
+            document.querySelector('.modal-overlay')?.remove();
+            showMessage('❌ Admin access required', 'error');
+            return;
+        }
+
+        // Call API
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.getAllBookingsAdmin();
+        console.log('Bookings API Result:', result);
+
+        document.querySelector('.modal-overlay')?.remove();
+
+        if (result.success) {
+            console.log('Showing bookings modal with', result.bookings?.length, 'bookings');
+            showAllBookingsModal(result.bookings);
+        } else {
+            showMessage('❌ ' + (result.message || 'Failed to load bookings'), 'error');
+        }
+
+    } catch (error) {
+        console.error('🔥 showAllBookings ERROR:', error);
+        document.querySelector('.modal-overlay')?.remove();
+        showMessage('❌ Error: ' + error.message, 'error');
+    }
+};
+
+// ✅ KEEP THIS FUNCTION - dipake oleh showAllBookings di atas
+function showAllBookingsLoadingModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 300px; text-align: center;">
+            <div class="modal-header">
+                <h3 class="modal-title">⏳ Loading</h3>
+            </div>
+            <div style="padding: 30px;">
+                <div class="spinner"></div>
+                <p style="margin-top: 15px; color: rgba(255,255,255,0.8);">Loading all bookings...</p>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
 	
 	window.showAddUserForm = function() {
 		const form = document.getElementById('addUserFormContainer');
@@ -810,7 +837,6 @@ function getRangeDisplayName(range, startDate, endDate) {
     window.getRangeDisplayName = getRangeDisplayName;
 	console.log('🔥 ALL FUNCTIONS FORCED TO WINDOW!');
 }
-
 
 
 
