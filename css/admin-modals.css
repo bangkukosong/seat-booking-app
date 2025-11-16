@@ -363,100 +363,49 @@
 }
 
 /* ==================== CHANGE PASSWORD MODAL - FIXED SPACING ==================== */
-#changePasswordModal.modal-overlay {
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: none;
-}
-
+/* DI admin-modals.css - IMPROVE CHANGE PASSWORD SPACING */
 #changePasswordModal .modal-content {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: transparent;
-    padding: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    padding: 30px 25px; /* ↑ More vertical padding */
     border-radius: 20px;
     width: 90%;
-    max-width: 420px; /* ↑ Sedikit lebih lebar */
-    border: none;
-    z-index: 1001;
-    color: white;
-    pointer-events: auto;
-}
-
-/* Glass effect untuk change password */
-#changePasswordModal .modal-content::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-    z-index: -1;
+    max-width: 420px; /* ↑ Slightly wider */
 }
 
 #changePasswordModal .modal-header {
-    position: relative;
-    padding: 30px 30px 15px 30px; /* ↑ More padding */
-    background: transparent;
-    border: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0;
+    margin-bottom: 25px; /* ↑ More space below header */
+    padding: 0 5px; /* ↑ Add horizontal padding */
 }
 
 #changePasswordModal .modal-title {
-    color: var(--gold);
     font-size: 1.4rem;
-    margin: 0;
     font-weight: 700;
-    padding-right: 40px; /* ↑ Space untuk close button */
+    margin: 0;
+    padding-right: 40px; /* ↑ Space for close button */
 }
 
 #changePasswordModal .close-btn {
     position: absolute;
     top: 25px; /* ↑ Match increased padding */
     right: 25px; /* ↑ Match increased padding */
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    z-index: 1002;
-    transition: all 0.3s ease;
-}
-
-#changePasswordModal .close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
 }
 
 #changePasswordModal .modal-body {
-    padding: 0 30px 30px 30px; /* ↑ More padding */
-    background: transparent;
+    padding: 0 5px; /* ↑ Add horizontal padding */
 }
 
-/* Form styling - IMPROVED SPACING */
 #changePasswordModal .form-group {
     margin-bottom: 25px; /* ↑ More space between fields */
 }
 
 #changePasswordModal .form-group label {
     display: block;
-    margin-bottom: 12px; /* ↑ More space below labels */
+    margin-bottom: 10px; /* ↑ More space below labels */
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
     font-size: 0.95rem;
@@ -478,24 +427,13 @@
     border-color: var(--primary-blue);
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.2);
-    transform: translateY(-2px);
+    transform: translateY(-2px); /* ↑ More lift on focus */
 }
 
-#changePasswordModal input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-#changePasswordModal input[readonly] {
-    background: rgba(255, 255, 255, 0.2);
-    opacity: 0.8;
-    cursor: not-allowed;
-}
-
-/* Button group - MORE SPACING */
 #changePasswordModal .btn-group {
     display: flex;
     gap: 15px; /* ↑ More space between buttons */
-    margin-top: 25px; /* ↑ More space above buttons */
+    margin-top: 30px; /* ↑ More space above buttons */
 }
 
 #changePasswordModal .btn {
@@ -509,29 +447,6 @@
     transition: all 0.3s ease;
     text-align: center;
 }
-
-#changePasswordModal .btn-primary {
-    background: linear-gradient(135deg, var(--primary-blue), #005aab);
-    color: white;
-}
-
-#changePasswordModal .btn-primary:hover {
-    background: linear-gradient(135deg, #005aab, var(--primary-blue));
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 120, 215, 0.4);
-}
-
-#changePasswordModal .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-#changePasswordModal .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
 /* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 768px) {
     .admin-modal-content {
