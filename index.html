@@ -14,8 +14,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <!-- Tambahkan CSS -->
-  <link rel="stylesheet" href="css/admin-modals.css?v=1.0.0">
-  <link rel="stylesheet" href="css/styles.css?v=1.0.0">
+  <link rel="stylesheet" href="css/admin-modals.css?v=1.0.1">
+  <link rel="stylesheet" href="css/styles.css?v=1.0.1">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22> 🪑</text></svg>">
 </head>
 <body>
@@ -171,35 +171,40 @@
   <div id="bookingFormContainer"></div>
 
   <!-- Add User Form -->
-  <div id="addUserFormContainer" class="add-user-modal">
-  <h3 style="color: var(--admin-purple); margin-bottom: 15px;">➕ Add New User</h3>
+<div id="addUserFormContainer" class="add-user-modal">
+    <button class="close-btn" onclick="hideAddUserForm()">&times;</button>
+    
+    <h3>➕ Add New User</h3>
+    
     <form id="addUserForm">
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="newUserUsername" required placeholder="username">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="newUserPassword" required placeholder="password (min. 6 Characters)">
-      </div>
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="newUserName" required placeholder="Full Name">
-      </div>
-      <div class="form-group">
-        <label>Role</label>
-        <select id="newUserRole" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.9); color: #000000;">
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-      <div class="btn-group">
-        <button type="submit" class="btn btn-primary">Add User</button>
-        <button type="button" onclick="hideAddUserForm()" class="btn btn-secondary">Cancel</button>
-      </div>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="newUserUsername" required placeholder="username">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="newUserPassword" required placeholder="password (min. 6 Characters">
+        </div>
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="newUserName" required placeholder="Full name">
+        </div>
+        <div class="form-group">
+            <label>Role</label>
+            <select id="newUserRole">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Add User</button>
+            <button type="button" class="btn btn-secondary" onclick="hideAddUserForm()">Cancel</button>
+        </div>
     </form>
-    <div id="addUserMessage" style="text-align: center; margin-top: 10px;"></div>
-  </div>
+    
+    <div id="addUserMessage"></div>
+</div>
 
    <!-- ========== MODAL CHANGE PASSWORD ========== -->
   <div id="changePasswordModal" class="modal-overlay">
@@ -212,7 +217,7 @@
         <div class="form-group">
           <label>Username</label>
           <input type="text" id="changePasswordUsername" readonly 
-                 style="background: rgba(255,255,255,0.3); color: #fff;">
+                 style="background: rgba(255,255,255,0.15); color: #fff;">
         </div>
         <div class="form-group">
           <label>Current Password</label>
@@ -249,7 +254,7 @@
     import './js/ui.js?v=1.0.0';
     import './js/auth.js?v=1.0.0';
     import './js/bookings.js?v=1.0.0';
-    import './js/main.js?v=1.0.0';
+    import './js/main.js?v=1.0.1';
 
     console.log('🎯 All modules loaded successfully!');
     console.log('🔥 Firestore integration: ACTIVE');
