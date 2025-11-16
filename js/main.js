@@ -251,16 +251,31 @@ function showAllBookingsLoadingModal() {
 		if (form) form.style.display = 'none';
 	};
 	
-	// Setup Add User Form
-	function setupAddUserForm() {
-		const form = document.getElementById('addUserForm');
-		if (form) {
-			form.addEventListener('submit', async function(e) {
-				e.preventDefault();
-				await handleAddUser();
-			});
-		}
-	}
+// CARI function setupAddUserForm() di main.js
+function setupAddUserForm() {
+    const form = document.getElementById('addUserForm');
+    if (form) {
+        // HAPUS event listener lama, tambah yang baru
+        form.removeEventListener('submit', handleAddUser); // Hapus yang lama jika ada
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('👤 Add user form submitted');
+            
+            try {
+                handleAddUser();
+            } catch (error) {
+                console.error('Form submission error:', error);
+                showAddUserMessage('❌ Form error: ' + error.message, 'error');
+            }
+        });
+        
+        console.log('✅ Add user form event listener setup');
+    } else {
+        console.log('⏳ Add user form not found, will retry later');
+        setTimeout(setupAddUserForm, 500);
+    }
+}
 	
 	async function handleAddUser() {
 		try {
