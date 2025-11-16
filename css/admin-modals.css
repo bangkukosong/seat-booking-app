@@ -362,7 +362,7 @@
     border: 1px solid rgba(0, 0, 0, 0.3) !important;
 }
 
-/* ==================== CHANGE PASSWORD MODAL ==================== */
+/* ==================== CHANGE PASSWORD MODAL - FIXED SPACING ==================== */
 #changePasswordModal.modal-overlay {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: none;
@@ -377,7 +377,7 @@
     padding: 0;
     border-radius: 20px;
     width: 90%;
-    max-width: 400px;
+    max-width: 420px; /* ↑ Sedikit lebih lebar */
     border: none;
     z-index: 1001;
     color: white;
@@ -403,7 +403,7 @@
 
 #changePasswordModal .modal-header {
     position: relative;
-    padding: 25px 25px 0 25px;
+    padding: 30px 30px 15px 30px; /* ↑ More padding */
     background: transparent;
     border: none;
     display: flex;
@@ -417,12 +417,13 @@
     font-size: 1.4rem;
     margin: 0;
     font-weight: 700;
+    padding-right: 40px; /* ↑ Space untuk close button */
 }
 
 #changePasswordModal .close-btn {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 25px; /* ↑ Match increased padding */
+    right: 25px; /* ↑ Match increased padding */
     background: none;
     border: none;
     color: white;
@@ -444,27 +445,28 @@
 }
 
 #changePasswordModal .modal-body {
-    padding: 0 25px 25px 25px;
+    padding: 0 30px 30px 30px; /* ↑ More padding */
     background: transparent;
 }
 
-/* Form styling */
+/* Form styling - IMPROVED SPACING */
 #changePasswordModal .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px; /* ↑ More space between fields */
 }
 
 #changePasswordModal .form-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 12px; /* ↑ More space below labels */
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
 }
 
 #changePasswordModal input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 16px 18px; /* ↑ More padding inside inputs */
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    border-radius: 12px; /* ↑ Slightly more rounded */
     background: rgba(255, 255, 255, 0.15);
     color: white;
     font-size: 16px;
@@ -476,6 +478,7 @@
     border-color: var(--primary-blue);
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.2);
+    transform: translateY(-2px);
 }
 
 #changePasswordModal input::placeholder {
@@ -488,19 +491,19 @@
     cursor: not-allowed;
 }
 
-/* Button group */
+/* Button group - MORE SPACING */
 #changePasswordModal .btn-group {
     display: flex;
-    gap: 12px;
-    margin-top: 10px;
+    gap: 15px; /* ↑ More space between buttons */
+    margin-top: 25px; /* ↑ More space above buttons */
 }
 
 #changePasswordModal .btn {
     flex: 1;
-    padding: 14px;
+    padding: 16px; /* ↑ More button padding */
     border: none;
-    border-radius: 10px;
-    font-size: 14px;
+    border-radius: 12px; /* ↑ Match input border radius */
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
