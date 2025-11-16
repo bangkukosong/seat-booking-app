@@ -558,8 +558,8 @@
     }
 
     .btn-secondary {
-      background: rgba(255,255,255,0.2);
-      color: #ff7744;
+      background: rgba(255,0,0,0.2);
+      color: white;
       border: 1px solid rgba(255,0,0,0.3);
     }
 
