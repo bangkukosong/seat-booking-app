@@ -251,31 +251,6 @@ function showAllBookingsLoadingModal() {
 		if (form) form.style.display = 'none';
 	};
 	
-// CARI function setupAddUserForm() di main.js
-function setupAddUserForm() {
-    const form = document.getElementById('addUserForm');
-    if (form) {
-        // HAPUS event listener lama, tambah yang baru
-        form.removeEventListener('submit', handleAddUser); // Hapus yang lama jika ada
-        
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('👤 Add user form submitted');
-            
-            try {
-                handleAddUser();
-            } catch (error) {
-                console.error('Form submission error:', error);
-                showAddUserMessage('❌ Form error: ' + error.message, 'error');
-            }
-        });
-        
-        console.log('✅ Add user form event listener setup');
-    } else {
-        console.log('⏳ Add user form not found, will retry later');
-        setTimeout(setupAddUserForm, 500);
-    }
-}
 	
 	async function handleAddUser() {
 		try {
@@ -1000,5 +975,43 @@ setTimeout(() => {
     setTimeout(healthCheck, 3000);
 }, 1500);
 
+// ✅ TARUH DI SINI - DI AKHIR FILE, DI LUAR FUNCTION APAPUN
+window.handleAddUser = async function() {
+    try {
+        const username = document.getElementById('newUserUsername').value;
+        const password = document.getElementById('newUserPassword').value;
+        const name = document.getElementById('newUserName').value;
+        const role = document.getElementById('newUserRole').value;
+
+        if (!username || !password || !name) {
+            showAddUserMessage('❌ Please fill all fields', 'error');
+            return;
+        }
+
+        if (password.length < 6) {
+            showAddUserMessage('❌ Password must be at least 6 characters', 'error');
+            return;
+        }
+
+        showAddUserMessage('⏳ Adding user...', 'info');
+
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.addUser(username, password, name, role);
+
+        if (result.success) {
+            showAddUserMessage('✅ User added successfully!', 'success');
+            setTimeout(() => {
+                hideAddUserForm();
+                showMessage('✅ User added successfully', 'success');
+            }, 1500);
+        } else {
+            showAddUserMessage(`❌ ${result.message}`, 'error');
+        }
+
+    } catch (error) {
+        console.error('Add User Error:', error);
+        showAddUserMessage('❌ Error adding user', 'error');
+    }
+};
 
 
