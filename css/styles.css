@@ -942,4 +942,133 @@
       .header-container {
         flex-wrap: nowrap !important;
       }
+	  
+		/* ==================== ADD USER MODAL ==================== */
+	.add-user-modal {
+		display: none;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background: rgba(255, 255, 255, 0.15);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		padding: 25px;
+		border-radius: 20px;
+		z-index: 1001;
+		width: 90%;
+		max-width: 400px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+		color: white;
+	}
+	
+	.add-user-modal .close-btn {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		background: none;
+		border: none;
+		color: white;
+		font-size: 1.5rem;
+		cursor: pointer;
+		padding: 0;
+		width: 30px;
+		height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		z-index: 1002;
+		transition: all 0.3s ease;
+	}
+	
+	.add-user-modal .close-btn:hover {
+		background: rgba(255, 255, 255, 0.1);
+	}
+	
+	/* Form elements styling */
+	.add-user-modal h3 {
+		color: var(--admin-purple);
+		margin-bottom: 20px;
+		padding-right: 40px;
+		font-size: 1.4rem;
+		text-align: center;
+	}
+	
+	.add-user-modal .form-group {
+		margin-bottom: 20px;
+	}
+	
+	.add-user-modal .form-group label {
+		display: block;
+		margin-bottom: 8px;
+		font-weight: 600;
+		color: rgba(255, 255, 255, 0.9);
+	}
+	
+	.add-user-modal input,
+	.add-user-modal select {
+		width: 100%;
+		padding: 14px 16px;
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		border-radius: 10px;
+		background: rgba(255, 255, 255, 0.15);
+		color: white;
+		font-size: 16px;
+		transition: all 0.3s ease;
+	}
+	
+	.add-user-modal input:focus,
+	.add-user-modal select:focus {
+		outline: none;
+		border-color: var(--primary-blue);
+		background: rgba(255, 255, 255, 0.2);
+		box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.2);
+	}
+	
+	.add-user-modal input::placeholder {
+		color: rgba(255, 255, 255, 0.6);
+	}
+	
+	/* Button group */
+	.add-user-modal .btn-group {
+		display: flex;
+		gap: 12px;
+		margin-top: 20px;
+	}
+	
+	.add-user-modal .btn {
+		flex: 1;
+		padding: 14px;
+		border: none;
+		border-radius: 10px;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		text-align: center;
+	}
+	
+	.add-user-modal .btn-primary {
+		background: linear-gradient(135deg, var(--primary-blue), #005aab);
+		color: white;
+	}
+	
+	.add-user-modal .btn-primary:hover {
+		background: linear-gradient(135deg, #005aab, var(--primary-blue));
+		transform: translateY(-2px);
+		box-shadow: 0 4px 15px rgba(0, 120, 215, 0.4);
+	}
+	
+	.add-user-modal .btn-secondary {
+		background: rgba(255, 255, 255, 0.1);
+		color: white;
+		border: 1px solid rgba(255, 255, 255, 0.3);
+	}
+	
+	.add-user-modal .btn-secondary:hover {
+		background: rgba(255, 255, 255, 0.2);
+		transform: translateY(-2px);
+	}
     }
