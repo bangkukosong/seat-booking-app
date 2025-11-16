@@ -404,10 +404,7 @@ function showAllBookingsLoadingModal() {
     console.log('✅ All bookings modal created with CSS classes');
 };
 	
-	// Initialize admin forms
-	setTimeout(setupAddUserForm, 1000);
-	
-    
+  
     // ==================== PASSWORD CHANGE ====================
 	window.showChangePasswordModal = async function() {
 		console.log('🎯 showChangePasswordModal CALLED!');
@@ -583,8 +580,6 @@ function showAllBookingsLoadingModal() {
         }
     }
 
-    // Initialize change password form after a short delay
-    setTimeout(setupChangePasswordForm, 1000);
     
 // ==================== EXPORT FUNCTIONS ====================
 
@@ -846,6 +841,149 @@ function getRangeDisplayName(range, startDate, endDate) {
     window.getRangeDisplayName = getRangeDisplayName;
 	console.log('🔥 ALL FUNCTIONS FORCED TO WINDOW!');
 }
+// ==================== ROBUST FORM INITIALIZATION ====================
+function initializeAllForms() {
+    console.log('🔄 Initializing all forms...');
+    
+    // Initialize Change Password Form
+    let cpAttempts = 0;
+    const initChangePasswordForm = () => {
+        cpAttempts++;
+        const form = document.getElementById('changePasswordForm');
+        if (form) {
+            console.log('✅ Change password form found, setting up listener...');
+            
+            // Clone untuk avoid duplicate listeners
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+            
+            // Add event listener ke form baru
+            document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('🔐 Change password form submitted');
+                await handleChangePassword();
+            });
+            
+            console.log('✅ Change password form initialized successfully');
+        } else if (cpAttempts < 5) {
+            console.log('⏳ Change password form not found, retrying...');
+            setTimeout(initChangePasswordForm, 500);
+        } else {
+            console.error('❌ Change password form failed to initialize after 5 attempts');
+        }
+    };
+    
+    // Initialize Add User Form  
+    let auAttempts = 0;
+    const initAddUserForm = () => {
+        auAttempts++;
+        const form = document.getElementById('addUserForm');
+        if (form) {
+            console.log('✅ Add user form found, setting up listener...');
+            
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+            
+            document.getElementById('addUserForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('👤 Add user form submitted');
+                await handleAddUser();
+            });
+            
+            console.log('✅ Add user form initialized successfully');
+        } else if (auAttempts < 5) {
+            console.log('⏳ Add user form not found, retrying...');
+            setTimeout(initAddUserForm, 500);
+        } else {
+            console.error('❌ Add user form failed to initialize after 5 attempts');
+        }
+    };
+    
+    // Start initialization
+    initChangePasswordForm();
+    initAddUserForm();
+}
+
+// ==================== HEALTH CHECK ====================
+function healthCheck() {
+    console.log('🩺 Running health check...');
+    
+    const criticalElements = [
+        'changePasswordForm',
+        'changePasswordModal', 
+        'addUserForm',
+        'loginForm'
+    ];
+    
+    criticalElements.forEach(id => {
+        const element = document.getElementById(id);
+        console.log(`${element ? '✅' : '❌'} ${id}: ${element ? 'FOUND' : 'MISSING'}`);
+    });
+    
+    // Test critical functions
+    const criticalFunctions = ['showChangePasswordModal', 'logout', 'refreshBookings'];
+    criticalFunctions.forEach(funcName => {
+        console.log(`${typeof window[funcName] === 'function' ? '✅' : '❌'} ${funcName}: ${typeof window[funcName]}`);
+    });
+}
+
+// ==================== SAFE MODAL FUNCTION ====================
+function safeShowModal(modalId, showFunction) {
+    try {
+        const modal = document.getElementById(modalId);
+        if (!modal) {
+            console.error(`❌ Modal ${modalId} not found`);
+            return false;
+        }
+        
+        showFunction();
+        console.log(`✅ Modal ${modalId} shown safely`);
+        return true;
+    } catch (error) {
+        console.error(`❌ Error showing modal ${modalId}:`, error);
+        return false;
+    }
+}
+
+// ==================== UPDATE showChangePasswordModal ====================
+window.showChangePasswordModal = async function() {
+    console.log('🎯 showChangePasswordModal CALLED (Safe Version)');
+    
+    const success = safeShowModal('changePasswordModal', () => {
+        const modal = document.getElementById('changePasswordModal');
+        const usernameField = document.getElementById('changePasswordUsername');
+        
+        // Import state untuk dapetin current user
+        import('./constants.js').then(({ state }) => {
+            if (usernameField && state.currentUser) {
+                usernameField.value = state.currentUser.username;
+            }
+        });
+        
+        modal.style.display = 'block';
+        
+        // Reset form
+        const form = document.getElementById('changePasswordForm');
+        if (form) form.reset();
+        
+        const messageEl = document.getElementById('changePasswordMessage');
+        if (messageEl) messageEl.innerHTML = '';
+    });
+    
+    if (!success) {
+        showMessage('❌ Cannot open change password form', 'error');
+    }
+};
+
+// ==================== INITIALIZE SETELAH APP READY ====================
+// GANTI bagian setTimeout yang lama dengan ini:
+setTimeout(() => {
+    console.log('🔧 Starting robust form initialization...');
+    initializeAllForms();
+    
+    // Run health check setelah 3 detik
+    setTimeout(healthCheck, 3000);
+}, 1500);
 
 
 
