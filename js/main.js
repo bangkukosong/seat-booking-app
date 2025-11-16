@@ -364,40 +364,45 @@ function showAllBookingsLoadingModal() {
 		document.body.appendChild(modal);
 	};
 	// Modal untuk All Bookings
-	function showAllBookingsModal(bookings) {
-		const modal = document.createElement('div');
-		modal.className = 'modal-overlay';
-		modal.innerHTML = `
-			<div class="modal-content" style="max-width: 900px;">
-				<div class="modal-header">
-					<h3 class="modal-title">📊 All Bookings</h3>
-					<button class="close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
-				</div>
-				<div style="padding: 20px; max-height: 60vh; overflow-y: auto;">
-					<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px; font-weight: bold;">
-						<div>Date</div>
-						<div>Seat</div>
-						<div>User</div>
-						<div>Time</div>
-					</div>
-					${bookings.map(booking => `
-						<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center;">
-							<div>${booking.day}</div>
-							<div><strong>${booking.seat}</strong></div>
-							<div>${booking.userName}</div>
-							<div><small>${booking.timestamp ? new Date(booking.timestamp).toLocaleString('en-US') : 'N/A'}</small></div>
-						</div>
-					`).join('')}
-				</div>
-				<div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-					<button class="btn btn-primary" onclick="exportBookings(); this.closest('.modal-overlay').remove()">
-						📤 Export to CSV
-					</button>
-				</div>
-			</div>
-		`;
-		document.body.appendChild(modal);
-	}
+	window.showAllBookingsModal = function(bookings) {
+    document.querySelectorAll('.modal-overlay').forEach(modal => modal.remove());
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay admin-modal';
+    
+    modal.innerHTML = `
+        <div class="admin-modal-content">
+            <div class="admin-modal-header">
+                <h3 class="admin-modal-title">📊 All Bookings</h3>
+                <button class="admin-close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+            </div>
+            <div class="admin-modal-body">
+                <div class="bookings-grid-header">
+                    <div>Date</div>
+                    <div>Seat</div>
+                    <div>User</div>
+                    <div>Time</div>
+                </div>
+                ${bookings.map(booking => `
+                    <div class="booking-row">
+                        <div>${booking.day}</div>
+                        <div><strong>${booking.seat}</strong></div>
+                        <div>${booking.userName}</div>
+                        <div><small>${booking.timestamp ? new Date(booking.timestamp).toLocaleString('en-US') : 'N/A'}</small></div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="admin-modal-footer">
+                <button class="admin-btn admin-btn-primary" onclick="exportBookings(); this.closest('.modal-overlay').remove()">
+                    📤 Export to CSV
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    console.log('✅ All bookings modal created with CSS classes');
+};
 	
 	// Initialize admin forms
 	setTimeout(setupAddUserForm, 1000);
@@ -583,19 +588,22 @@ function showAllBookingsLoadingModal() {
     
 // ==================== EXPORT FUNCTIONS ====================
 
-function showExportModal() {
+window.showExportModal = function() {
+    document.querySelectorAll('.modal-overlay').forEach(modal => modal.remove());
+    
     const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
+    modal.className = 'modal-overlay admin-modal';
+    
     modal.innerHTML = `
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h3 class="modal-title">📤 Export Bookings Data</h3>
-                <button class="close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+        <div class="admin-modal-content" style="max-width: 500px;">
+            <div class="admin-modal-header">
+                <h3 class="admin-modal-title">📤 Export Bookings Data</h3>
+                <button class="admin-close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
             </div>
-            <div style="padding: 20px;">
-                <div class="form-group">
-                    <label>📅 Date Range</label>
-                    <select id="exportRange" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.9); color: #000;">
+            <div style="padding: 24px;">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: white; margin-bottom: 8px; font-weight: 600;">📅 Date Range</label>
+                    <select id="exportRange" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.9); color: #000; border: 1px solid rgba(255,255,255,0.3);">
                         <option value="today">Today</option>
                         <option value="week">This Week</option>
                         <option value="month">This Month</option>
@@ -604,30 +612,30 @@ function showExportModal() {
                     </select>
                 </div>
                 
-                <div id="customRangeFields" style="display: none; gap: 10px; grid-template-columns: 1fr 1fr;">
-                    <div class="form-group">
-                        <label>Start Date</label>
-                        <input type="date" id="exportStartDate" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.9); color: #000;">
+                <div id="customRangeFields" style="display: none; gap: 10px; grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+                    <div>
+                        <label style="display: block; color: white; margin-bottom: 8px; font-size: 0.9rem;">Start Date</label>
+                        <input type="date" id="exportStartDate" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.9); color: #000; border: 1px solid rgba(255,255,255,0.3);">
                     </div>
-                    <div class="form-group">
-                        <label>End Date</label>
-                        <input type="date" id="exportEndDate" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.9); color: #000;">
+                    <div>
+                        <label style="display: block; color: white; margin-bottom: 8px; font-size: 0.9rem;">End Date</label>
+                        <input type="date" id="exportEndDate" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.9); color: #000; border: 1px solid rgba(255,255,255,0.3);">
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label>📊 Export Format</label>
-                    <select id="exportFormat" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.9); color: #000;">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: white; margin-bottom: 8px; font-weight: 600;">📊 Export Format</label>
+                    <select id="exportFormat" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.9); color: #000; border: 1px solid rgba(255,255,255,0.3);">
                         <option value="csv">CSV (Excel)</option>
                         <option value="json">JSON</option>
                     </select>
                 </div>
                 
-                <div class="btn-group" style="margin-top: 20px;">
-                    <button type="button" class="btn btn-primary" onclick="generateExport()">
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="admin-btn admin-btn-primary" onclick="generateExport()" style="flex: 1;">
                         📥 Generate Export
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">
+                    <button type="button" class="admin-btn admin-btn-secondary" onclick="this.closest('.modal-overlay').remove()" style="flex: 1;">
                         Cancel
                     </button>
                 </div>
@@ -644,7 +652,6 @@ function showExportModal() {
     rangeSelect.addEventListener('change', function() {
         customRangeFields.style.display = this.value === 'custom' ? 'grid' : 'none';
         
-        // Set default dates for custom range
         if (this.value === 'custom') {
             const today = new Date();
             const oneWeekAgo = new Date();
@@ -654,7 +661,7 @@ function showExportModal() {
             document.getElementById('exportEndDate').value = today.toISOString().split('T')[0];
         }
     });
-}
+};
 	window.exportBookings = async function() {
 		try {
 			
