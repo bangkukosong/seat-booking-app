@@ -1,0 +1,278 @@
+/* css/admin-modals.css - Professional Admin Modal Styles */
+
+/* ==================== ADMIN MODAL OVERLAY ==================== */
+.modal-overlay.admin-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: adminModalFadeIn 0.3s ease-out;
+}
+
+@keyframes adminModalFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(5px);
+    }
+}
+
+/* ==================== ADMIN MODAL CONTENT ==================== */
+.admin-modal-content {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border-radius: 16px;
+    max-width: 900px;
+    max-height: 85vh;
+    width: 95%;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: adminModalSlideIn 0.3s ease-out;
+}
+
+@keyframes adminModalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ==================== MODAL HEADER ==================== */
+.admin-modal-header {
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-modal-title {
+    margin: 0;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.admin-close-btn {
+    background: rgba(255, 68, 68, 0.2);
+    color: #ff4444;
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.admin-close-btn:hover {
+    background: rgba(255, 68, 68, 0.3);
+    transform: scale(1.1);
+}
+
+/* ==================== MODAL BODY ==================== */
+.admin-modal-body {
+    padding: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* ==================== USERS GRID STYLES ==================== */
+.users-grid-header {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    align-items: center;
+    color: white;
+    transition: background 0.2s ease;
+}
+
+.user-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+.user-row:last-child {
+    border-bottom: none;
+}
+
+.user-info strong {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+    color: #ffffff;
+}
+
+.user-info small {
+    opacity: 0.7;
+    color: #cccccc;
+    font-size: 0.85rem;
+}
+
+/* ==================== ROLE BADGES ==================== */
+.role-badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    border: 1px solid transparent;
+}
+
+.role-badge.super_admin {
+    background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+    color: white;
+    border-color: rgba(255, 107, 107, 0.3);
+}
+
+.role-badge.admin {
+    background: linear-gradient(135deg, #4A90E2, #6BC5FF);
+    color: white;
+    border-color: rgba(74, 144, 226, 0.3);
+}
+
+.role-badge.dept_admin {
+    background: linear-gradient(135deg, #9B59B6, #BE90D4);
+    color: white;
+    border-color: rgba(155, 89, 182, 0.3);
+}
+
+.role-badge.user {
+    background: linear-gradient(135deg, #27AE60, #58D68D);
+    color: white;
+    border-color: rgba(39, 174, 96, 0.3);
+}
+
+/* ==================== ADMIN BUTTONS ==================== */
+.admin-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.admin-btn-secondary {
+    background: rgba(108, 117, 125, 0.3);
+    color: white;
+    border: 1px solid rgba(108, 117, 125, 0.5);
+}
+
+.admin-btn-secondary:hover {
+    background: rgba(108, 117, 125, 0.5);
+    transform: translateY(-1px);
+}
+
+.admin-btn-primary {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+}
+
+.admin-btn-primary:hover {
+    background: linear-gradient(135deg, #218838, #1e9c7a);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.admin-btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+/* ==================== MODAL FOOTER ==================== */
+.admin-modal-footer {
+    padding: 20px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* ==================== BOOKINGS GRID STYLES ==================== */
+.bookings-grid-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.booking-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    align-items: center;
+    color: white;
+}
+
+.booking-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+    .admin-modal-content {
+        width: 98%;
+        max-height: 90vh;
+    }
+    
+    .users-grid-header,
+    .user-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .bookings-grid-header,
+    .booking-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    
+    .user-actions,
+    .user-role {
+        text-align: center;
+    }
+}
