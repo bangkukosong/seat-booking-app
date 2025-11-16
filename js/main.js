@@ -21,9 +21,6 @@ function initializeApp() {
     
     // Setup global functions untuk HTML onclick
     setupGlobalFunctions();
-	
-	// Initialize theme manager
-    themeManager.init();
     
     // Initialize authentication
     initializeAuth();
@@ -34,118 +31,6 @@ function initializeApp() {
 
 function setupGlobalFunctions() {
     console.log('🔧 Setting up global functions...');
-	
-	    // ==================== THEME MANAGER ====================
-    window.themeManager = {
-        currentTheme: 'default',
-        
-        init() {
-            // Load saved theme dari localStorage
-            const savedTheme = localStorage.getItem('appTheme') || 'default';
-            this.applyTheme(savedTheme);
-        },
-        
-        applyTheme(themeName) {
-            // Remove existing theme classes
-            document.body.classList.remove('theme-default', 'theme-purple', 'theme-blue', 'theme-green', 'theme-orange', 'theme-dark');
-            
-            // Apply new theme
-            document.body.classList.add(`theme-${themeName}`);
-            this.currentTheme = themeName;
-            
-            // Save to localStorage
-            localStorage.setItem('appTheme', themeName);
-            
-            console.log(`🎨 Theme applied: ${themeName}`);
-        },
-        
-        applyModalTheme(modalElement, themeName) {
-            // Remove existing modal theme classes
-            modalElement.classList.remove('modal-theme-purple', 'modal-theme-blue', 'modal-theme-green', 'modal-theme-orange', 'modal-theme-dark');
-            
-            // Apply modal theme
-            if (themeName !== 'default') {
-                modalElement.classList.add(`modal-theme-${themeName}`);
-            }
-        }
-    };
-
-    // Theme Settings Modal
-    window.showThemeSettings = function() {
-        document.querySelectorAll('.modal-overlay').forEach(modal => modal.remove());
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay admin-modal theme-settings-modal';
-        
-        modal.innerHTML = `
-            <div class="admin-modal-content">
-                <div class="admin-modal-header">
-                    <h3 class="admin-modal-title">🎨 Theme Settings</h3>
-                    <button class="admin-close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
-                </div>
-                <div class="admin-modal-body">
-                    <p style="color: white; margin-bottom: 20px;">Choose your preferred theme:</p>
-                    
-                    <div class="theme-options">
-                        <div class="theme-option theme-default active" onclick="selectTheme('default')">
-                            Default Dark
-                        </div>
-                        <div class="theme-option theme-purple" onclick="selectTheme('purple')">
-                            Purple
-                        </div>
-                        <div class="theme-option theme-blue" onclick="selectTheme('blue')">
-                            Blue
-                        </div>
-                        <div class="theme-option theme-green" onclick="selectTheme('green')">
-                            Green
-                        </div>
-                        <div class="theme-option theme-orange" onclick="selectTheme('orange')">
-                            Orange
-                        </div>
-                        <div class="theme-option theme-dark" onclick="selectTheme('dark')">
-                            Dark Gray
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                        <label style="color: white; display: block; margin-bottom: 10px;">
-                            <input type="checkbox" id="uniformModals" onchange="toggleUniformModals(this.checked)">
-                            Use uniform theme for all modals
-                        </label>
-                        <small style="color: rgba(255,255,255,0.7);">If enabled, all modals will use the selected theme instead of individual colors</small>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        updateThemeSelection();
-    };
-
-    // Theme Selection Handler
-    window.selectTheme = function(themeName) {
-        themeManager.applyTheme(themeName);
-        updateThemeSelection();
-    };
-
-    // Update active theme selection
-    function updateThemeSelection() {
-        document.querySelectorAll('.theme-option').forEach(option => {
-            option.classList.remove('active');
-        });
-        
-        const activeOption = document.querySelector(`.theme-option.theme-${themeManager.currentTheme}`);
-        if (activeOption) {
-            activeOption.classList.add('active');
-        }
-    }
-
-    // Uniform Modals Toggle
-    window.toggleUniformModals = function(enabled) {
-        localStorage.setItem('uniformModals', enabled);
-        console.log(`Uniform modals: ${enabled}`);
-    };
-	
     
     // ==================== VIEW TOGGLES ====================
     window.showGridView = function() {
@@ -234,7 +119,7 @@ function setupGlobalFunctions() {
     
 
 	// ==================== ADMIN FUNCTIONS ====================
-	window.showUserManagement = async function() {
+window.showUserManagement = async function() {
     console.log('🎯 showUserManagement STARTED');
     
     try {
