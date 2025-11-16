@@ -276,3 +276,21 @@
         text-align: center;
     }
 }
+
+/* Tambahkan di admin-modals.css */
+#changePasswordModal .modal-content {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+}
+
+#changePasswordModal .modal-header {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+#changePasswordModal input {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #000 !important;
+}
