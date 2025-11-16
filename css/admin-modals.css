@@ -1,4 +1,4 @@
-/* css/admin-modals.css - Professional Admin Modal Styles */
+/* css/admin-modals.css - Professional Admin Modal Styles with Color Themes */
 
 /* ==================== ADMIN MODAL OVERLAY ==================== */
 .modal-overlay.admin-modal {
@@ -29,7 +29,6 @@
 
 /* ==================== ADMIN MODAL CONTENT ==================== */
 .admin-modal-content {
-    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     border-radius: 16px;
     max-width: 900px;
     max-height: 85vh;
@@ -54,7 +53,6 @@
 /* ==================== MODAL HEADER ==================== */
 .admin-modal-header {
     padding: 20px 24px;
-    background: rgba(255, 255, 255, 0.05);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     justify-content: space-between;
@@ -101,7 +99,6 @@
     grid-template-columns: 1fr auto auto;
     gap: 16px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     font-weight: 600;
     color: white;
@@ -229,7 +226,6 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 16px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     font-weight: 600;
     color: white;
@@ -250,6 +246,287 @@
 .booking-row:hover {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 8px;
+}
+
+/* ==================== ADMIN MODAL COLOR THEMES ==================== */
+
+/* PURPLE THEME - Manage Users */
+.manage-users-modal .admin-modal-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.manage-users-modal .admin-modal-header {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+.manage-users-modal .users-grid-header {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+}
+
+.manage-users-modal .user-row {
+    color: white !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.manage-users-modal .user-info strong {
+    color: white !important;
+}
+
+.manage-users-modal .user-info small {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* BLUE THEME - View All Bookings */
+.view-bookings-modal .admin-modal-content {
+    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.view-bookings-modal .admin-modal-header {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+.view-bookings-modal .bookings-grid-header {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+}
+
+.view-bookings-modal .booking-row {
+    color: white !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* GREEN THEME - Export Reports */
+.export-modal .admin-modal-content {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.export-modal .admin-modal-header {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+.export-modal label {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+.export-modal select,
+.export-modal input {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #333 !important;
+}
+
+/* GOLD THEME - Change Password */
+.change-password-modal .admin-modal-content {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.change-password-modal .admin-modal-header {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.change-password-modal .modal-title {
+    color: #000 !important;
+}
+
+.change-password-modal label {
+    color: #000 !important;
+    font-weight: 600 !important;
+}
+
+.change-password-modal input {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    color: #333 !important;
+}
+
+.change-password-modal .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+}
+
+.change-password-modal .btn-secondary {
+    background: rgba(0, 0, 0, 0.2) !important;
+    color: #000 !important;
+    border: 1px solid rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ==================== CHANGE PASSWORD MODAL ==================== */
+#changePasswordModal.modal-overlay {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: none;
+}
+
+#changePasswordModal .modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    padding: 0;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    border: none;
+    z-index: 1001;
+    color: white;
+    pointer-events: auto;
+}
+
+/* Glass effect untuk change password */
+#changePasswordModal .modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+#changePasswordModal .modal-header {
+    position: relative;
+    padding: 25px 25px 0 25px;
+    background: transparent;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+#changePasswordModal .modal-title {
+    color: var(--gold);
+    font-size: 1.4rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+#changePasswordModal .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 1002;
+    transition: all 0.3s ease;
+}
+
+#changePasswordModal .close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#changePasswordModal .modal-body {
+    padding: 0 25px 25px 25px;
+    background: transparent;
+}
+
+/* Form styling */
+#changePasswordModal .form-group {
+    margin-bottom: 20px;
+}
+
+#changePasswordModal .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+#changePasswordModal input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+#changePasswordModal input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.2);
+}
+
+#changePasswordModal input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+#changePasswordModal input[readonly] {
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+/* Button group */
+#changePasswordModal .btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+#changePasswordModal .btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+#changePasswordModal .btn-primary {
+    background: linear-gradient(135deg, var(--primary-blue), #005aab);
+    color: white;
+}
+
+#changePasswordModal .btn-primary:hover {
+    background: linear-gradient(135deg, #005aab, var(--primary-blue));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 120, 215, 0.4);
+}
+
+#changePasswordModal .btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#changePasswordModal .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
 }
 
 /* ==================== RESPONSIVE DESIGN ==================== */
@@ -276,21 +553,97 @@
         text-align: center;
     }
 }
-
-/* Tambahkan di admin-modals.css */
-#changePasswordModal .modal-content {
-    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 16px !important;
+/* ==================== THEME SETTINGS STYLES ==================== */
+.settings-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+    margin-left: 10px;
 }
 
-#changePasswordModal .modal-header {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+.settings-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1) rotate(30deg);
 }
 
-#changePasswordModal input {
-    background: rgba(255, 255, 255, 0.9) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    color: #000 !important;
+/* Theme Settings Modal */
+.theme-settings-modal .admin-modal-content {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+    max-width: 500px;
+}
+
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.theme-option {
+    padding: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.theme-option:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.theme-option.active {
+    border-color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Color Themes */
+.theme-default { background: linear-gradient(135deg, #2a2a2a, #1a1a1a); color: white; }
+.theme-purple { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+.theme-blue { background: linear-gradient(135deg, #4A90E2, #357ABD); color: white; }
+.theme-green { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
+.theme-orange { background: linear-gradient(135deg, #fd7e14, #e8590c); color: white; }
+.theme-dark { background: linear-gradient(135deg, #343a40, #212529); color: white; }
+
+/* Modal Themes */
+.modal-theme-purple .admin-modal-content { 
+    background: linear-gradient(135deg, #667eea, #764ba2) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.modal-theme-blue .admin-modal-content { 
+    background: linear-gradient(135deg, #4A90E2, #357ABD) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.modal-theme-green .admin-modal-content { 
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.modal-theme-orange .admin-modal-content { 
+    background: linear-gradient(135deg, #fd7e14, #e8590c) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.modal-theme-dark .admin-modal-content { 
+    background: linear-gradient(135deg, #343a40, #212529) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Responsive Theme Settings */
+@media (max-width: 768px) {
+    .theme-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .theme-option {
+        padding: 15px;
+    }
 }
