@@ -1,3 +1,5 @@
+//main.js Ver.1.0.1 
+//- working change password
 // js/main.js - FIXED VERSION (With Working Change Password)
 import { initializeAuth } from './auth.js';
 import { showLoader, showMessage } from './utils.js';
@@ -251,16 +253,6 @@ function showAllBookingsLoadingModal() {
 		if (form) form.style.display = 'none';
 	};
 	
-	// Setup Add User Form
-	function setupAddUserForm() {
-		const form = document.getElementById('addUserForm');
-		if (form) {
-			form.addEventListener('submit', async function(e) {
-				e.preventDefault();
-				await handleAddUser();
-			});
-		}
-	}
 	
 	async function handleAddUser() {
 		try {
@@ -300,20 +292,6 @@ function showAllBookingsLoadingModal() {
 		}
 	}
 	
-	function showAddUserMessage(text, type) {
-		const messageEl = document.getElementById('addUserMessage');
-		if (messageEl) {
-			messageEl.textContent = text;
-			messageEl.style.color = type === 'error' ? '#ff5555' : 
-								type === 'success' ? '#00ff80' : '#ffd700';
-			messageEl.style.padding = '10px';
-			messageEl.style.borderRadius = '8px';
-			messageEl.style.background = type === 'error' ? 'rgba(255,85,85,0.1)' : 
-									type === 'success' ? 'rgba(0,255,128,0.1)' : 'rgba(255,215,0,0.1)';
-			messageEl.style.border = type === 'error' ? '1px solid rgba(255,85,85,0.3)' : 
-								type === 'success' ? '1px solid rgba(0,255,128,0.3)' : '1px solid rgba(255,215,0,0.3)';
-		}
-	}
 	
 	// Modal untuk User Management
 	window.showUserManagementModal = function(users) {
@@ -363,8 +341,9 @@ function showAllBookingsLoadingModal() {
 		
 		document.body.appendChild(modal);
 	};
-	// Modal untuk All Bookings
-	window.showAllBookingsModal = function(bookings) {
+	
+// ✅ FIX: showAllBookingsModal - PAKAI bookingDate BUKAN day
+window.showAllBookingsModal = function(bookings) {
     document.querySelectorAll('.modal-overlay').forEach(modal => modal.remove());
     
     const modal = document.createElement('div');
@@ -385,10 +364,10 @@ function showAllBookingsLoadingModal() {
                 </div>
                 ${bookings.map(booking => `
                     <div class="booking-row">
-                        <div>${booking.day}</div>
+                        <div>${booking.bookingDate || booking.day}</div> <!-- ✅ bookingDate -->
                         <div><strong>${booking.seat}</strong></div>
                         <div>${booking.userName}</div>
-                        <div><small>${booking.timestamp ? new Date(booking.timestamp).toLocaleString('en-US') : 'N/A'}</small></div>
+                        <div><small>${booking.bookingTime ? new Date(booking.bookingTime).toLocaleString('en-US') : 'N/A'}</small></div> <!-- ✅ bookingTime -->
                     </div>
                 `).join('')}
             </div>
@@ -401,13 +380,13 @@ function showAllBookingsLoadingModal() {
     `;
     
     document.body.appendChild(modal);
+};
+    
+    document.body.appendChild(modal);
     console.log('✅ All bookings modal created with CSS classes');
 };
 	
-	// Initialize admin forms
-	setTimeout(setupAddUserForm, 1000);
-	
-    
+  
     // ==================== PASSWORD CHANGE ====================
 	window.showChangePasswordModal = async function() {
 		console.log('🎯 showChangePasswordModal CALLED!');
@@ -583,8 +562,6 @@ function showAllBookingsLoadingModal() {
         }
     }
 
-    // Initialize change password form after a short delay
-    setTimeout(setupChangePasswordForm, 1000);
     
 // ==================== EXPORT FUNCTIONS ====================
 
@@ -846,6 +823,202 @@ function getRangeDisplayName(range, startDate, endDate) {
     window.getRangeDisplayName = getRangeDisplayName;
 	console.log('🔥 ALL FUNCTIONS FORCED TO WINDOW!');
 }
+// ==================== ROBUST FORM INITIALIZATION ====================
+function initializeAllForms() {
+    console.log('🔄 Initializing all forms...');
+    
+    // Initialize Change Password Form
+    let cpAttempts = 0;
+    const initChangePasswordForm = () => {
+        cpAttempts++;
+        const form = document.getElementById('changePasswordForm');
+        if (form) {
+            console.log('✅ Change password form found, setting up listener...');
+            
+            // Clone untuk avoid duplicate listeners
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+            
+            // Add event listener ke form baru
+            document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('🔐 Change password form submitted');
+                await handleChangePassword();
+            });
+            
+            console.log('✅ Change password form initialized successfully');
+        } else if (cpAttempts < 5) {
+            console.log('⏳ Change password form not found, retrying...');
+            setTimeout(initChangePasswordForm, 500);
+        } else {
+            console.error('❌ Change password form failed to initialize after 5 attempts');
+        }
+    };
+    
+    // Initialize Add User Form  
+    let auAttempts = 0;
+    const initAddUserForm = () => {
+        auAttempts++;
+        const form = document.getElementById('addUserForm');
+        if (form) {
+            console.log('✅ Add user form found, setting up listener...');
+            
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+            
+            document.getElementById('addUserForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                console.log('👤 Add user form submitted');
+                await handleAddUser();
+            });
+            
+            console.log('✅ Add user form initialized successfully');
+        } else if (auAttempts < 5) {
+            console.log('⏳ Add user form not found, retrying...');
+            setTimeout(initAddUserForm, 500);
+        } else {
+            console.error('❌ Add user form failed to initialize after 5 attempts');
+        }
+    };
+    
+    // Start initialization
+    initChangePasswordForm();
+    initAddUserForm();
+}
 
+// ==================== HEALTH CHECK ====================
+function healthCheck() {
+    console.log('🩺 Running health check...');
+    
+    const criticalElements = [
+        'changePasswordForm',
+        'changePasswordModal', 
+        'addUserForm',
+        'loginForm'
+    ];
+    
+    criticalElements.forEach(id => {
+        const element = document.getElementById(id);
+        console.log(`${element ? '✅' : '❌'} ${id}: ${element ? 'FOUND' : 'MISSING'}`);
+    });
+    
+    // Test critical functions
+    const criticalFunctions = ['showChangePasswordModal', 'logout', 'refreshBookings'];
+    criticalFunctions.forEach(funcName => {
+        console.log(`${typeof window[funcName] === 'function' ? '✅' : '❌'} ${funcName}: ${typeof window[funcName]}`);
+    });
+}
+
+// ==================== SAFE MODAL FUNCTION ====================
+function safeShowModal(modalId, showFunction) {
+    try {
+        const modal = document.getElementById(modalId);
+        if (!modal) {
+            console.error(`❌ Modal ${modalId} not found`);
+            return false;
+        }
+        
+        showFunction();
+        console.log(`✅ Modal ${modalId} shown safely`);
+        return true;
+    } catch (error) {
+        console.error(`❌ Error showing modal ${modalId}:`, error);
+        return false;
+    }
+}
+
+// ==================== UPDATE showChangePasswordModal ====================
+window.showChangePasswordModal = async function() {
+    console.log('🎯 showChangePasswordModal CALLED (Safe Version)');
+    
+    const success = safeShowModal('changePasswordModal', () => {
+        const modal = document.getElementById('changePasswordModal');
+        const usernameField = document.getElementById('changePasswordUsername');
+        
+        // Import state untuk dapetin current user
+        import('./constants.js').then(({ state }) => {
+            if (usernameField && state.currentUser) {
+                usernameField.value = state.currentUser.username;
+            }
+        });
+        
+        modal.style.display = 'block';
+        
+        // Reset form
+        const form = document.getElementById('changePasswordForm');
+        if (form) form.reset();
+        
+        const messageEl = document.getElementById('changePasswordMessage');
+        if (messageEl) messageEl.innerHTML = '';
+    });
+    
+    if (!success) {
+        showMessage('❌ Cannot open change password form', 'error');
+    }
+};
+
+// ==================== INITIALIZE SETELAH APP READY ====================
+// GANTI bagian setTimeout yang lama dengan ini:
+setTimeout(() => {
+    console.log('🔧 Starting robust form initialization...');
+    initializeAllForms();
+    
+    // Run health check setelah 3 detik
+    setTimeout(healthCheck, 3000);
+}, 1500);
+
+	function showAddUserMessage(text, type) {
+		const messageEl = document.getElementById('addUserMessage');
+		if (messageEl) {
+			messageEl.textContent = text;
+			messageEl.style.color = type === 'error' ? '#ff5555' : 
+								type === 'success' ? '#00ff80' : '#ffd700';
+			messageEl.style.padding = '10px';
+			messageEl.style.borderRadius = '8px';
+			messageEl.style.background = type === 'error' ? 'rgba(255,85,85,0.1)' : 
+									type === 'success' ? 'rgba(0,255,128,0.1)' : 'rgba(255,215,0,0.1)';
+			messageEl.style.border = type === 'error' ? '1px solid rgba(255,85,85,0.3)' : 
+								type === 'success' ? '1px solid rgba(0,255,128,0.3)' : '1px solid rgba(255,215,0,0.3)';
+		}
+	}
+	
+// ✅ TARUH DI SINI - DI AKHIR FILE, DI LUAR FUNCTION APAPUN
+window.handleAddUser = async function() {
+    try {
+        const username = document.getElementById('newUserUsername').value;
+        const password = document.getElementById('newUserPassword').value;
+        const name = document.getElementById('newUserName').value;
+        const role = document.getElementById('newUserRole').value;
+
+        if (!username || !password || !name) {
+            showAddUserMessage('❌ Please fill all fields', 'error');
+            return;
+        }
+
+        if (password.length < 6) {
+            showAddUserMessage('❌ Password must be at least 6 characters', 'error');
+            return;
+        }
+
+        showAddUserMessage('⏳ Adding user...', 'info');
+
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.addUser(username, password, name, role);
+
+        if (result.success) {
+            showAddUserMessage('✅ User added successfully!', 'success');
+            setTimeout(() => {
+                hideAddUserForm();
+                showMessage('✅ User added successfully', 'success');
+            }, 1500);
+        } else {
+            showAddUserMessage(`❌ ${result.message}`, 'error');
+        }
+
+    } catch (error) {
+        console.error('Add User Error:', error);
+        showAddUserMessage('❌ Error adding user', 'error');
+    }
+};
 
 

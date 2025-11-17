@@ -1,4 +1,4 @@
-// js/auth.js - FIXED VERSION (User ID Issue Fixed)
+// auth.js - COMPLETE FIXED VERSION
 import { auth, db } from './firebase-config.js';
 import { showLoader, showMessage } from './utils.js';
 import { state } from './constants.js';
@@ -7,121 +7,53 @@ export function initializeAuth() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
-        console.log('✅ Auth system ready - User ID login');
+        console.log('✅ Auth system ready - Firestore login');
     }
-    
-    // Check if user already logged in
-    auth.onAuthStateChanged(async (firebaseUser) => {
-        if (firebaseUser) {
-            console.log('✅ Auto-login detected:', firebaseUser.email);
-            await loadUserData(firebaseUser.email);
-        }
-    });
 }
 
 async function handleLogin(e) {
     e.preventDefault();
-    const userId = document.getElementById('username').value.trim();
+    const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
     
-    if (!userId || !password) {
+    if (!username || !password) {
         showMessage('⚠️ User ID dan password harus diisi', 'error');
         return;
     }
 
     showLoader(true);
     try {
-        // ✅ AUTO-CONVERT: "dendy" → "dendy@bangkukosong.internal"
-        const email = `${userId}@bangkukosong.internal`;
-        console.log('🔄 Converting User ID to email:', email);
+        // ✅ FIX: PAKAI FIRESTORE LOGIN (bukan Firebase Auth)
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.login(username, password);
         
-        // ✅ Firebase Authentication
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        console.log('✅ Login successful for:', userId);
-        
-        // ✅ Load user profile data
-        await loadUserData(email);
+        if (result.success) {
+            console.log('✅ Login successful for:', username);
+            state.currentUser = result.user;
+            showMainApp();
+            showMessage('✅ Login successful!', 'success');
+        } else {
+            showMessage(`❌ ${result.message}`, 'error');
+        }
         
     } catch (error) {
         console.error('❌ Login error:', error);
-        
-        // ✅ User-friendly error messages in Bahasa
-        if (error.code === 'auth/user-not-found') {
-            showMessage('❌ User ID tidak ditemukan', 'error');
-        } else if (error.code === 'auth/wrong-password') {
-            showMessage('❌ Password salah', 'error');
-        } else if (error.code === 'auth/too-many-requests') {
-            showMessage('❌ Terlalu banyak percobaan gagal. Coba lagi nanti.', 'error');
-        } else if (error.code === 'auth/network-request-failed') {
-            showMessage('❌ Gagal terhubung ke server. Cek koneksi internet.', 'error');
-        } else {
-            showMessage('❌ Login gagal: ' + error.message, 'error');
-        }
+        showMessage('❌ Login gagal: ' + error.message, 'error');
     } finally {
         showLoader(false);
     }
 }
 
-async function loadUserData(email) {
-    try {
-        // ✅ Load additional user data dari Firestore
-        const userDoc = await db.collection('users').doc(email).get();
-        const userId = email.split('@')[0]; // "dendy"
-        
-        if (userDoc.exists) {
-            const userData = userDoc.data();
-            state.currentUser = {
-                userId: userId, // "dendy"
-                username: userId, // ✅ FIX: Tambah username untuk compatibility
-                email: email,  
-                name: userData.name || userId,
-                role: userData.role || 'user',
-                firebaseUID: auth.currentUser.uid
-            };
-        } else {
-            // ✅ Create default user profile jika belum ada
-            state.currentUser = {
-                userId: userId,
-                username: userId, // ✅ FIX: Tambah username untuk compatibility
-                email: email,
-                name: userId, // Default name sama dengan User ID
-                role: 'user',
-                firebaseUID: auth.currentUser.uid
-            };
-            
-            // Save ke Firestore untuk pertama kali
-            await db.collection('users').doc(email).set({
-                username: userId, // ✅ FIX: Tambah username
-                name: userId,
-                email: email,
-                role: 'user',
-                createdAt: new Date(),
-                firebaseUID: auth.currentUser.uid
-            });
-        }
-        
-        console.log('✅ User profile loaded:', state.currentUser);
-        showMainApp();
-        
-    } catch (error) {
-        console.error('❌ Error loading user profile:', error);
-        showMessage('❌ Error memuat profil user', 'error');
-    }
-}
-
 function showMainApp() {
-    // Hide login, show main app
     document.getElementById('loginFormContainer').style.display = 'none';
     document.getElementById('mainApp').style.display = 'block';
     
-    // Update user info display
     const userInfo = document.getElementById('userInfo');
     if (userInfo && state.currentUser) {
         userInfo.innerHTML = `🧑‍💻 <strong>${state.currentUser.name}</strong>`;
     }
     
-    // Show admin features jika admin
-    if (state.currentUser.role === 'admin') {
+    if (state.currentUser.role === 'admin' || state.currentUser.role === 'super_admin') {
         document.getElementById('adminPanel').style.display = 'block';
         document.querySelectorAll('.admin-only').forEach(el => {
             el.style.display = 'block';
@@ -129,7 +61,6 @@ function showMainApp() {
         console.log('✅ Admin features enabled');
     }
     
-    // Initialize bookings system
     initializeBookingsSystem();
 }
 
@@ -145,10 +76,13 @@ function initializeBookingsSystem() {
 // Global logout function
 window.logout = async function() {
     try {
-        await auth.signOut();
+        // Sign out dari Firebase Auth (jika ada)
+        if (auth.currentUser) {
+            await auth.signOut();
+        }
+        
         state.currentUser = null;
         
-        // Reset UI
         document.getElementById('loginFormContainer').style.display = 'flex';
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('username').value = '';
