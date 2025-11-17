@@ -6,15 +6,16 @@ export class FirestoreAPI {
     // ==================== AUTHENTICATION ====================
     static async login(username, password) {
         try {
-            // ✅ FIX: QUERY YANG BENAR - CARI BY USERNAME
             const snapshot = await db.collection('users')
                 .where('username', '==', username)
-                .where('password', '==', password) // Note: Password masih plain text di Firestore
+                .where('password', '==', password)
                 .get();
             
             if (!snapshot.empty) {
                 const userDoc = snapshot.docs[0];
                 const userData = userDoc.data();
+                
+                // ✅ FIXED: RETURN NEW STRUCTURE
                 return { 
                     success: true, 
                     user: { 
@@ -23,7 +24,11 @@ export class FirestoreAPI {
                         name: userData.name,
                         role: userData.role || 'user',
                         email: userData.email,
-                        team: userData.teamId
+                        team: userData.teamId, // ✅ teamId dari structure baru
+                        teamName: userData.teamName,
+                        permissions: userData.permissions || ["read", "write"],
+                        profile: userData.profile || { displayName: userData.name },
+                        preferences: userData.preferences || {}
                     } 
                 };
             }
@@ -37,18 +42,23 @@ export class FirestoreAPI {
     // ==================== BOOKINGS MANAGEMENT ====================
     static async getBookings(day) {
         try {
-            // ✅ FIX: PAKAI bookingDate TAPI SUPPORT PARAMETER 'day'
+            // ✅ SIMPLIFIED - tanpa index dulu
             const snapshot = await db.collection('bookings')
-                .where('bookingDate', '==', day)  // ✅ bookingDate
-                .where('status', '==', 'active')  // ✅ Only active bookings
-                .orderBy('bookingTime', 'asc')
+                .where('bookingDate', '==', day)
+                .where('status', '==', 'active')
                 .get();
                 
             const bookings = snapshot.docs.map(doc => ({
                 id: doc.id,
-                ...doc.data(),
-                timestamp: doc.data().bookingTime?.toDate?.() || new Date() // ✅ bookingTime
+                ...doc.data()
             }));
+            
+            // Sort manually di client
+            bookings.sort((a, b) => {
+                const timeA = a.bookingTime?.toDate?.() || new Date(0);
+                const timeB = b.bookingTime?.toDate?.() || new Date(0);
+                return timeA - timeB;
+            });
             
             return { success: true, bookings };
         } catch (error) {
@@ -59,19 +69,26 @@ export class FirestoreAPI {
 
     static async getAllBookings(userName) {
         try {
-            // ✅ FIX: PAKAI bookingDate BUKAN day
+            // ✅ SIMPLIFIED - tanpa index dulu
             const snapshot = await db.collection('bookings')
                 .where('userName', '==', userName)
-                .orderBy('bookingDate', 'desc')      // ✅ bookingDate
-                .orderBy('bookingTime', 'desc')      // ✅ bookingTime
                 .get();
                 
             const bookings = snapshot.docs.map(doc => ({
                 id: doc.id,
-                ...doc.data(),
-                timestamp: doc.data().bookingTime?.toDate?.() || new Date(),
-                day: doc.data().bookingDate // ✅ BACKWARD COMPATIBILITY: tambah field 'day'
+                ...doc.data()
             }));
+            
+            // Sort manually di client
+            bookings.sort((a, b) => {
+                const dateA = new Date(a.bookingDate || 0);
+                const dateB = new Date(b.bookingDate || 0);
+                if (dateB - dateA !== 0) return dateB - dateA;
+                
+                const timeA = a.bookingTime?.toDate?.() || new Date(0);
+                const timeB = b.bookingTime?.toDate?.() || new Date(0);
+                return timeB - timeA;
+            });
             
             return { success: true, bookings };
         } catch (error) {
@@ -84,7 +101,7 @@ export class FirestoreAPI {
         try {
             console.log('🔍 Checking for duplicate bookings...', { seat, userName, day });
             
-            // ✅ FIX: PAKAI bookingDate
+            // Check seat availability
             const seatSnapshot = await db.collection('bookings')
                 .where('bookingDate', '==', day)
                 .where('seat', '==', seat)
@@ -99,6 +116,7 @@ export class FirestoreAPI {
                 };
             }
 
+            // Check user existing booking
             const userSnapshot = await db.collection('bookings')
                 .where('bookingDate', '==', day)
                 .where('userName', '==', userName)
@@ -113,15 +131,15 @@ export class FirestoreAPI {
                 };
             }
 
-            // ✅ DAPATKAN USER TEAM
+            // ✅ DAPATKAN USER TEAM DARI STRUCTURE BARU
             const userTeam = await this.getUserTeam(userName);
 
-            // ✅ CREATE WITH NEW STRUCTURE
+            // Create booking
             await db.collection('bookings').add({
                 seat: seat,
                 userName: userName,
                 userTeam: userTeam,
-                bookingDate: day,         // ✅ bookingDate (dari parameter day)
+                bookingDate: day,
                 bookingTime: firebase.firestore.FieldValue.serverTimestamp(),
                 status: "active",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -138,7 +156,6 @@ export class FirestoreAPI {
 
     static async cancelBooking(seat, userName, day) {
         try {
-            // ✅ FIX: PAKAI bookingDate
             const snapshot = await db.collection('bookings')
                 .where('bookingDate', '==', day)
                 .where('seat', '==', seat)
@@ -150,7 +167,6 @@ export class FirestoreAPI {
                 return { success: false, message: 'Booking not found' };
             }
 
-            // ✅ UPDATE STATUS JADI CANCELLED (soft delete)
             const bookingDoc = snapshot.docs[0];
             await db.collection('bookings').doc(bookingDoc.id).update({
                 status: "cancelled",
@@ -168,7 +184,6 @@ export class FirestoreAPI {
     // ==================== USER MANAGEMENT ====================
     static async addUser(username, password, name, role = 'user') {
         try {
-            // Check if username already exists
             const existingSnapshot = await db.collection('users')
                 .where('username', '==', username)
                 .get();
@@ -177,15 +192,30 @@ export class FirestoreAPI {
                 return { success: false, message: 'Username already exists' };
             }
 
-            // Note: Ini cuma bikin Firestore doc, gak bikin Firebase Auth user
-            // Untuk Firebase Auth, perlu pake auth.createUserWithEmailAndPassword()
             await db.collection('users').add({
                 username: username,
-                password: password, // 🔐 Masih plain text - harus fix nanti
+                password: password,
                 name: name,
                 role: role,
                 teamId: 'UNASSIGNED',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                teamName: 'Unassigned Team',
+                permissions: role === 'admin' ? ["read", "write", "delete", "user_management"] : ["read", "write"],
+                loginMethod: "username",
+                status: "active",
+                isActive: true,
+                profile: {
+                    displayName: name,
+                    department: "General",
+                    avatar: null
+                },
+                preferences: {
+                    notifications: true,
+                    emailUpdates: false,
+                    defaultView: "grid",
+                    theme: "default"
+                },
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             
             return { success: true, message: 'User created successfully' };
@@ -197,7 +227,6 @@ export class FirestoreAPI {
 
     static async changePassword(username, currentPassword, newPassword) {
         try {
-            // Find user and verify current password
             const snapshot = await db.collection('users')
                 .where('username', '==', username)
                 .where('password', '==', currentPassword)
@@ -207,7 +236,6 @@ export class FirestoreAPI {
                 return { success: false, message: 'Current password is incorrect' };
             }
 
-            // Update password di Firestore
             const userDoc = snapshot.docs[0];
             await db.collection('users').doc(userDoc.id).update({
                 password: newPassword,
@@ -244,15 +272,14 @@ export class FirestoreAPI {
     static async getAllBookingsAdmin() {
         try {
             const snapshot = await db.collection('bookings')
-                .orderBy('bookingDate', 'desc')      // ✅ bookingDate
-                .orderBy('bookingTime', 'desc')      // ✅ bookingTime
+                .orderBy('bookingDate', 'desc')
+                .orderBy('bookingTime', 'desc')
                 .get();
                 
             const bookings = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
-                timestamp: doc.data().bookingTime?.toDate?.() || new Date(),
-                day: doc.data().bookingDate // ✅ BACKWARD COMPATIBILITY
+                timestamp: doc.data().bookingTime?.toDate?.() || new Date()
             }));
             
             return { success: true, bookings };
@@ -271,7 +298,8 @@ export class FirestoreAPI {
                 .get();
                 
             if (!userSnapshot.empty) {
-                return userSnapshot.docs[0].data().teamId || 'UNASSIGNED';
+                const userData = userSnapshot.docs[0].data();
+                return userData.teamId || 'UNASSIGNED';
             }
             return 'UNASSIGNED';
         } catch (error) {

@@ -1,4 +1,4 @@
-// auth.js - COMPLETE FIXED VERSION
+// auth.js - FIXED VERSION
 import { auth, db } from './firebase-config.js';
 import { showLoader, showMessage } from './utils.js';
 import { state } from './constants.js';
@@ -23,7 +23,6 @@ async function handleLogin(e) {
 
     showLoader(true);
     try {
-        // ✅ FIX: PAKAI FIRESTORE LOGIN (bukan Firebase Auth)
         const { FirestoreAPI } = await import('./firestore-api.js');
         const result = await FirestoreAPI.login(username, password);
         
@@ -50,7 +49,7 @@ function showMainApp() {
     
     const userInfo = document.getElementById('userInfo');
     if (userInfo && state.currentUser) {
-        userInfo.innerHTML = `🧑‍💻 <strong>${state.currentUser.name}</strong>`;
+        userInfo.innerHTML = `🧑‍💻 <strong>${state.currentUser.name}</strong> | ${state.currentUser.teamName || state.currentUser.team}`;
     }
     
     if (state.currentUser.role === 'admin' || state.currentUser.role === 'super_admin') {
@@ -76,7 +75,6 @@ function initializeBookingsSystem() {
 // Global logout function
 window.logout = async function() {
     try {
-        // Sign out dari Firebase Auth (jika ada)
         if (auth.currentUser) {
             await auth.signOut();
         }

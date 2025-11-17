@@ -1,4 +1,4 @@
-// constants.js - COMPLETE FIXED VERSION
+// constants.js - FIXED VERSION
 export const TEAMS_CONFIG = [
     { id: "ITPM", name: "ITPM", displayName: "IT Project Management", totalSeats: 4, color: "#00ff80" },
     { id: "CM", name: "CM", displayName: "Change Management", totalSeats: 4, color: "#ff6b6b" },
