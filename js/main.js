@@ -448,99 +448,7 @@ function showAllBookingsLoadingModal() {
         }
     }
 
-    // Handle change password
-		async function handleChangePassword() {
-		try {
-        // Import state
-        const { state } = await import('./constants.js');
-        
-        if (!state.currentUser) {
-            showChangePasswordMessage('❌ Please login first', 'error');
-            return;
-        }
-
-        const currentPassword = document.getElementById('currentPassword')?.value;
-        const newPassword = document.getElementById('newPassword')?.value;
-        const confirmPassword = document.getElementById('confirmPassword')?.value;
-        
-        // Validation
-        if (!currentPassword || !newPassword || !confirmPassword) {
-            showChangePasswordMessage('❌ Please fill all fields', 'error');
-            return;
-        }
-        
-        if (newPassword !== confirmPassword) {
-            showChangePasswordMessage('❌ New password and confirm password do not match', 'error');
-            return;
-        }
-        
-        if (newPassword.length < 6) {
-            showChangePasswordMessage('❌ New password must be at least 6 characters', 'error');
-            return;
-        }
-        
-        try {
-            showChangePasswordMessage('⏳ Updating password...', 'info');
-            
-            // Temporarily disable button
-            const submitBtn = document.querySelector('#changePasswordForm button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Updating...';
-            }
-            
-            // Import FirestoreAPI for changePassword function
-            const { FirestoreAPI } = await import('./firestore-api.js');
-            const result = await FirestoreAPI.changePassword(
-                state.currentUser.username,
-                currentPassword,
-                newPassword
-            );
-            
-            console.log('Change Password API Response:', result);
-            
-            if (result.success) {
-                showChangePasswordMessage('✅ Password successfully updated!', 'success');
-                setTimeout(() => {
-                    hideChangePasswordModal();
-                    showMessage('✅ Password successfully changed', 'success');
-                    const form = document.getElementById('changePasswordForm');
-                    if (form) form.reset();
-                }, 1500);
-            } else {
-                showChangePasswordMessage(`❌ ${result.message}`, 'error');
-                // Re-enable button on error
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Update Password';
-                }
-            }
-            
-        } catch (error) {
-            console.error('Change Password Error:', error);
-            
-            if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-                // REAL NETWORK ERROR - no internet connection
-                showChangePasswordMessage('❌ Network error: Please check your internet connection and try again.', 'error');
-            } else {
-                // OTHER ERRORS
-                showChangePasswordMessage(`❌ Error: ${error.message}`, 'error');
-            }
-            
-            // Re-enable button on error
-            const submitBtn = document.querySelector('#changePasswordForm button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Update Password';
-            }
-        }
-     } catch (error) {
-        // Error di outer try (import state)
-        console.error('Error in handleChangePassword:', error);
-        showChangePasswordMessage('❌ Error processing request', 'error');
-    }
-}
-
+   
     function showChangePasswordMessage(text, type) {
         const messageEl = document.getElementById('changePasswordMessage');
         if (messageEl) {
@@ -555,7 +463,8 @@ function showAllBookingsLoadingModal() {
                                   type === 'success' ? '1px solid rgba(0,255,128,0.3)' : '1px solid rgba(255,215,0,0.3)';
         }
     }
-
+// Initialize
+setTimeout(setupChangePasswordForm, 1000);
     
 // ==================== EXPORT FUNCTIONS ====================
 
@@ -1014,5 +923,99 @@ window.handleAddUser = async function() {
         showAddUserMessage('❌ Error adding user', 'error');
     }
 };
+
+  // Handle change password
+		window.handleChangePassword = async function() {
+		try {
+        // Import state
+        const { state } = await import('./constants.js');
+        
+        if (!state.currentUser) {
+            showChangePasswordMessage('❌ Please login first', 'error');
+            return;
+        }
+
+        const currentPassword = document.getElementById('currentPassword')?.value;
+        const newPassword = document.getElementById('newPassword')?.value;
+        const confirmPassword = document.getElementById('confirmPassword')?.value;
+        
+        // Validation
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            showChangePasswordMessage('❌ Please fill all fields', 'error');
+            return;
+        }
+        
+        if (newPassword !== confirmPassword) {
+            showChangePasswordMessage('❌ New password and confirm password do not match', 'error');
+            return;
+        }
+        
+        if (newPassword.length < 6) {
+            showChangePasswordMessage('❌ New password must be at least 6 characters', 'error');
+            return;
+        }
+        
+        try {
+            showChangePasswordMessage('⏳ Updating password...', 'info');
+            
+            // Temporarily disable button
+            const submitBtn = document.querySelector('#changePasswordForm button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Updating...';
+            }
+            
+            // Import FirestoreAPI for changePassword function
+            const { FirestoreAPI } = await import('./firestore-api.js');
+            const result = await FirestoreAPI.changePassword(
+                state.currentUser.username,
+                currentPassword,
+                newPassword
+            );
+            
+            console.log('Change Password API Response:', result);
+            
+            if (result.success) {
+                showChangePasswordMessage('✅ Password successfully updated!', 'success');
+                setTimeout(() => {
+                    hideChangePasswordModal();
+                    showMessage('✅ Password successfully changed', 'success');
+                    const form = document.getElementById('changePasswordForm');
+                    if (form) form.reset();
+                }, 1500);
+            } else {
+                showChangePasswordMessage(`❌ ${result.message}`, 'error');
+                // Re-enable button on error
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Update Password';
+                }
+            }
+            
+        } catch (error) {
+            console.error('Change Password Error:', error);
+            
+            if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                // REAL NETWORK ERROR - no internet connection
+                showChangePasswordMessage('❌ Network error: Please check your internet connection and try again.', 'error');
+            } else {
+                // OTHER ERRORS
+                showChangePasswordMessage(`❌ Error: ${error.message}`, 'error');
+            }
+            
+            // Re-enable button on error
+            const submitBtn = document.querySelector('#changePasswordForm button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Update Password';
+            }
+        }
+     } catch (error) {
+        // Error di outer try (import state)
+        console.error('Error in handleChangePassword:', error);
+        showChangePasswordMessage('❌ Error processing request', 'error');
+    }
+}
+
 
 
