@@ -1,5 +1,5 @@
 /* css/styles.css - Professional Compact Admin Modal Styles */
-/* ver 1.0.5 - COMPACT VERSION */  
+/* ver 1.0.6 - COMPACT VERSION */  
 
   :root {
       --primary-green: #00ff80;
@@ -46,7 +46,7 @@
       max-width: 500px; 
       margin: 20px auto; 
       padding: 20px; 
-      background: rgba(255,255,255,0.12); 
+      background: rgba(255,255,255,0.20); 
       backdrop-filter: blur(12px);
       border-radius: 20px; 
       color: #fff;
@@ -56,7 +56,7 @@
     .office-layout-container {
       max-width: 765px;
       margin: 20px auto;
-      background: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.2);
       backdrop-filter: blur(12px);
       border-radius: 20px;
       padding: 20px;
@@ -813,11 +813,38 @@
       font-size: 0.9rem;
     }
 
-    .view-btn.active {
-      background: var(--primary-blue);
-      border-color: var(--primary-blue);
-    }
-
+	/* ==================== FIX MOBILE BUTTON ACTIVE STATES ==================== */
+	
+	/* Desktop - button active state (biru) */
+	.view-btn.active {
+		background: var(--primary-blue) !important;
+		border-color: var(--primary-blue) !important;
+		color: white !important;
+	}
+	
+	/* Mobile override - biar cuma border yang berubah */
+	@media (max-width: 768px) {
+		.view-btn.active {
+			background: rgba(255, 255, 255, 0.1) !important; /* ← tetep gelap */
+			border-color: var(--primary-blue) !important;    /* ← border biru */
+			color: var(--primary-blue) !important;           /* ← text biru */
+			box-shadow: 0 0 0 1px var(--primary-blue) !important; /* ← glow effect */
+		}
+		
+		/* Control buttons di mobile juga */
+		.control-btn:active,
+		.control-btn.active {
+			background: rgba(255, 255, 255, 0.1) !important;
+			border-color: var(--primary-blue) !important;
+			color: var(--primary-blue) !important;
+		}
+	}
+	
+	/* Optional: Tambah transition biar smooth */
+	.view-btn, .control-btn {
+		transition: all 0.3s ease !important;
+	}
+	
     .view-btn:hover {
       background: rgba(255,255,255,0.2);
     }

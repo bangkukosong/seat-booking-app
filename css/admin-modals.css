@@ -1,5 +1,5 @@
 /* css/admin-modals.css - Professional Compact Admin Modal Styles */
-/* ver 1.0.8 - COMPACT VERSION */
+/* ver 1.0.9 - COMPACT VERSION */
 
 /* ==================== ADMIN MODAL OVERLAY ==================== */
 .modal-overlay.admin-modal {
@@ -70,7 +70,7 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 700;
     font-size: 1.2rem !important;
-    color: var(--primary-blue);
+    color: var(--gold);
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     margin: 0;
 }
@@ -429,4 +429,35 @@
 
 .view-bookings-modal .admin-modal-content {
     background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+}
+/* ==================== BOOKINGS TABLE COMPACT STYLES ==================== */
+.booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 10px 0;
+    font-size: 0.85rem;
+}
+
+.booking-table th {
+    background: rgba(255,215,0,0.2);
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.booking-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.9);
+    font-size: 0.85rem;
+}
+
+.booking-table tr:hover {
+    background: rgba(255,255,255,0.03);
 }
