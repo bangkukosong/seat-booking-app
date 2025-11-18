@@ -127,8 +127,7 @@ export function renderSeatGrid() {
                         const bookingDate = booking.bookingTime?.toDate?.() || new Date(booking.bookingTime);
                         if (!isNaN(bookingDate.getTime())) {
                             bookingTimeDisplay = bookingDate.toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit'
+                                'Today'
                             });
                         }
                     } catch (error) {
