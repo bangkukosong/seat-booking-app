@@ -120,25 +120,18 @@ export function renderSeatGrid() {
                 const isMyBooking = booking.userName === state.currentUser.username;
                 seat.className = isMyBooking ? 'seat my-booking' : 'seat booked';
                 
-                // ✅ FIXED: Tampilkan tanggal & jam seperti versi monolith
+                // ✅ FIXED: Tampilkan tanggal & jam
                 let timeDisplay = 'Today';
-                
-                // Coba berbagai field timestamp yang mungkin
                 const timestamp = booking.timestamp || booking.bookingTime || booking.createdAt;
                 
                 if (timestamp) {
                     try {
                         let date;
-                        
-                        // Handle Firebase timestamp format
                         if (timestamp.seconds) {
                             date = new Date(timestamp.seconds * 1000);
-                        } 
-                        // Handle regular date
-                        else {
+                        } else {
                             date = new Date(timestamp);
                         }
-                        
                         if (!isNaN(date.getTime())) {
                             timeDisplay = date.toLocaleString('en-US', {
                                 year: 'numeric',
@@ -153,15 +146,16 @@ export function renderSeatGrid() {
                     }
                 }
                 
-                // ✅ FIXED: Extract department dari format "Deny|ITPM"
+                // ✅ FIXED: Extract department - SIMPLE VERSION
                 let displayName = booking.userName || 'Unknown';
                 let department = '';
                 
-                if (displayName.includes('|')) {
+                // Cek apakah ada pipe character '|'
+                if (displayName && displayName.includes('|')) {
                     const parts = displayName.split('|');
-                    if (parts.length === 2) {
-                        displayName = parts[0].trim(); // "Deny"
-                        department = parts[1].trim();  // "ITPM"
+                    if (parts.length >= 2) {
+                        displayName = parts[0].trim();
+                        department = parts[1].trim();
                     }
                 }
                 
