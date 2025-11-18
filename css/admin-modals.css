@@ -1,5 +1,5 @@
-/* css/admin-modals.css - Professional Admin Modal Styles with Color Themes */
-//ver 1.0.3
+/* css/admin-modals.css - Professional Compact Admin Modal Styles */
+/* ver 1.0.4 - COMPACT VERSION */
 
 /* ==================== ADMIN MODAL OVERLAY ==================== */
 .modal-overlay.admin-modal {
@@ -8,8 +8,8 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
     z-index: 10000;
     display: flex;
     justify-content: center;
@@ -24,26 +24,32 @@
     }
     to {
         opacity: 1;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(10px);
     }
 }
 
-/* ==================== ADMIN MODAL CONTENT ==================== */
-.admin-modal-content {
-    border-radius: 16px;
-    max-width: 900px;
-    max-height: 85vh;
-    width: 95%;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+/* ==================== COMPACT MODAL CONTAINER ==================== */
+.admin-modal-container {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(25px);
+    padding: 20px !important;
+    border-radius: 16px !important;
+    width: 92% !important;
+    max-width: 1100px !important;
+    max-height: 80vh !important;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
     animation: adminModalSlideIn 0.3s ease-out;
 }
 
 @keyframes adminModalSlideIn {
     from {
         opacity: 0;
-        transform: translateY(-30px) scale(0.95);
+        transform: translateY(-20px) scale(0.98);
     }
     to {
         opacity: 1;
@@ -51,31 +57,33 @@
     }
 }
 
-/* ==================== MODAL HEADER ==================== */
+/* ==================== COMPACT MODAL HEADER ==================== */
 .admin-modal-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 15px !important;
+    flex-shrink: 0;
 }
 
-.admin-modal-title {
+.admin-modal-header h2 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem !important;
+    color: var(--primary-blue);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     margin: 0;
-    color: white;
-    font-size: 1.4rem;
-    font-weight: 600;
 }
 
 .admin-close-btn {
     background: rgba(255, 68, 68, 0.2);
     color: #ff4444;
     border: 1px solid rgba(255, 68, 68, 0.3);
-    width: 32px;
-    height: 32px;
+    width: 28px !important;
+    height: 28px !important;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1.1rem !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -87,821 +95,53 @@
     transform: scale(1.1);
 }
 
-/* ==================== MODAL BODY ==================== */
-.admin-modal-body {
-    padding: 24px;
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-/* ==================== USERS GRID STYLES ==================== */
-.users-grid-header {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 16px;
-    padding: 16px;
-    border-radius: 12px;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.user-row {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 16px;
-    padding: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    align-items: center;
-    color: white;
-    transition: background 0.2s ease;
-}
-
-.user-row:hover {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-}
-
-.user-row:last-child {
-    border-bottom: none;
-}
-
-.user-info strong {
-    display: block;
-    font-size: 1.1rem;
-    margin-bottom: 4px;
-    color: #ffffff;
-}
-
-.user-info small {
-    opacity: 0.7;
-    color: #cccccc;
-    font-size: 0.85rem;
-}
-
-/* ==================== ROLE BADGES ==================== */
-.role-badge {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: capitalize;
-    border: 1px solid transparent;
-}
-
-.role-badge.super_admin {
-    background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
-    color: white;
-    border-color: rgba(255, 107, 107, 0.3);
-}
-
-.role-badge.admin {
-    background: linear-gradient(135deg, #4A90E2, #6BC5FF);
-    color: white;
-    border-color: rgba(74, 144, 226, 0.3);
-}
-
-.role-badge.dept_admin {
-    background: linear-gradient(135deg, #9B59B6, #BE90D4);
-    color: white;
-    border-color: rgba(155, 89, 182, 0.3);
-}
-
-.role-badge.user {
-    background: linear-gradient(135deg, #27AE60, #58D68D);
-    color: white;
-    border-color: rgba(39, 174, 96, 0.3);
-}
-
-/* ==================== ADMIN BUTTONS ==================== */
-.admin-btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.admin-btn-secondary {
-    background: rgba(108, 117, 125, 0.3);
-    color: white;
-    border: 1px solid rgba(108, 117, 125, 0.5);
-}
-
-.admin-btn-secondary:hover {
-    background: rgba(108, 117, 125, 0.5);
-    transform: translateY(-1px);
-}
-
-.admin-btn-primary {
-    background: linear-gradient(135deg, #28a745, #20c997);
-    color: white;
-    border: none;
-}
-
-.admin-btn-primary:hover {
-    background: linear-gradient(135deg, #218838, #1e9c7a);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-}
-
-.admin-btn-sm {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-}
-
-/* ==================== MODAL FOOTER ==================== */
-.admin-modal-footer {
-    padding: 20px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: center;
-    background: rgba(255, 255, 255, 0.02);
-}
-
-/* ==================== BOOKINGS GRID STYLES ==================== */
-.bookings-grid-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 16px;
-    padding: 16px;
-    border-radius: 12px;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.booking-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 16px;
-    padding: 12px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    align-items: center;
-    color: white;
-}
-
-.booking-row:hover {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-}
-
-/* ==================== ADMIN MODAL COLOR THEMES ==================== */
-
-/* PURPLE THEME - Manage Users */
-.manage-users-modal .admin-modal-content {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.manage-users-modal .admin-modal-header {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
-}
-
-.manage-users-modal .users-grid-header {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    color: white !important;
-}
-
-.manage-users-modal .user-row {
-    color: white !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.manage-users-modal .user-info strong {
-    color: white !important;
-}
-
-.manage-users-modal .user-info small {
-    color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/* BLUE THEME - View All Bookings */
-.view-bookings-modal .admin-modal-content {
-    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.view-bookings-modal .admin-modal-header {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
-}
-
-.view-bookings-modal .bookings-grid-header {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    color: white !important;
-}
-
-.view-bookings-modal .booking-row {
-    color: white !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-/* GREEN THEME - Export Reports */
-.export-modal .admin-modal-content {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.export-modal .admin-modal-header {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
-}
-
-.export-modal label {
-    color: white !important;
-    font-weight: 600 !important;
-}
-
-.export-modal select,
-.export-modal input {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    color: #333 !important;
-}
-
-/* GOLD THEME - Change Password */
-.change-password-modal .admin-modal-content {
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.change-password-modal .admin-modal-header {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-.change-password-modal .modal-title {
-    color: #000 !important;
-}
-
-.change-password-modal label {
-    color: #000 !important;
-    font-weight: 600 !important;
-}
-
-.change-password-modal input {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border: 1px solid rgba(0, 0, 0, 0.2) !important;
-    color: #333 !important;
-}
-
-.change-password-modal .btn-primary {
-    background: linear-gradient(135deg, #667eea, #764ba2) !important;
-    color: white !important;
-}
-
-.change-password-modal .btn-secondary {
-    background: rgba(0, 0, 0, 0.2) !important;
-    color: #000 !important;
-    border: 1px solid rgba(0, 0, 0, 0.3) !important;
-}
-
-/* ==================== CHANGE PASSWORD MODAL - FIXED SPACING ==================== */
-/* DI admin-modals.css - IMPROVE CHANGE PASSWORD SPACING */
-#changePasswordModal .modal-content {
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    padding: 30px 25px; /* ↑ More vertical padding */
-    border-radius: 20px;
-    width: 90%;
-    max-width: 420px; /* ↑ Slightly wider */
-}
-
-#changePasswordModal .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px; /* ↑ More space below header */
-    padding: 0 5px; /* ↑ Add horizontal padding */
-}
-
-#changePasswordModal .modal-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0;
-    padding-right: 40px; /* ↑ Space for close button */
-}
-
-#changePasswordModal .close-btn {
-    position: absolute;
-    top: 25px; /* ↑ Match increased padding */
-    right: 25px; /* ↑ Match increased padding */
-}
-
-#changePasswordModal .modal-body {
-    padding: 0 5px; /* ↑ Add horizontal padding */
-}
-
-#changePasswordModal .form-group {
-    margin-bottom: 25px; /* ↑ More space between fields */
-}
-
-#changePasswordModal .form-group label {
-    display: block;
-    margin-bottom: 10px; /* ↑ More space below labels */
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.95rem;
-}
-
-#changePasswordModal input {
-    width: 100%;
-    padding: 16px 18px; /* ↑ More padding inside inputs */
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px; /* ↑ Slightly more rounded */
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    font-size: 16px;
-    transition: all 0.3s ease;
-}
-
-#changePasswordModal input:focus {
-    outline: none;
-    border-color: var(--primary-blue);
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.2);
-    transform: translateY(-2px); /* ↑ More lift on focus */
-}
-
-#changePasswordModal .btn-group {
-    display: flex;
-    gap: 15px; /* ↑ More space between buttons */
-    margin-top: 30px; /* ↑ More space above buttons */
-}
-
-#changePasswordModal .btn {
-    flex: 1;
-    padding: 16px; /* ↑ More button padding */
-    border: none;
-    border-radius: 12px; /* ↑ Match input border radius */
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-/* ==================== RESPONSIVE DESIGN ==================== */
-@media (max-width: 768px) {
-    .admin-modal-content {
-        width: 98%;
-        max-height: 90vh;
-    }
-    
-    .users-grid-header,
-    .user-row {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-    
-    .bookings-grid-header,
-    .booking-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-    }
-    
-    .user-actions,
-    .user-role {
-        text-align: center;
-    }
-}
-/* ==================== THEME SETTINGS STYLES ==================== */
-.settings-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: all 0.2s ease;
-    margin-left: 10px;
-}
-
-.settings-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1) rotate(30deg);
-}
-
-/* Theme Settings Modal */
-.theme-settings-modal .admin-modal-content {
-    background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
-    max-width: 500px;
-}
-
-.theme-options {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.theme-option {
-    padding: 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    text-align: center;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-    font-weight: 600;
-}
-
-.theme-option:hover {
-    transform: translateY(-3px);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.theme-option.active {
-    border-color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Color Themes */
-.theme-default { background: linear-gradient(135deg, #2a2a2a, #1a1a1a); color: white; }
-.theme-purple { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-.theme-blue { background: linear-gradient(135deg, #4A90E2, #357ABD); color: white; }
-.theme-green { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
-.theme-orange { background: linear-gradient(135deg, #fd7e14, #e8590c); color: white; }
-.theme-dark { background: linear-gradient(135deg, #343a40, #212529); color: white; }
-
-/* Modal Themes */
-.modal-theme-purple .admin-modal-content { 
-    background: linear-gradient(135deg, #667eea, #764ba2) !important; 
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.modal-theme-blue .admin-modal-content { 
-    background: linear-gradient(135deg, #4A90E2, #357ABD) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.modal-theme-green .admin-modal-content { 
-    background: linear-gradient(135deg, #28a745, #20c997) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.modal-theme-orange .admin-modal-content { 
-    background: linear-gradient(135deg, #fd7e14, #e8590c) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.modal-theme-dark .admin-modal-content { 
-    background: linear-gradient(135deg, #343a40, #212529) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Responsive Theme Settings */
-@media (max-width: 768px) {
-    .theme-options {
-        grid-template-columns: 1fr;
-    }
-    
-    .theme-option {
-        padding: 15px;
-    }
-}
-/* ==================== ROLE BADGES STYLES ==================== */
-.role-badge {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: capitalize;
-    border: 1px solid transparent;
-    display: inline-block;
-    text-align: center;
-    min-width: 60px;
-}
-
-.role-badge.super_admin {
-    background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
-    color: white;
-    border-color: rgba(255, 107, 107, 0.3);
-}
-
-.role-badge.admin {
-    background: linear-gradient(135deg, #4A90E2, #6BC5FF);
-    color: white;
-    border-color: rgba(74, 144, 226, 0.3);
-}
-
-.role-badge.user {
-    background: linear-gradient(135deg, #27AE60, #58D68D);
-    color: white;
-    border-color: rgba(39, 174, 96, 0.3);
-}
-
-/* ==================== ADMIN BUTTON STYLES ==================== */
-.admin-btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    margin: 2px;
-}
-
-.admin-btn-secondary {
-    background: rgba(108, 117, 125, 0.3);
-    color: white;
-    border: 1px solid rgba(108, 117, 125, 0.5);
-}
-
-.admin-btn-secondary:hover {
-    background: rgba(108, 117, 125, 0.5);
-    transform: translateY(-1px);
-}
-
-.admin-btn-primary {
-    background: linear-gradient(135deg, #28a745, #20c997);
-    color: white;
-    border: none;
-}
-
-.admin-btn-primary:hover {
-    background: linear-gradient(135deg, #218838, #1e9c7a);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-}
-
-.admin-btn-danger {
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    color: white;
-    border: none;
-}
-
-.admin-btn-danger:hover {
-    background: linear-gradient(135deg, #c82333, #bd2130);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-}
-
-.admin-btn-sm {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-}
-
-/* ==================== TABLE STYLES ==================== */
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 10px 0;
-}
-
-.admin-table th {
-    background: rgba(255,215,0,0.2);
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    color: var(--gold);
-    font-weight: 600;
-}
-
-.admin-table td {
-    padding: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.9);
-}
-
-.admin-table tr:hover {
-    background: rgba(255,255,255,0.03);
-}
-
-/* ==================== STATUS BADGES ==================== */
-.status-badge {
-    padding: 4px 8px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: inline-block;
-}
-
-.status-active {
-    background: rgba(0,255,128,0.2);
-    color: #00ff80;
-    border: 1px solid rgba(0,255,128,0.3);
-}
-
-.status-inactive {
-    background: rgba(255,0,0,0.2);
-    color: #ff5555;
-    border: 1px solid rgba(255,0,0,0.3);
-}
-
-.status-pending {
-    background: rgba(255,215,0,0.2);
-    color: #ffd700;
-    border: 1px solid rgba(255,215,0,0.3);
-}
-
-/* ==================== ACTION BUTTONS ==================== */
-.action-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.action-btn {
-    padding: 6px 10px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.action-btn:hover {
-    transform: translateY(-1px);
-}
-
-.btn-role {
-    background: rgba(255,215,0,0.3);
-    color: #ffd700;
-    border: 1px solid rgba(255,215,0,0.5);
-}
-
-.btn-role:hover {
-    background: rgba(255,215,0,0.4);
-}
-
-.btn-password {
-    background: rgba(0,120,215,0.3);
-    color: #0078d7;
-    border: 1px solid rgba(0,120,215,0.5);
-}
-
-.btn-password:hover {
-    background: rgba(0,120,215,0.4);
-}
-
-.btn-delete {
-    background: rgba(255,0,0,0.3);
-    color: #ff5555;
-    border: 1px solid rgba(255,0,0,0.5);
-}
-
-.btn-delete:hover {
-    background: rgba(255,0,0,0.4);
-}
-
-/* ==================== MODAL GRID LAYOUT ==================== */
-.modal-grid {
-    display: grid;
-    gap: 15px;
-    padding: 15px 0;
-}
-
-.grid-header {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 15px;
-    padding: 15px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 10px;
-    font-weight: bold;
-    color: var(--gold);
-}
-
-.grid-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 15px;
-    padding: 15px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    align-items: center;
-    background: rgba(255,255,255,0.03);
-    border-radius: 8px;
-    margin-bottom: 8px;
-}
-
-/* ==================== RESPONSIVE DESIGN ==================== */
-@media (max-width: 768px) {
-    .grid-header,
-    .grid-row {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    
-    .action-buttons {
-        justify-content: center;
-    }
-    
-    .admin-btn {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-    }
-    
-    .role-badge {
-        padding: 4px 12px;
-        font-size: 0.8rem;
-        min-width: 50px;
-    }
-}
-/* ==================== MODAL CONTAINER & GLASS EFFECT ==================== */
-.admin-modal-container {
-    background: rgba(255,255,255,0.25);
-    backdrop-filter: blur(20px);
-    padding: 25px;
-    border-radius: 20px;
-    width: 95%;
-    max-width: 1200px;
-    max-height: 85vh;
-    border: 1px solid rgba(255,255,255,0.3);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
-}
-
-/* Close button styling */
-.admin-close-btn {
-    background: rgba(255,68,68,0.2);
-    color: #ff4444;
-    border: 1px solid rgba(255,68,68,0.3);
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.admin-close-btn:hover {
-    background: rgba(255,68,68,0.3);
-    transform: scale(1.1);
-}
-
-/* ==================== MODAL LAYOUT ==================== */
-.admin-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-shrink: 0;
-}
-
+/* ==================== COMPACT ACTION BUTTONS ==================== */
 .admin-action-buttons {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 8px !important;
+    margin-bottom: 15px !important;
     flex-wrap: wrap;
     flex-shrink: 0;
 }
 
-.admin-modal-scroll {
-    flex: 1;
-    overflow-y: auto;
-    max-height: 400px;
-    margin: 0 -10px;
-    padding: 0 10px;
+.btn {
+    padding: 8px 14px !important;
+    font-size: 0.85rem !important;
+    border-radius: 8px !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
 }
 
-.admin-modal-footer {
-    margin-top: 20px;
-    text-align: center;
-    color: rgba(255,255,255,0.8);
-    flex-shrink: 0;
-}
-
-/* ==================== GRID LAYOUT ==================== */
+/* ==================== COMPACT GRID LAYOUT ==================== */
 .grid-header {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 15px;
-    padding: 15px;
+    gap: 12px !important;
+    padding: 12px 15px !important;
     background: rgba(255,255,255,0.1);
     border-radius: 10px;
     font-weight: bold;
     color: var(--gold);
-    margin-bottom: 10px;
+    margin-bottom: 8px !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem !important;
 }
 
 .grid-row {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 15px;
-    padding: 15px;
+    gap: 12px !important;
+    padding: 12px 15px !important;
     border-bottom: 1px solid rgba(255,255,255,0.1);
     align-items: center;
     background: rgba(255,255,255,0.05);
     border-radius: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 6px !important;
     transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem !important;
+    color: rgba(0, 0, 0, 0.8);
 }
 
 .grid-row:hover {
@@ -909,80 +149,114 @@
     transform: translateY(-2px);
 }
 
-/* ==================== ROLE BADGES ==================== */
+.grid-row div {
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 0.85rem !important;
+}
+
+.grid-row .user-info {
+    color: rgba(0, 0, 0, 0.9);
+    font-weight: 600;
+    font-size: 0.9rem !important;
+}
+
+.grid-row .user-details {
+    font-size: 0.75rem !important;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* ==================== COMPACT SCROLL AREA ==================== */
+.admin-modal-scroll {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 350px !important;
+    margin: 0 -8px !important;
+    padding: 0 8px !important;
+}
+
+.admin-modal-footer {
+    margin-top: 20px;
+    text-align: center;
+    color: rgba(255,255,255,0.8);
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+/* ==================== COMPACT ROLE BADGES ==================== */
 .role-badge {
-    padding: 6px 16px;
+    padding: 4px 12px !important;
     border-radius: 20px;
-    font-size: 0.85rem;
+    font-size: 0.8rem !important;
     font-weight: 600;
     text-transform: capitalize;
     border: 1px solid transparent;
     display: inline-block;
     text-align: center;
-    min-width: 60px;
+    min-width: 50px !important;
 }
 
 .role-badge.super_admin {
-    background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+    background: linear-gradient(135deg, #DC2626, #EF4444);
     color: white;
-    border-color: rgba(255, 107, 107, 0.3);
+    border-color: rgba(220, 38, 38, 0.4);
 }
 
 .role-badge.admin {
-    background: linear-gradient(135deg, #4A90E2, #6BC5FF);
+    background: linear-gradient(135deg, #2563EB, #3B82F6);
     color: white;
-    border-color: rgba(74, 144, 226, 0.3);
+    border-color: rgba(37, 99, 235, 0.4);
 }
 
 .role-badge.user {
-    background: linear-gradient(135deg, #27AE60, #58D68D);
+    background: linear-gradient(135deg, #059669, #10B981);
     color: white;
-    border-color: rgba(39, 174, 96, 0.3);
+    border-color: rgba(5, 150, 105, 0.4);
 }
 
-/* ==================== STATUS BADGES ==================== */
+/* ==================== COMPACT STATUS BADGES ==================== */
 .status-badge {
-    padding: 6px 12px;
+    padding: 4px 10px !important;
     border-radius: 15px;
-    font-size: 0.8rem;
+    font-size: 0.75rem !important;
     font-weight: 600;
     display: inline-block;
     text-align: center;
-    min-width: 80px;
+    min-width: 70px !important;
 }
 
 .status-active {
-    background: rgba(0,255,128,0.2);
-    color: #00ff80;
-    border: 1px solid rgba(0,255,128,0.3);
+    background: rgba(5, 150, 105, 0.2);
+    color: #059669;
+    border: 1px solid rgba(5, 150, 105, 0.4);
 }
 
 .status-inactive {
-    background: rgba(255,215,0,0.2);
-    color: #ffd700;
-    border: 1px solid rgba(255,215,0,0.3);
+    background: rgba(245, 158, 11, 0.2);
+    color: #D97706;
+    border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
-/* ==================== ACTION BUTTONS ==================== */
+/* ==================== COMPACT ACTION BUTTONS ==================== */
 .action-buttons {
     display: flex;
-    gap: 8px;
+    gap: 6px !important;
     flex-wrap: wrap;
     justify-content: center;
 }
 
 .action-btn {
-    padding: 8px 12px;
+    padding: 6px 10px !important;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px !important;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.75rem !important;
     font-weight: 600;
     transition: all 0.3s ease;
     white-space: nowrap;
     display: flex;
     align-items: center;
     gap: 4px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .action-btn:hover {
@@ -991,46 +265,127 @@
 }
 
 .btn-role {
-    background: rgba(255,215,0,0.3);
-    color: #ffd700;
-    border: 1px solid rgba(255,215,0,0.5);
+    background: rgba(37, 99, 235, 0.3);
+    color: #2563EB;
+    border: 1px solid rgba(37, 99, 235, 0.5);
 }
 
 .btn-role:hover {
-    background: rgba(255,215,0,0.4);
+    background: rgba(37, 99, 235, 0.4);
 }
 
 .btn-password {
-    background: rgba(0,120,215,0.3);
-    color: #0078d7;
-    border: 1px solid rgba(0,120,215,0.5);
+    background: rgba(5, 150, 105, 0.3);
+    color: #059669;
+    border: 1px solid rgba(5, 150, 105, 0.5);
 }
 
 .btn-password:hover {
-    background: rgba(0,120,215,0.4);
+    background: rgba(5, 150, 105, 0.4);
 }
 
 .btn-delete {
-    background: rgba(255,0,0,0.3);
-    color: #ff5555;
-    border: 1px solid rgba(255,0,0,0.5);
+    background: rgba(220, 38, 38, 0.3);
+    color: #DC2626;
+    border: 1px solid rgba(220, 38, 38, 0.5);
 }
 
 .btn-delete:hover {
-    background: rgba(255,0,0,0.4);
+    background: rgba(220, 38, 38, 0.4);
 }
 
-/* ==================== RESPONSIVE DESIGN ==================== */
+/* ==================== CHANGE PASSWORD MODAL FIX ==================== */
+#changePasswordModal .modal-content {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(25px);
+    padding: 25px !important;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#changePasswordModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px !important;
+}
+
+#changePasswordModal .modal-title {
+    font-size: 1.2rem !important;
+    font-weight: 700;
+    margin: 0;
+}
+
+#changePasswordModal .form-group {
+    margin-bottom: 20px !important;
+}
+
+#changePasswordModal .form-group label {
+    display: block;
+    margin-bottom: 8px !important;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem !important;
+}
+
+#changePasswordModal input {
+    width: 100%;
+    padding: 12px 14px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 14px !important;
+}
+
+#changePasswordModal .btn-group {
+    display: flex;
+    gap: 12px !important;
+    margin-top: 25px !important;
+}
+
+#changePasswordModal .btn {
+    flex: 1;
+    padding: 12px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+}
+
+/* ==================== COMPACT MOBILE RESPONSIVE ==================== */
 @media (max-width: 768px) {
+    .admin-modal-container {
+        padding: 15px !important;
+        margin: 8px !important;
+        width: 95% !important;
+        max-height: 85vh !important;
+    }
+    
+    .admin-modal-header h2 {
+        font-size: 1.1rem !important;
+    }
+    
+    .btn {
+        padding: 7px 12px !important;
+        font-size: 0.8rem !important;
+    }
+    
     .grid-header,
     .grid-row {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 8px !important;
+        padding: 10px !important;
         text-align: center;
     }
     
     .action-buttons {
         justify-content: center;
+    }
+    
+    .action-btn {
+        padding: 5px 8px !important;
+        font-size: 0.7rem !important;
     }
     
     .role-badge,
@@ -1039,12 +394,39 @@
         margin: 0 auto;
     }
     
-    .admin-modal-container {
-        padding: 15px;
-        margin: 10px;
-    }
-    
     .admin-action-buttons {
         flex-direction: column;
     }
+    
+    #changePasswordModal .modal-content {
+        padding: 20px !important;
+        margin: 10px;
+    }
+}
+
+/* ==================== BACKWARD COMPATIBILITY ==================== */
+/* Maintain compatibility with existing modal classes */
+.admin-modal-content {
+    border-radius: 16px;
+    max-width: 1100px;
+    max-height: 80vh;
+    width: 92%;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.admin-modal-body {
+    padding: 20px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+/* Color Themes - Simplified */
+.manage-users-modal .admin-modal-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.view-bookings-modal .admin-modal-content {
+    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
 }
