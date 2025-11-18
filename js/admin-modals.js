@@ -1,4 +1,4 @@
-// admin-modals.js - Professional Admin Modal Functions v1.0.3
+// admin-modals.js - Professional Admin Modal Functions v1.0.5
 export function showUserManagementModal(users) {
     console.log('👥 User Management - Users:', users);
     
@@ -11,55 +11,41 @@ export function showUserManagementModal(users) {
         z-index: 10000; overflow: hidden;
     `;
     
-    modal.innerHTML = `
-        <div class="admin-modal-container" style="
-            background: rgba(255,255,255,0.25); 
-            backdrop-filter: blur(20px);
-            padding: 25px; border-radius: 20px; 
-            width: 95%; max-width: 1200px; max-height: 85vh; 
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column;
-        ">
-            <!-- Header -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0;">
-                <h2 style="color: var(--admin-purple); margin: 0; font-size: 1.5rem;">👥 User Access Management</h2>
-                <button onclick="this.closest('.modal-overlay').remove()" 
-                        class="admin-close-btn">×</button>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; flex-shrink: 0;">
-                <button onclick="window.showAddUserForm()" class="btn btn-success">
-                    ➕ Add New User
-                </button>
-                <button onclick="window.exportUserReport()" class="btn btn-primary">
-                    📊 Export User Report
-                </button>
-                <button onclick="window.refreshUserList()" class="btn btn-secondary">
-                    🔄 Refresh
-                </button>
-            </div>
-            
-            <!-- Grid Header -->
-            <div class="grid-header">
-                <div>User Information</div>
-                <div>Role</div>
-                <div>Status</div>
-                <div>Actions</div>
-            </div>
-            
-            <!-- Scrollable Content -->
-            <div style="flex: 1; overflow-y: auto; max-height: 400px; margin: 0 -10px; padding: 0 10px;">
-                ${renderUsersList(users)}
-            </div>
-            
-            <!-- Footer -->
-            <div style="margin-top: 20px; text-align: center; color: rgba(255,255,255,0.8); flex-shrink: 0;">
-                Total Users: <strong>${users?.length || 0}</strong>
-            </div>
-        </div>
-    `;
+	// Di dalam showUserManagementModal - pastikan pakai class yang sama
+	modal.innerHTML = `
+		<div class="admin-modal-container">
+			<!-- Header -->
+			<div class="admin-modal-header">
+				<h2>👥 User Access Management</h2>
+				<button onclick="this.closest('.modal-overlay').remove()" class="admin-close-btn">×</button>
+			</div>
+			
+			<!-- Action Buttons -->
+			<div class="admin-action-buttons">
+				<button onclick="window.showAddUserForm()" class="btn btn-success">➕ Add New User</button>
+				<button onclick="window.exportUserReport()" class="btn btn-primary">📊 Export User Report</button>
+				<button onclick="window.refreshUserList()" class="btn btn-secondary">🔄 Refresh</button>
+			</div>
+			
+			<!-- Grid Header -->
+			<div class="grid-header">
+				<div>User Information</div>
+				<div>Role</div>
+				<div>Status</div>
+				<div>Actions</div>
+			</div>
+			
+			<!-- Scrollable Content -->
+			<div class="admin-modal-scroll">
+				${renderUsersList(users)}
+			</div>
+			
+			<!-- Footer -->
+			<div class="admin-modal-footer">
+				Total Users: <strong>${users?.length || 0}</strong>
+			</div>
+		</div>
+	`;
     
     document.body.appendChild(modal);
 }
@@ -71,38 +57,40 @@ export function showAllBookingsModal(bookings) {
     modal.className = 'modal-overlay admin-modal';
     modal.style.cssText = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+        background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
         display: flex; justify-content: center; align-items: center;
         z-index: 10000;
     `;
     
     modal.innerHTML = `
-        <div style="background: var(--card-bg); padding: 25px; border-radius: 15px; 
-                   width: 95%; max-width: 1200px; max-height: 85vh; overflow-y: auto;
-                   border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: var(--primary-blue); margin: 0;">📋 All Bookings Report</h2>
+        <div class="admin-modal-container" style="max-width: 1200px !important;">
+            <!-- Header -->
+            <div class="admin-modal-header">
+                <h2 style="color: var(--gold) !important;">📋 All Bookings Report</h2>
                 <button onclick="this.closest('.modal-overlay').remove()" 
-                        style="background: none; border: none; color: #ff5555; font-size: 24px; cursor: pointer;">×</button>
+                        class="admin-close-btn">×</button>
             </div>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                <button onclick="window.exportBookingReport()" class="btn btn-success" style="padding: 10px 15px;">
+            <!-- Action Buttons -->
+            <div class="admin-action-buttons">
+                <button onclick="window.exportBookingReport()" class="btn btn-success">
                     📤 Export CSV Report
                 </button>
-                <button onclick="window.exportBookingPDF()" class="btn btn-primary" style="padding: 10px 15px;">
-                    📄 Export PDF Report
+                <button onclick="window.exportBookingPDF()" class="btn btn-primary">
+                    📄 Export PDF
                 </button>
-                <button onclick="window.refreshAllBookings()" class="btn btn-secondary" style="padding: 10px 15px;">
+                <button onclick="window.refreshAllBookings()" class="btn btn-secondary">
                     🔄 Refresh
                 </button>
             </div>
             
-            <div style="max-height: 500px; overflow-y: auto;">
+            <!-- Scrollable Content -->
+            <div class="admin-modal-scroll">
                 ${renderBookingsTable(bookings)}
             </div>
             
-            <div style="margin-top: 20px; text-align: center; color: rgba(255,255,255,0.7);">
+            <!-- Footer -->
+            <div class="admin-modal-footer">
                 Total Bookings: <strong>${bookings?.length || 0}</strong>
             </div>
         </div>
@@ -110,7 +98,6 @@ export function showAllBookingsModal(bookings) {
     
     document.body.appendChild(modal);
 }
-
 // ==================== USER MANAGEMENT FUNCTIONS ====================
 function renderUsersList(users) {
     if (!users || users.length === 0) {
@@ -378,36 +365,55 @@ function renderBookingsTable(bookings) {
             <table style="width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden;">
                 <thead>
                     <tr style="background: rgba(255,215,0,0.2);">
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1);">Date</th>
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1);">Seat</th>
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1);">User</th>
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1);">Booking Time</th>
-                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1);">Department</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Date</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Seat</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">User</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Booking Time</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Department</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${bookings.map(booking => `
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                            <td style="padding: 12px; color: white;">
-                                ${booking.day ? new Date(booking.day).toLocaleDateString('en-US', { 
-                                    year: 'numeric', month: 'short', day: 'numeric' 
-                                }) : 'Unknown'}
-                            </td>
-                            <td style="padding: 12px; color: var(--primary-green); font-weight: bold;">${booking.seat}</td>
-                            <td style="padding: 12px; color: white;">${booking.userName}</td>
-                            <td style="padding: 12px; color: rgba(255,255,255,0.8);">
-                                ${booking.bookingTime ? 
-                                    new Date(booking.bookingTime.seconds * 1000).toLocaleString('en-US', {
-                                        hour: '2-digit', minute: '2-digit', second: '2-digit'
-                                    }) : 
-                                    'Unknown'
-                                }
-                            </td>
-                            <td style="padding: 12px; color: var(--gold);">
-                                ${booking.seat ? booking.seat.split('-')[0] : 'Unknown'}
-                            </td>
-                        </tr>
-                    `).join('')}
+                    ${bookings.map(booking => {
+                        // Fix date formatting
+                        const bookingDate = booking.bookingTime?.toDate ? booking.bookingTime.toDate() : 
+                                           booking.timestamp ? new Date(booking.timestamp) : 
+                                           booking.createdAt?.toDate ? booking.createdAt.toDate() : new Date();
+                        
+                        const bookingTimeDisplay = bookingDate instanceof Date && !isNaN(bookingDate)
+                            ? bookingDate.toLocaleString('en-US', {
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric',
+                                hour: '2-digit', 
+                                minute: '2-digit'
+                            })
+                            : 'Unknown';
+
+                        const dateDisplay = booking.bookingDate ? 
+                            new Date(booking.bookingDate).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric' 
+                            }) : 'Unknown';
+
+                        return `
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 10px 12px; color: white; font-size: 0.85rem;">${dateDisplay}</td>
+                                <td style="padding: 10px 12px; color: var(--primary-green); font-weight: bold; font-size: 0.85rem;">${booking.seat}</td>
+                                <td style="padding: 10px 12px; color: white; font-size: 0.85rem;">${booking.userName}</td>
+                                <td style="padding: 10px 12px; color: rgba(255,255,255,0.8); font-size: 0.85rem;">${bookingTimeDisplay}</td>
+                                <td style="padding: 10px 12px; color: var(--gold); font-size: 0.85rem;">
+                                    ${booking.seat ? booking.seat.split('-')[0] : 'Unknown'}
+                                </td>
+                                <td style="padding: 10px 12px; font-size: 0.85rem;">
+                                    <span class="status-badge ${booking.status === 'active' ? 'status-active' : 'status-inactive'}">
+                                        ${booking.status === 'active' ? '✅ Active' : '❌ Cancelled'}
+                                    </span>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
                 </tbody>
             </table>
         </div>
@@ -562,8 +568,30 @@ window.exportBookingReport = async function() {
 };
 
 window.exportBookingPDF = function() {
-    showMessage('📄 PDF export feature coming soon!', 'info');
+    // Simple PDF implementation using browser print
+    showMessage('📄 Preparing PDF export...', 'info');
+    
+    setTimeout(() => {
+        const modal = document.querySelector('.admin-modal-container');
+        if (modal) {
+            const originalDisplay = modal.style.display;
+            modal.style.display = 'block';
+            
+            // Use browser print for simple PDF
+            window.print();
+            
+            modal.style.display = originalDisplay;
+            showMessage('✅ PDF ready! Use browser print to save as PDF.', 'success');
+        } else {
+            showMessage('❌ No booking data to export', 'error');
+        }
+    }, 1000);
 };
+
+// Atau disable PDF button dan kasih message
+// window.exportBookingPDF = function() {
+//     showMessage('📄 PDF export feature coming soon!', 'info');
+// };
 
 // ==================== EXPORT UTILITIES ====================
 function exportToCSV(data, filename) {

@@ -1,5 +1,5 @@
 // js/firestore-api.js - COMPAT VERSION (PASTI WORK)
-//ver1.0.4
+//ver1.0.5
 import { db } from './firebase-config.js';
 
 export class FirestoreAPI {
@@ -431,22 +431,37 @@ export class FirestoreAPI {
 			}
 	
 			const reportData = result.bookings.map(booking => {
-				const bookingDate = booking.bookingTime?.toDate ? booking.bookingTime.toDate() : new Date(booking.timestamp);
+				const bookingDate = booking.bookingTime?.toDate ? booking.bookingTime.toDate() : 
+								booking.timestamp ? new Date(booking.timestamp) : 
+								booking.createdAt?.toDate ? booking.createdAt.toDate() : new Date();
+				
 				const bookingTimeDisplay = bookingDate instanceof Date && !isNaN(bookingDate)
-					? bookingDate.toLocaleString('en-US', { 
-						year: 'numeric', month: 'short', day: 'numeric',
-						hour: '2-digit', minute: '2-digit' 
+					? bookingDate.toLocaleString('en-US', {
+						year: 'numeric', 
+						month: 'short', 
+						day: 'numeric',
+						hour: '2-digit', 
+						minute: '2-digit'
 					})
 					: 'Unknown';
 	
+				const dateDisplay = booking.bookingDate ? 
+					new Date(booking.bookingDate).toLocaleDateString('en-US', { 
+						year: 'numeric', 
+						month: 'short', 
+						day: 'numeric' 
+					}) : 'Unknown';
+	
+				// ✅ REORDERED & REMOVED FIELDS
 				return {
-					'Date': booking.bookingDate,
+					'User': booking.userName,  // ← User dipindah ke depan
+					'Date': dateDisplay,
 					'Seat': booking.seat,
-					'User': booking.userName,
 					'Department': booking.seat?.split('-')[0] || 'Unknown',
 					'Booking Time': bookingTimeDisplay,
 					'Status': booking.status,
 					'Created': booking.createdAt?.toDate?.()?.toLocaleDateString?.() || 'Unknown'
+					// ❌ REMOVED: id, updatedAt
 				};
 			});
 	
@@ -456,7 +471,7 @@ export class FirestoreAPI {
 			return { success: false, message: error.message };
 		}
 	}
-	
+		
     // ==================== HELPER FUNCTIONS ====================
     static async getUserTeam(username) {
         try {
