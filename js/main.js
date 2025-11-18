@@ -194,42 +194,39 @@ function setupGlobalFunctions() {
     };
     
     // ==================== PASSWORD CHANGE ====================
-    window.showChangePasswordModal = async function() {
-        console.log('🎯 showChangePasswordModal CALLED!');
+window.showChangePasswordModal = async function() {
+    try {
+        const { state } = await import('./constants.js');
         
-        try {
-            const { state } = await import('./constants.js');
-            
-            if (!state.currentUser) {
-                showMessage('❌ Please login first', 'error');
-                return;
-            }
-            
-            const modal = document.getElementById('changePasswordModal');
-            const usernameField = document.getElementById('changePasswordUsername');
-            
-            if (modal && usernameField) {
-                usernameField.value = state.currentUser.username;
-                modal.style.display = 'block';
-                
-                // Reset form
-                const form = document.getElementById('changePasswordForm');
-                if (form) form.reset();
-                
-                const messageEl = document.getElementById('changePasswordMessage');
-                if (messageEl) messageEl.innerHTML = '';
-            }
-        } catch (error) {
-            console.error('Error:', error);
+        if (!state.currentUser) {
+            showMessage('❌ Please login first', 'error');
+            return;
         }
-    };
-
-    window.hideChangePasswordModal = function() {
+        
         const modal = document.getElementById('changePasswordModal');
-        if (modal) {
-            modal.style.display = 'none';
+        const usernameField = document.getElementById('changePasswordUsername');
+        
+        if (modal && usernameField) {
+            // ✅ FIX: PAKAI setTimeout BIAR PASTI DOM READY
+            setTimeout(() => {
+                usernameField.value = state.currentUser.username;
+                console.log('✅ Username set to:', usernameField.value);
+            }, 100);
+            
+            modal.style.display = 'block';
+            
+            // Reset other fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            
+            const messageEl = document.getElementById('changePasswordMessage');
+            if (messageEl) messageEl.innerHTML = '';
         }
-    };
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
 
     // Handle change password
     async function handleChangePassword() {
