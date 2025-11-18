@@ -96,6 +96,7 @@ export async function loadHistoricalBookings() {
 
 
 // DEBUG VERSION - untuk lihat format username sebenarnya
+// FIXED VERSION - Pakai nama team singkat saja
 export function renderSeatGrid() {
     const grid = document.getElementById('seatGrid');
     if (!grid) return;
@@ -104,9 +105,6 @@ export function renderSeatGrid() {
     let totalAvailable = 0;
     const totalSeats = TEAMS_CONFIG.reduce((sum, team) => sum + team.totalSeats, 0);
 
-    // DEBUG: Cek semua booking data
-    console.log('🔍 DEBUG ALL BOOKINGS:', state.currentBookings);
-    
     TEAMS_CONFIG.forEach(team => {
         const teamDiv = document.createElement('div');
         teamDiv.className = 'team';
@@ -150,60 +148,16 @@ export function renderSeatGrid() {
                     }
                 }
                 
-                // ✅ DEBUG: Lihat format username yang sebenarnya
-                const rawUsername = booking.userName || 'Unknown';
-                console.log(`🔍 DEBUG ${seatCode}:`, {
-                    rawUsername: rawUsername,
-                    includesPipe: rawUsername.includes('|'),
-                    includesDash: rawUsername.includes('-'),
-                    includesSlash: rawUsername.includes('/'),
-                    length: rawUsername.length,
-                    type: typeof rawUsername
-                });
-                
-                // Extract department - MULTI FORMAT SUPPORT
-                let displayName = rawUsername;
-                let department = '';
-                
-                // Coba berbagai format pemisah
-                if (rawUsername.includes('|')) {
-                    const parts = rawUsername.split('|');
-                    console.log(`🔍 Split by |:`, parts);
-                    if (parts.length >= 2) {
-                        displayName = parts[0].trim();
-                        department = parts[1].trim();
-                    }
-                } else if (rawUsername.includes('-')) {
-                    const parts = rawUsername.split('-');
-                    console.log(`🔍 Split by -:`, parts);
-                    if (parts.length >= 2) {
-                        displayName = parts[0].trim();
-                        department = parts[1].trim();
-                    }
-                } else if (rawUsername.includes('/')) {
-                    const parts = rawUsername.split('/');
-                    console.log(`🔍 Split by /:`, parts);
-                    if (parts.length >= 2) {
-                        displayName = parts[0].trim();
-                        department = parts[1].trim();
-                    }
-                } else if (rawUsername.includes(' ')) {
-                    // Coba split by space untuk format "Deny ITPM"
-                    const parts = rawUsername.split(' ');
-                    console.log(`🔍 Split by space:`, parts);
-                    if (parts.length >= 2) {
-                        displayName = parts[0].trim();
-                        department = parts.slice(1).join(' ').trim();
-                    }
-                }
-                
-                console.log(`🔍 RESULT - Name: "${displayName}", Dept: "${department}"`);
+                // ✅ FIXED: Ambil nama team singkat dari seat code
+                let displayName = booking.userName || 'Unknown';
+                const teamNameFromSeat = seatCode.split('-')[0]; // Contoh: "ITPM-01" → "ITPM"
                 
                 seat.innerHTML = `
                     ${seatCode}
                     <span class="tooltip">
                         <strong>${isMyBooking ? '📌 Your Booking' : 'Booked by:'}</strong><br>
-                        ${displayName}${department ? `<br>🏢 ${department}` : ''}<br>
+                        ${displayName}<br>
+                        🏢 ${teamNameFromSeat}<br>
                         ${timeDisplay}
                     </span>
                 `;
