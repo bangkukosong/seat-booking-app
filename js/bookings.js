@@ -94,7 +94,7 @@ export async function loadHistoricalBookings() {
     }
 }
 
-// Seat Grid Rendering - ✅ FIXED VERSION with Date Display
+// Seat Grid Rendering - FIXED dengan display department
 export function renderSeatGrid() {
     const grid = document.getElementById('seatGrid');
     if (!grid) return;
@@ -153,11 +153,23 @@ export function renderSeatGrid() {
                     }
                 }
                 
+                // ✅ FIXED: Extract department dari format "Deny|ITPM"
+                let displayName = booking.userName || 'Unknown';
+                let department = '';
+                
+                if (displayName.includes('|')) {
+                    const parts = displayName.split('|');
+                    if (parts.length === 2) {
+                        displayName = parts[0].trim(); // "Deny"
+                        department = parts[1].trim();  // "ITPM"
+                    }
+                }
+                
                 seat.innerHTML = `
                     ${seatCode}
                     <span class="tooltip">
                         <strong>${isMyBooking ? '📌 Your Booking' : 'Booked by:'}</strong><br>
-                        ${booking.userName || 'Unknown'}<br>
+                        ${displayName}${department ? `<br>🏢 ${department}` : ''}<br>
                         ${timeDisplay}
                     </span>
                 `;
