@@ -94,7 +94,8 @@ export async function loadHistoricalBookings() {
     }
 }
 
-// Seat Grid Rendering - FIXED dengan display department
+
+// DEBUG VERSION - untuk lihat format username sebenarnya
 export function renderSeatGrid() {
     const grid = document.getElementById('seatGrid');
     if (!grid) return;
@@ -103,6 +104,9 @@ export function renderSeatGrid() {
     let totalAvailable = 0;
     const totalSeats = TEAMS_CONFIG.reduce((sum, team) => sum + team.totalSeats, 0);
 
+    // DEBUG: Cek semua booking data
+    console.log('🔍 DEBUG ALL BOOKINGS:', state.currentBookings);
+    
     TEAMS_CONFIG.forEach(team => {
         const teamDiv = document.createElement('div');
         teamDiv.className = 'team';
@@ -146,18 +150,54 @@ export function renderSeatGrid() {
                     }
                 }
                 
-                // ✅ FIXED: Extract department - SIMPLE VERSION
-                let displayName = booking.userName || 'Unknown';
+                // ✅ DEBUG: Lihat format username yang sebenarnya
+                const rawUsername = booking.userName || 'Unknown';
+                console.log(`🔍 DEBUG ${seatCode}:`, {
+                    rawUsername: rawUsername,
+                    includesPipe: rawUsername.includes('|'),
+                    includesDash: rawUsername.includes('-'),
+                    includesSlash: rawUsername.includes('/'),
+                    length: rawUsername.length,
+                    type: typeof rawUsername
+                });
+                
+                // Extract department - MULTI FORMAT SUPPORT
+                let displayName = rawUsername;
                 let department = '';
                 
-                // Cek apakah ada pipe character '|'
-                if (displayName && displayName.includes('|')) {
-                    const parts = displayName.split('|');
+                // Coba berbagai format pemisah
+                if (rawUsername.includes('|')) {
+                    const parts = rawUsername.split('|');
+                    console.log(`🔍 Split by |:`, parts);
                     if (parts.length >= 2) {
                         displayName = parts[0].trim();
                         department = parts[1].trim();
                     }
+                } else if (rawUsername.includes('-')) {
+                    const parts = rawUsername.split('-');
+                    console.log(`🔍 Split by -:`, parts);
+                    if (parts.length >= 2) {
+                        displayName = parts[0].trim();
+                        department = parts[1].trim();
+                    }
+                } else if (rawUsername.includes('/')) {
+                    const parts = rawUsername.split('/');
+                    console.log(`🔍 Split by /:`, parts);
+                    if (parts.length >= 2) {
+                        displayName = parts[0].trim();
+                        department = parts[1].trim();
+                    }
+                } else if (rawUsername.includes(' ')) {
+                    // Coba split by space untuk format "Deny ITPM"
+                    const parts = rawUsername.split(' ');
+                    console.log(`🔍 Split by space:`, parts);
+                    if (parts.length >= 2) {
+                        displayName = parts[0].trim();
+                        department = parts.slice(1).join(' ').trim();
+                    }
                 }
+                
+                console.log(`🔍 RESULT - Name: "${displayName}", Dept: "${department}"`);
                 
                 seat.innerHTML = `
                     ${seatCode}
