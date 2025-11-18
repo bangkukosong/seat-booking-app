@@ -1,5 +1,5 @@
 /* css/admin-modals.css - Professional Compact Admin Modal Styles */
-/* ver 1.0.6 - COMPACT VERSION */
+/* ver 1.0.7 - COMPACT VERSION */
 
 /* ==================== ADMIN MODAL OVERLAY ==================== */
 .modal-overlay.admin-modal {
@@ -31,11 +31,11 @@
 /* ==================== COMPACT MODAL CONTAINER ==================== */
 .admin-modal-container {
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(10px);
     padding: 20px !important;
     border-radius: 16px !important;
-    width: 88% !important;
-    max-width: 800px !important;
+    width: 92% !important;
+    max-width: 850px !important;
     max-height: 80vh !important;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -408,9 +408,9 @@
 /* Maintain compatibility with existing modal classes */
 .admin-modal-content {
     border-radius: 16px;
-    max-width: 800px;
+    max-width: 850px;
     max-height: 80vh;
-    width: 88%;
+    width: 92%;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);

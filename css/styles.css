@@ -1,5 +1,5 @@
 /* css/styles.css - Professional Compact Admin Modal Styles */
-/* ver 1.0.3 - COMPACT VERSION */  
+/* ver 1.0.4 - COMPACT VERSION */  
 
   :root {
       --primary-green: #00ff80;
@@ -27,7 +27,7 @@
     
 /* TAMBAHKAN DI styles.css - FORCE BLUR */
 .overlay { 
-    background: rgba(0,0,0,0.1) !important; 
+    background: rgba(0,0,0,0.2) !important; 
     position: fixed !important; 
     top: 0 !important; 
     left: 0 !important; 
@@ -36,8 +36,8 @@
     z-index: 0 !important; 
     
     /* FORCE BLUR EFFECT */
-    backdrop-filter: blur(3px) !important;
-    -webkit-backdrop-filter: blur(3px) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
 }
     
     .container { 
