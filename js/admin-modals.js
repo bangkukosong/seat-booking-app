@@ -1,6 +1,6 @@
-// admin-modals.js - Professional Admin Modal Functions v1.0.5
+// admin-modals.js - Professional Admin Modal Functions v1.0.6
 export function showUserManagementModal(users) {
-    console.log('👥 User Management - Users:', users);
+    console.log('🧑‍💼 User Management - Users:', users);
     
     const modal = document.createElement('div');
     modal.className = 'modal-overlay admin-modal';
@@ -16,7 +16,7 @@ export function showUserManagementModal(users) {
 		<div class="admin-modal-container">
 			<!-- Header -->
 			<div class="admin-modal-header">
-				<h2 style="color: var(--gold) !important;">👥 User Access Management</h2>
+				<h2 style="color: var(--gold) !important;">🧑‍💼 User Access Management</h2>
 				<button onclick="this.closest('.modal-overlay').remove()" class="admin-close-btn">×</button>
 			</div>
 			
@@ -209,7 +209,7 @@ window.showRoleChangeModal = function(username, currentRole) {
                     background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
                     color: white; font-size: 14px;
                 ">
-                    <option value="user" ${currentRole === 'user' ? 'selected' : ''}>👤 User</option>
+                    <option value="user" ${currentRole === 'user' ? 'selected' : ''}>🙍 User</option>
                     <option value="admin" ${currentRole === 'admin' ? 'selected' : ''}>👨‍💼 Admin</option>
                 </select>
             </div>
@@ -567,26 +567,26 @@ window.exportBookingReport = async function() {
     }
 };
 
-window.exportBookingPDF = function() {
-    // Simple PDF implementation using browser print
-    showMessage('📄 Preparing PDF export...', 'info');
+//window.exportBookingPDF = function() {
+//    Simple PDF implementation using browser print
+//    showMessage('📄 Preparing PDF export...', 'info');
     
-    setTimeout(() => {
-        const modal = document.querySelector('.admin-modal-container');
-        if (modal) {
-            const originalDisplay = modal.style.display;
-            modal.style.display = 'block';
+//   setTimeout(() => {
+//        const modal = document.querySelector('.admin-modal-container');
+//        if (modal) {
+//            const originalDisplay = modal.style.display;
+//            modal.style.display = 'block';
             
             // Use browser print for simple PDF
-            window.print();
+ //           window.print();
             
-            modal.style.display = originalDisplay;
-            showMessage('✅ PDF ready! Use browser print to save as PDF.', 'success');
-        } else {
-            showMessage('❌ No booking data to export', 'error');
-        }
-    }, 1000);
-};
+ //           modal.style.display = originalDisplay;
+ //           showMessage('✅ PDF ready! Use browser print to save as PDF.', 'success');
+ //       } else {
+ //           showMessage('❌ No booking data to export', 'error');
+//        }
+ //  }, 1000);
+//};
 
 // Atau disable PDF button dan kasih message
 // window.exportBookingPDF = function() {
