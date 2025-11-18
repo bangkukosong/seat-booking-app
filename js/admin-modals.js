@@ -1,4 +1,4 @@
-// admin-modals.js - Professional Admin Modal Functions v1.0.2
+// admin-modals.js - Professional Admin Modal Functions v1.0.3
 export function showUserManagementModal(users) {
     console.log('👥 User Management - Users:', users);
     
@@ -6,47 +6,56 @@ export function showUserManagementModal(users) {
     modal.className = 'modal-overlay admin-modal';
     modal.style.cssText = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+        background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
         display: flex; justify-content: center; align-items: center;
-        z-index: 10000;
+        z-index: 10000; overflow: hidden;
     `;
     
     modal.innerHTML = `
-        <div style="background: var(--card-bg); padding: 25px; border-radius: 15px; 
-                   width: 95%; max-width: 1000px; max-height: 85vh; overflow-y: auto;
-                   border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: var(--admin-purple); margin: 0;">👥 User Access Management</h2>
+        <div class="admin-modal-container" style="
+            background: rgba(255,255,255,0.25); 
+            backdrop-filter: blur(20px);
+            padding: 25px; border-radius: 20px; 
+            width: 95%; max-width: 1200px; max-height: 85vh; 
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column;
+        ">
+            <!-- Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0;">
+                <h2 style="color: var(--admin-purple); margin: 0; font-size: 1.5rem;">👥 User Access Management</h2>
                 <button onclick="this.closest('.modal-overlay').remove()" 
-                        style="background: none; border: none; color: #ff5555; font-size: 24px; cursor: pointer;">×</button>
+                        class="admin-close-btn">×</button>
             </div>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                <button onclick="window.showAddUserForm()" class="btn btn-success" style="padding: 10px 15px;">
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; flex-shrink: 0;">
+                <button onclick="window.showAddUserForm()" class="btn btn-success">
                     ➕ Add New User
                 </button>
-                <button onclick="window.exportUserReport()" class="btn btn-primary" style="padding: 10px 15px;">
+                <button onclick="window.exportUserReport()" class="btn btn-primary">
                     📊 Export User Report
                 </button>
-                <button onclick="window.refreshUserList()" class="btn btn-secondary" style="padding: 10px 15px;">
+                <button onclick="window.refreshUserList()" class="btn btn-secondary">
                     🔄 Refresh
                 </button>
             </div>
             
-            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 2fr; gap: 15px; font-weight: bold; color: var(--gold);">
-                    <div>User Information</div>
-                    <div>Role</div>
-                    <div>Status</div>
-                    <div>Actions</div>
-                </div>
+            <!-- Grid Header -->
+            <div class="grid-header">
+                <div>User Information</div>
+                <div>Role</div>
+                <div>Status</div>
+                <div>Actions</div>
             </div>
             
-            <div style="max-height: 500px; overflow-y: auto;">
+            <!-- Scrollable Content -->
+            <div style="flex: 1; overflow-y: auto; max-height: 400px; margin: 0 -10px; padding: 0 10px;">
                 ${renderUsersList(users)}
             </div>
             
-            <div style="margin-top: 20px; text-align: center; color: rgba(255,255,255,0.7);">
+            <!-- Footer -->
+            <div style="margin-top: 20px; text-align: center; color: rgba(255,255,255,0.8); flex-shrink: 0;">
                 Total Users: <strong>${users?.length || 0}</strong>
             </div>
         </div>
@@ -108,59 +117,255 @@ function renderUsersList(users) {
         return '<p style="text-align: center; color: rgba(255,255,255,0.7); padding: 40px;">No users found</p>';
     }
     
-    return users.map(user => `
-        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 2fr; gap: 15px; 
-                    padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); 
-                    align-items: center; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px;">
+    return users.map(user => {
+        // Format dates properly
+        const createdDate = user.createdAt?.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
+        const lastLoginDate = user.lastLogin?.toDate ? user.lastLogin.toDate() : (user.lastLogin ? new Date(user.lastLogin) : null);
+        
+        const createdDisplay = createdDate instanceof Date && !isNaN(createdDate) 
+            ? createdDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+            : 'Unknown';
             
-            <!-- User Information -->
-            <div>
-                <div style="font-weight: bold; color: white; margin-bottom: 4px;">${user.name || 'N/A'}</div>
-                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">ID: ${user.username}</div>
-                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">
-                    Created: ${user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : 'Unknown'}
+        const lastLoginDisplay = lastLoginDate instanceof Date && !isNaN(lastLoginDate)
+            ? lastLoginDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+            : 'Never';
+            
+        const isActive = user.lastLogin ? 
+            (Date.now() - lastLoginDate.getTime() < 30 * 24 * 60 * 60 * 1000) : false; // Active if logged in within 30 days
+
+        return `
+            <div class="grid-row">
+                <!-- User Information -->
+                <div>
+                    <div style="font-weight: bold; color: white; margin-bottom: 4px;">${user.name || 'N/A'}</div>
+                    <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">ID: ${user.username}</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">
+                        Created: ${createdDisplay}<br>
+                        Last Login: ${lastLoginDisplay}
+                    </div>
+                </div>
+                
+                <!-- Role -->
+                <div>
+                    <span class="role-badge ${user.role || 'user'}">
+                        ${user.role || 'user'}
+                    </span>
+                </div>
+                
+                <!-- Status -->
+                <div>
+                    <span class="status-badge ${isActive ? 'status-active' : 'status-inactive'}">
+                        ${isActive ? '✅ Active' : '💤 Inactive'}
+                    </span>
+                </div>
+                
+                <!-- Actions -->
+                <div class="action-buttons">
+                    <button onclick="window.showRoleChangeModal('${user.username}', '${user.role}')" 
+                            class="action-btn btn-role">
+                        🔄 Role
+                    </button>
+                    <button onclick="window.showPasswordResetModal('${user.username}')" 
+                            class="action-btn btn-password">
+                        🔑 Reset PW
+                    </button>
+                    ${user.role !== 'super_admin' ? `
+                        <button onclick="window.deleteUser('${user.username}')" 
+                                class="action-btn btn-delete">
+                            🗑️ Delete
+                        </button>
+                    ` : ''}
                 </div>
             </div>
-            
-            <!-- Role -->
-            <div>
-                <span class="role-badge ${user.role || 'user'}" 
-                      style="padding: 6px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600;
-                             background: ${getRoleColor(user.role).background}; 
-                             color: ${getRoleColor(user.role).color};
-                             border: 1px solid ${getRoleColor(user.role).border};">
-                    ${user.role || 'user'}
-                </span>
+        `;
+    }).join('');
+}
+
+// ====================Role Change Modal (Elegant)====================
+window.showRoleChangeModal = function(username, currentRole) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay admin-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 10001;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: rgba(255,255,255,0.25); 
+            backdrop-filter: blur(20px);
+            padding: 30px; border-radius: 20px; 
+            width: 90%; max-width: 400px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            color: white;
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="color: var(--gold); margin: 0;">🔄 Change User Role</h3>
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="admin-close-btn">×</button>
             </div>
             
-            <!-- Status -->
-            <div>
-                <span style="padding: 4px 8px; border-radius: 10px; font-size: 0.75rem; 
-                            background: rgba(0,255,128,0.2); color: #00ff80; border: 1px solid rgba(0,255,128,0.3);">
-                    ✅ Active
-                </span>
+            <div style="margin-bottom: 20px;">
+                <p style="margin-bottom: 10px; color: rgba(255,255,255,0.9);">User: <strong>${username}</strong></p>
+                <p style="color: rgba(255,255,255,0.8);">Current Role: <span class="role-badge ${currentRole}">${currentRole}</span></p>
             </div>
             
-            <!-- Actions -->
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button onclick="window.changeUserRole('${user.username}', '${user.role}')" 
-                        class="btn btn-secondary" style="padding: 6px 10px; font-size: 0.8rem;">
-                    🔄 Role
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 10px; color: rgba(255,255,255,0.9); font-weight: 600;">
+                    Select New Role:
+                </label>
+                <select id="newRoleSelect" style="
+                    width: 100%; padding: 12px; border-radius: 10px; 
+                    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+                    color: white; font-size: 14px;
+                ">
+                    <option value="user" ${currentRole === 'user' ? 'selected' : ''}>👤 User</option>
+                    <option value="admin" ${currentRole === 'admin' ? 'selected' : ''}>👨‍💼 Admin</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button onclick="window.confirmRoleChange('${username}')" 
+                        class="btn btn-success" style="flex: 1;">
+                    ✅ Confirm Change
                 </button>
-                <button onclick="window.resetUserPassword('${user.username}')" 
-                        class="btn btn-primary" style="padding: 6px 10px; font-size: 0.8rem;">
-                    🔑 Reset PW
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="btn btn-secondary" style="flex: 1;">
+                    ❌ Cancel
                 </button>
-                ${user.role !== 'super_admin' ? `
-                    <button onclick="window.deleteUser('${user.username}')" 
-                            class="btn btn-danger" style="padding: 6px 10px; font-size: 0.8rem;">
-                        🗑️ Delete
-                    </button>
-                ` : ''}
             </div>
         </div>
-    `).join('');
-}
+    `;
+    
+    document.body.appendChild(modal);
+};
+
+window.confirmRoleChange = async function(username) {
+    const newRole = document.getElementById('newRoleSelect').value;
+    
+    try {
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.changeUserRole(username, newRole);
+        
+        if (result.success) {
+            showMessage(`✅ Role changed to ${newRole} for ${username}`, 'success');
+            // Close both modals
+            document.querySelectorAll('.modal-overlay').forEach(modal => modal.remove());
+            setTimeout(() => window.refreshUserList(), 1000);
+        } else {
+            showMessage(`❌ Failed to change role: ${result.message}`, 'error');
+        }
+    } catch (error) {
+        console.error('Change role error:', error);
+        showMessage('❌ Error changing role', 'error');
+    }
+};
+// ======== Password Reset Modal (Elegant + Auto-generate) ===========
+window.showPasswordResetModal = function(username) {
+    // Generate secure password
+    const generateSecurePassword = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        let password = '';
+        for (let i = 0; i < 12; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return password;
+    };
+
+    const newPassword = generateSecurePassword();
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay admin-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 10001;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: rgba(255,255,255,0.25); 
+            backdrop-filter: blur(20px);
+            padding: 30px; border-radius: 20px; 
+            width: 90%; max-width: 450px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            color: white;
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="color: var(--gold); margin: 0;">🔑 Reset Password</h3>
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="admin-close-btn">×</button>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <p style="margin-bottom: 15px; color: rgba(255,255,255,0.9);">
+                    User: <strong>${username}</strong>
+                </p>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8); font-size: 0.9rem;">
+                        New Generated Password:
+                    </label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="generatedPassword" value="${newPassword}" readonly 
+                               style="flex: 1; padding: 10px; border-radius: 8px; 
+                                      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+                                      color: var(--primary-green); font-family: monospace; font-weight: bold;">
+                        <button onclick="copyGeneratedPassword()" 
+                                class="btn btn-secondary" style="white-space: nowrap;">
+                            📋 Copy
+                        </button>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); text-align: center;">
+                    🔒 Password will be automatically reset to this secure password
+                </p>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button onclick="window.confirmPasswordReset('${username}', '${newPassword}')" 
+                        class="btn btn-success" style="flex: 1;">
+                    ✅ Reset Password
+                </button>
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="btn btn-secondary" style="flex: 1;">
+                    ❌ Cancel
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+};
+
+window.copyGeneratedPassword = function() {
+    const passwordField = document.getElementById('generatedPassword');
+    passwordField.select();
+    document.execCommand('copy');
+    showMessage('✅ Password copied to clipboard!', 'success');
+};
+
+window.confirmPasswordReset = async function(username, newPassword) {
+    try {
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.resetUserPassword(username, newPassword);
+        
+        if (result.success) {
+            showMessage(`✅ Password reset successfully for ${username}`, 'success');
+            // Close modal
+            document.querySelector('.modal-overlay').remove();
+        } else {
+            showMessage(`❌ Failed to reset password: ${result.message}`, 'error');
+        }
+    } catch (error) {
+        console.error('Reset password error:', error);
+        showMessage('❌ Error resetting password', 'error');
+    }
+};
 
 // ==================== BOOKINGS REPORT FUNCTIONS ====================
 function renderBookingsTable(bookings) {
