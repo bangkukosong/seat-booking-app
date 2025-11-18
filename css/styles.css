@@ -1,5 +1,5 @@
 /* css/styles.css - Professional Compact Admin Modal Styles */
-/* ver 1.0.4 - COMPACT VERSION */  
+/* ver 1.0.5 - COMPACT VERSION */  
 
   :root {
       --primary-green: #00ff80;
@@ -36,8 +36,8 @@
     z-index: 0 !important; 
     
     /* FORCE BLUR EFFECT */
-    backdrop-filter: blur(5px) !important;
-    -webkit-backdrop-filter: blur(5px) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
 }
     
     .container { 
