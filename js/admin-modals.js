@@ -1,463 +1,632 @@
-/* css/admin-modals.css - Professional Compact Admin Modal Styles */
-/* ver 1.0.9 - COMPACT VERSION */
-
-/* ==================== ADMIN MODAL OVERLAY ==================== */
-.modal-overlay.admin-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    z-index: 10000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    animation: adminModalFadeIn 0.3s ease-out;
+// admin-modals.js - Professional Admin Modal Functions v1.0.5
+export function showUserManagementModal(users) {
+    console.log('👥 User Management - Users:', users);
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay admin-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 10000; overflow: hidden;
+    `;
+    
+	// Di dalam showUserManagementModal - pastikan pakai class yang sama
+	modal.innerHTML = `
+		<div class="admin-modal-container">
+			<!-- Header -->
+			<div class="admin-modal-header">
+				<h2 style="color: var(--gold) !important;">👥 User Access Management</h2>
+				<button onclick="this.closest('.modal-overlay').remove()" class="admin-close-btn">×</button>
+			</div>
+			
+			<!-- Action Buttons -->
+			<div class="admin-action-buttons">
+				<button onclick="window.showAddUserForm()" class="btn btn-success">➕ Add New User</button>
+				<button onclick="window.exportUserReport()" class="btn btn-primary">📊 Export User Report</button>
+				<button onclick="window.refreshUserList()" class="btn btn-secondary">🔄 Refresh</button>
+			</div>
+			
+			<!-- Grid Header -->
+			<div class="grid-header">
+				<div>User Information</div>
+				<div>Role</div>
+				<div>Status</div>
+				<div>Actions</div>
+			</div>
+			
+			<!-- Scrollable Content -->
+			<div class="admin-modal-scroll">
+				${renderUsersList(users)}
+			</div>
+			
+			<!-- Footer -->
+			<div class="admin-modal-footer">
+				Total Users: <strong>${users?.length || 0}</strong>
+			</div>
+		</div>
+	`;
+    
+    document.body.appendChild(modal);
 }
 
-@keyframes adminModalFadeIn {
-    from {
-        opacity: 0;
-        backdrop-filter: blur(0px);
-    }
-    to {
-        opacity: 1;
-        backdrop-filter: blur(10px);
-    }
+export function showAllBookingsModal(bookings) {
+    console.log('📋 All Bookings - Bookings:', bookings);
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay admin-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 10000;
+    `;
+    
+    modal.innerHTML = `
+        <div class="admin-modal-container" style="max-width: 1200px !important;">
+            <!-- Header -->
+            <div class="admin-modal-header">
+                <h2 style="color: var(--gold) !important;">📋 All Bookings Report</h2>
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="admin-close-btn">×</button>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="admin-action-buttons">
+                <button onclick="window.exportBookingReport()" class="btn btn-success">
+                    📤 Export CSV Report
+                </button>
+                <button onclick="window.exportBookingPDF()" class="btn btn-primary">
+                    📄 Export PDF
+                </button>
+                <button onclick="window.refreshAllBookings()" class="btn btn-secondary">
+                    🔄 Refresh
+                </button>
+            </div>
+            
+            <!-- Scrollable Content -->
+            <div class="admin-modal-scroll">
+                ${renderBookingsTable(bookings)}
+            </div>
+            
+            <!-- Footer -->
+            <div class="admin-modal-footer">
+                Total Bookings: <strong>${bookings?.length || 0}</strong>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
 }
-
-/* ==================== COMPACT MODAL CONTAINER ==================== */
-.admin-modal-container {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    padding: 20px !important;
-    border-radius: 16px !important;
-    width: 92% !important;
-    max-width: 900px !important;
-    max-height: 80vh !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: 500;
-    animation: adminModalSlideIn 0.3s ease-out;
-}
-
-@keyframes adminModalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.98);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* ==================== COMPACT MODAL HEADER ==================== */
-.admin-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px !important;
-    flex-shrink: 0;
-}
-
-.admin-modal-header h2 {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: 700;
-    font-size: 1.2rem !important;
-    color: var(--gold);
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    margin: 0;
-}
-
-.admin-close-btn {
-    background: rgba(255, 68, 68, 0.2);
-    color: #ff4444;
-    border: 1px solid rgba(255, 68, 68, 0.3);
-    width: 28px !important;
-    height: 28px !important;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.1rem !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.admin-close-btn:hover {
-    background: rgba(255, 68, 68, 0.3);
-    transform: scale(1.1);
-}
-
-/* ==================== COMPACT ACTION BUTTONS ==================== */
-.admin-action-buttons {
-    display: flex;
-    gap: 8px !important;
-    margin-bottom: 15px !important;
-    flex-wrap: wrap;
-    flex-shrink: 0;
-}
-
-.btn {
-    padding: 8px 14px !important;
-    font-size: 0.85rem !important;
-    border-radius: 8px !important;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: 600;
-}
-
-/* ==================== COMPACT GRID LAYOUT ==================== */
-.grid-header {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 12px !important;
-    padding: 12px 15px !important;
-    background: rgba(255,255,255,0.08);
-    border-radius: 10px;
-    font-weight: bold;
-    color: var(--gold);
-    margin-bottom: 8px !important;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: 600;
-    font-size: 0.85rem !important;
-}
-
-.grid-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 12px !important;
-    padding: 12px 15px !important;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    align-items: center;
-    background: rgba(255,255,255,0.04);
-    border-radius: 8px;
-    margin-bottom: 6px !important;
-    transition: all 0.3s ease;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 0.9rem !important;
-    color: rgba(0, 0, 0, 0.8);
-}
-
-.grid-row:hover {
-    background: rgba(255,255,255,0.06);
-    transform: translateY(-2px);
-}
-
-.grid-row div {
-    color: rgba(0, 0, 0, 0.8);
-    font-size: 0.85rem !important;
-}
-
-.grid-row .user-info {
-    color: rgba(0, 0, 0, 0.9);
-    font-weight: 600;
-    font-size: 0.9rem !important;
-}
-
-.grid-row .user-details {
-    font-size: 0.75rem !important;
-    color: rgba(0, 0, 0, 0.6);
-}
-
-/* ==================== COMPACT SCROLL AREA ==================== */
-.admin-modal-scroll {
-    flex: 1;
-    overflow-y: auto;
-    max-height: 350px !important;
-    margin: 0 -8px !important;
-    padding: 0 8px !important;
-}
-
-.admin-modal-footer {
-    margin-top: 20px;
-    text-align: center;
-    color: rgba(255,255,255,0.8);
-    flex-shrink: 0;
-    font-size: 0.9rem;
-}
-
-/* ==================== COMPACT ROLE BADGES ==================== */
-.role-badge {
-    padding: 4px 12px !important;
-    border-radius: 20px;
-    font-size: 0.8rem !important;
-    font-weight: 600;
-    text-transform: capitalize;
-    border: 1px solid transparent;
-    display: inline-block;
-    text-align: center;
-    min-width: 50px !important;
-}
-
-.role-badge.super_admin {
-    background: linear-gradient(135deg, #DC2626, #EF4444);
-    color: white;
-    border-color: rgba(220, 38, 38, 0.4);
-}
-
-.role-badge.admin {
-    background: linear-gradient(135deg, #2563EB, #3B82F6);
-    color: white;
-    border-color: rgba(37, 99, 235, 0.4);
-}
-
-.role-badge.user {
-    background: linear-gradient(135deg, #059669, #10B981);
-    color: white;
-    border-color: rgba(5, 150, 105, 0.4);
-}
-
-/* ==================== COMPACT STATUS BADGES ==================== */
-.status-badge {
-    padding: 4px 10px !important;
-    border-radius: 15px;
-    font-size: 0.75rem !important;
-    font-weight: 600;
-    display: inline-block;
-    text-align: center;
-    min-width: 70px !important;
-}
-
-.status-active {
-    background: rgba(5, 150, 105, 0.2);
-    color: #059669;
-    border: 1px solid rgba(5, 150, 105, 0.4);
-}
-
-.status-inactive {
-    background: rgba(245, 158, 11, 0.2);
-    color: #D97706;
-    border: 1px solid rgba(245, 158, 11, 0.4);
-}
-
-/* ==================== COMPACT ACTION BUTTONS ==================== */
-.action-buttons {
-    display: flex;
-    gap: 6px !important;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.action-btn {
-    padding: 6px 10px !important;
-    border: none;
-    border-radius: 6px !important;
-    cursor: pointer;
-    font-size: 0.75rem !important;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.btn-role {
-    background: rgba(37, 99, 235, 0.3);
-    color: #2563EB;
-    border: 1px solid rgba(37, 99, 235, 0.5);
-}
-
-.btn-role:hover {
-    background: rgba(37, 99, 235, 0.4);
-}
-
-.btn-password {
-    background: rgba(5, 150, 105, 0.3);
-    color: #059669;
-    border: 1px solid rgba(5, 150, 105, 0.5);
-}
-
-.btn-password:hover {
-    background: rgba(5, 150, 105, 0.4);
-}
-
-.btn-delete {
-    background: rgba(220, 38, 38, 0.3);
-    color: #DC2626;
-    border: 1px solid rgba(220, 38, 38, 0.5);
-}
-
-.btn-delete:hover {
-    background: rgba(220, 38, 38, 0.4);
-}
-
-/* ==================== CHANGE PASSWORD MODAL FIX ==================== */
-#changePasswordModal .modal-content {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(25px);
-    padding: 25px !important;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 400px !important;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-#changePasswordModal .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px !important;
-}
-
-#changePasswordModal .modal-title {
-    font-size: 1.2rem !important;
-    font-weight: 700;
-    margin: 0;
-}
-
-#changePasswordModal .form-group {
-    margin-bottom: 20px !important;
-}
-
-#changePasswordModal .form-group label {
-    display: block;
-    margin-bottom: 8px !important;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.9rem !important;
-}
-
-#changePasswordModal input {
-    width: 100%;
-    padding: 12px 14px !important;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px !important;
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    font-size: 14px !important;
-}
-
-#changePasswordModal .btn-group {
-    display: flex;
-    gap: 12px !important;
-    margin-top: 25px !important;
-}
-
-#changePasswordModal .btn {
-    flex: 1;
-    padding: 12px !important;
-    border-radius: 10px !important;
-    font-size: 14px !important;
-}
-
-/* ==================== COMPACT MOBILE RESPONSIVE ==================== */
-@media (max-width: 768px) {
-    .admin-modal-container {
-        padding: 15px !important;
-        margin: 8px !important;
-        width: 95% !important;
-        max-height: 85vh !important;
+// ==================== USER MANAGEMENT FUNCTIONS ====================
+function renderUsersList(users) {
+    if (!users || users.length === 0) {
+        return '<p style="text-align: center; color: rgba(255,255,255,0.7); padding: 40px;">No users found</p>';
     }
     
-    .admin-modal-header h2 {
-        font-size: 1.1rem !important;
-    }
-    
-    .btn {
-        padding: 7px 12px !important;
-        font-size: 0.8rem !important;
-    }
-    
-    .grid-header,
-    .grid-row {
-        grid-template-columns: 1fr;
-        gap: 8px !important;
-        padding: 10px !important;
-        text-align: center;
-    }
-    
-    .action-buttons {
-        justify-content: center;
-    }
-    
-    .action-btn {
-        padding: 5px 8px !important;
-        font-size: 0.7rem !important;
-    }
-    
-    .role-badge,
-    .status-badge {
-        min-width: 80px;
-        margin: 0 auto;
-    }
-    
-    .admin-action-buttons {
-        flex-direction: column;
-    }
-    
-    #changePasswordModal .modal-content {
-        padding: 20px !important;
-        margin: 10px;
-    }
+    return users.map(user => {
+        // Format dates properly
+        const createdDate = user.createdAt?.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
+        const lastLoginDate = user.lastLogin?.toDate ? user.lastLogin.toDate() : (user.lastLogin ? new Date(user.lastLogin) : null);
+        
+        const createdDisplay = createdDate instanceof Date && !isNaN(createdDate) 
+            ? createdDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+            : 'Unknown';
+            
+        const lastLoginDisplay = lastLoginDate instanceof Date && !isNaN(lastLoginDate)
+            ? lastLoginDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+            : 'Never';
+            
+        const isActive = user.lastLogin ? 
+            (Date.now() - lastLoginDate.getTime() < 30 * 24 * 60 * 60 * 1000) : false; // Active if logged in within 30 days
+
+        return `
+            <div class="grid-row">
+                <!-- User Information -->
+                <div>
+                    <div style="font-weight: bold; color: white; margin-bottom: 4px;">${user.name || 'N/A'}</div>
+                    <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">ID: ${user.username}</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">
+                        Created: ${createdDisplay}<br>
+                        Last Login: ${lastLoginDisplay}
+                    </div>
+                </div>
+                
+                <!-- Role -->
+                <div>
+                    <span class="role-badge ${user.role || 'user'}">
+                        ${user.role || 'user'}
+                    </span>
+                </div>
+                
+                <!-- Status -->
+                <div>
+                    <span class="status-badge ${isActive ? 'status-active' : 'status-inactive'}">
+                        ${isActive ? '✅ Active' : '💤 Inactive'}
+                    </span>
+                </div>
+                
+                <!-- Actions -->
+                <div class="action-buttons">
+                    <button onclick="window.showRoleChangeModal('${user.username}', '${user.role}')" 
+                            class="action-btn btn-role">
+                        🔄 Role
+                    </button>
+                    <button onclick="window.showPasswordResetModal('${user.username}')" 
+                            class="action-btn btn-password">
+                        🔑 Reset PW
+                    </button>
+                    ${user.role !== 'super_admin' ? `
+                        <button onclick="window.deleteUser('${user.username}')" 
+                                class="action-btn btn-delete">
+                            🗑️ Delete
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
-/* ==================== BACKWARD COMPATIBILITY ==================== */
-/* Maintain compatibility with existing modal classes */
-.admin-modal-content {
-    border-radius: 16px;
-    max-width: 900px;
-    max-height: 80vh;
-    width: 92%;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+// ====================Role Change Modal (Elegant)====================
+window.showRoleChangeModal = function(username, currentRole) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay admin-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 10001;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: rgba(255,255,255,0.25); 
+            backdrop-filter: blur(20px);
+            padding: 30px; border-radius: 20px; 
+            width: 90%; max-width: 400px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            color: white;
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="color: var(--gold); margin: 0;">🔄 Change User Role</h3>
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="admin-close-btn">×</button>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <p style="margin-bottom: 10px; color: rgba(255,255,255,0.9);">User: <strong>${username}</strong></p>
+                <p style="color: rgba(255,255,255,0.8);">Current Role: <span class="role-badge ${currentRole}">${currentRole}</span></p>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 10px; color: rgba(255,255,255,0.9); font-weight: 600;">
+                    Select New Role:
+                </label>
+                <select id="newRoleSelect" style="
+                    width: 100%; padding: 12px; border-radius: 10px; 
+                    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+                    color: white; font-size: 14px;
+                ">
+                    <option value="user" ${currentRole === 'user' ? 'selected' : ''}>👤 User</option>
+                    <option value="admin" ${currentRole === 'admin' ? 'selected' : ''}>👨‍💼 Admin</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button onclick="window.confirmRoleChange('${username}')" 
+                        class="btn btn-success" style="flex: 1;">
+                    ✅ Confirm Change
+                </button>
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="btn btn-secondary" style="flex: 1;">
+                    ❌ Cancel
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+};
+
+window.confirmRoleChange = async function(username) {
+    const newRole = document.getElementById('newRoleSelect').value;
+    
+    try {
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.changeUserRole(username, newRole);
+        
+        if (result.success) {
+            showMessage(`✅ Role changed to ${newRole} for ${username}`, 'success');
+            // Close both modals
+            document.querySelectorAll('.modal-overlay').forEach(modal => modal.remove());
+            setTimeout(() => window.refreshUserList(), 1000);
+        } else {
+            showMessage(`❌ Failed to change role: ${result.message}`, 'error');
+        }
+    } catch (error) {
+        console.error('Change role error:', error);
+        showMessage('❌ Error changing role', 'error');
+    }
+};
+// ======== Password Reset Modal (Elegant + Auto-generate) ===========
+window.showPasswordResetModal = function(username) {
+    // Generate secure password
+    const generateSecurePassword = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        let password = '';
+        for (let i = 0; i < 12; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return password;
+    };
+
+    const newPassword = generateSecurePassword();
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay admin-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 10001;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: rgba(255,255,255,0.25); 
+            backdrop-filter: blur(20px);
+            padding: 30px; border-radius: 20px; 
+            width: 90%; max-width: 450px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            color: white;
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="color: var(--gold); margin: 0;">🔑 Reset Password</h3>
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="admin-close-btn">×</button>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <p style="margin-bottom: 15px; color: rgba(255,255,255,0.9);">
+                    User: <strong>${username}</strong>
+                </p>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8); font-size: 0.9rem;">
+                        New Generated Password:
+                    </label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="generatedPassword" value="${newPassword}" readonly 
+                               style="flex: 1; padding: 10px; border-radius: 8px; 
+                                      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+                                      color: var(--primary-green); font-family: monospace; font-weight: bold;">
+                        <button onclick="copyGeneratedPassword()" 
+                                class="btn btn-secondary" style="white-space: nowrap;">
+                            📋 Copy
+                        </button>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); text-align: center;">
+                    🔒 Password will be automatically reset to this secure password
+                </p>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button onclick="window.confirmPasswordReset('${username}', '${newPassword}')" 
+                        class="btn btn-success" style="flex: 1;">
+                    ✅ Reset Password
+                </button>
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="btn btn-secondary" style="flex: 1;">
+                    ❌ Cancel
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+};
+
+window.copyGeneratedPassword = function() {
+    const passwordField = document.getElementById('generatedPassword');
+    passwordField.select();
+    document.execCommand('copy');
+    showMessage('✅ Password copied to clipboard!', 'success');
+};
+
+window.confirmPasswordReset = async function(username, newPassword) {
+    try {
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.resetUserPassword(username, newPassword);
+        
+        if (result.success) {
+            showMessage(`✅ Password reset successfully for ${username}`, 'success');
+            // Close modal
+            document.querySelector('.modal-overlay').remove();
+        } else {
+            showMessage(`❌ Failed to reset password: ${result.message}`, 'error');
+        }
+    } catch (error) {
+        console.error('Reset password error:', error);
+        showMessage('❌ Error resetting password', 'error');
+    }
+};
+
+// ==================== BOOKINGS REPORT FUNCTIONS ====================
+function renderBookingsTable(bookings) {
+    if (!bookings || bookings.length === 0) {
+        return '<p style="text-align: center; color: rgba(255,255,255,0.7); padding: 40px;">No bookings found</p>';
+    }
+    
+    return `
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden;">
+                <thead>
+                    <tr style="background: rgba(255,215,0,0.2);">
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Date</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Seat</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">User</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Booking Time</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Department</th>
+                        <th style="padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${bookings.map(booking => {
+                        // Fix date formatting
+                        const bookingDate = booking.bookingTime?.toDate ? booking.bookingTime.toDate() : 
+                                           booking.timestamp ? new Date(booking.timestamp) : 
+                                           booking.createdAt?.toDate ? booking.createdAt.toDate() : new Date();
+                        
+                        const bookingTimeDisplay = bookingDate instanceof Date && !isNaN(bookingDate)
+                            ? bookingDate.toLocaleString('en-US', {
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric',
+                                hour: '2-digit', 
+                                minute: '2-digit'
+                            })
+                            : 'Unknown';
+
+                        const dateDisplay = booking.bookingDate ? 
+                            new Date(booking.bookingDate).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric' 
+                            }) : 'Unknown';
+
+                        return `
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 10px 12px; color: white; font-size: 0.85rem;">${dateDisplay}</td>
+                                <td style="padding: 10px 12px; color: var(--primary-green); font-weight: bold; font-size: 0.85rem;">${booking.seat}</td>
+                                <td style="padding: 10px 12px; color: white; font-size: 0.85rem;">${booking.userName}</td>
+                                <td style="padding: 10px 12px; color: rgba(255,255,255,0.8); font-size: 0.85rem;">${bookingTimeDisplay}</td>
+                                <td style="padding: 10px 12px; color: var(--gold); font-size: 0.85rem;">
+                                    ${booking.seat ? booking.seat.split('-')[0] : 'Unknown'}
+                                </td>
+                                <td style="padding: 10px 12px; font-size: 0.85rem;">
+                                    <span class="status-badge ${booking.status === 'active' ? 'status-active' : 'status-inactive'}">
+                                        ${booking.status === 'active' ? '✅ Active' : '❌ Cancelled'}
+                                    </span>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
 }
 
-.admin-modal-body {
-    padding: 20px;
-    max-height: 350px;
-    overflow-y: auto;
+// ==================== HELPER FUNCTIONS ====================
+function getRoleColor(role) {
+    const colors = {
+        'super_admin': { background: 'rgba(255,0,0,0.3)', color: '#ff5555', border: 'rgba(255,0,0,0.5)' },
+        'admin': { background: 'rgba(255,215,0,0.3)', color: '#ffd700', border: 'rgba(255,215,0,0.5)' },
+        'user': { background: 'rgba(0,255,128,0.3)', color: '#00ff80', border: 'rgba(0,255,128,0.5)' }
+    };
+    return colors[role] || colors.user;
 }
 
-/* Color Themes - Simplified */
-.manage-users-modal .admin-modal-content {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
+// ==================== WINDOW FUNCTIONS ====================
+window.refreshUserList = async function() {
+    try {
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.getAllUsers();
+        
+        if (result.success) {
+            // Close current modal and open new one
+            document.querySelector('.admin-modal')?.remove();
+            showUserManagementModal(result.users);
+            showMessage('✅ User list refreshed', 'success');
+        } else {
+            showMessage('❌ Failed to refresh users', 'error');
+        }
+    } catch (error) {
+        console.error('Refresh users error:', error);
+        showMessage('❌ Error refreshing users', 'error');
+    }
+};
 
-.view-bookings-modal .admin-modal-content {
-    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
-}
-/* ==================== BOOKINGS TABLE COMPACT STYLES ==================== */
-.booking-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 10px 0;
-    font-size: 0.85rem;
-}
+window.refreshAllBookings = async function() {
+    try {
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.getAllBookingsAdmin();
+        
+        if (result.success) {
+            // Close current modal and open new one
+            document.querySelector('.admin-modal')?.remove();
+            showAllBookingsModal(result.bookings);
+            showMessage('✅ Bookings refreshed', 'success');
+        } else {
+            showMessage('❌ Failed to refresh bookings', 'error');
+        }
+    } catch (error) {
+        console.error('Refresh bookings error:', error);
+        showMessage('❌ Error refreshing bookings', 'error');
+    }
+};
 
-.booking-table th {
-    background: rgba(255,215,0,0.2);
-    padding: 10px 12px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    color: var(--gold);
-    font-weight: 600;
-    font-size: 0.85rem;
-}
+window.changeUserRole = async function(username, currentRole) {
+    const newRole = prompt(`Change role for ${username}\nCurrent: ${currentRole}\n\nEnter new role (user/admin):`, currentRole);
+    
+    if (newRole && ['user', 'admin'].includes(newRole.toLowerCase())) {
+        try {
+            const { FirestoreAPI } = await import('./firestore-api.js');
+            const result = await FirestoreAPI.changeUserRole(username, newRole.toLowerCase());
+            
+            if (result.success) {
+                showMessage(`✅ Role changed to ${newRole} for ${username}`, 'success');
+                setTimeout(() => window.refreshUserList(), 1000);
+            } else {
+                showMessage(`❌ Failed to change role: ${result.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Change role error:', error);
+            showMessage('❌ Error changing role', 'error');
+        }
+    } else if (newRole) {
+        showMessage('❌ Invalid role. Use "user" or "admin"', 'error');
+    }
+};
 
-.booking-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.9);
-    font-size: 0.85rem;
-}
+window.resetUserPassword = async function(username) {
+    const confirmReset = confirm(`Reset password for ${username}?\n\nNew password will be: "password123"`);
+    
+    if (confirmReset) {
+        try {
+            const { FirestoreAPI } = await import('./firestore-api.js');
+            const result = await FirestoreAPI.resetUserPassword(username, 'password123');
+            
+            if (result.success) {
+                showMessage(`✅ Password reset to "password123" for ${username}`, 'success');
+            } else {
+                showMessage(`❌ Failed to reset password: ${result.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Reset password error:', error);
+            showMessage('❌ Error resetting password', 'error');
+        }
+    }
+};
 
-.booking-table tr:hover {
-    background: rgba(255,255,255,0.03);
+window.deleteUser = async function(username) {
+    const confirmDelete = confirm(`⚠️ DELETE USER: ${username}\n\nThis action cannot be undone!`);
+    
+    if (confirmDelete) {
+        try {
+            const { FirestoreAPI } = await import('./firestore-api.js');
+            const result = await FirestoreAPI.deleteUser(username);
+            
+            if (result.success) {
+                showMessage(`✅ User ${username} deleted`, 'success');
+                setTimeout(() => window.refreshUserList(), 1000);
+            } else {
+                showMessage(`❌ Failed to delete user: ${result.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Delete user error:', error);
+            showMessage('❌ Error deleting user', 'error');
+        }
+    }
+};
+
+window.exportUserReport = async function() {
+    try {
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.getAllUsers();
+        
+        if (result.success) {
+            exportToCSV(result.users, 'user_access_report');
+            showMessage('✅ User report exported as CSV', 'success');
+        } else {
+            showMessage('❌ Failed to export user report', 'error');
+        }
+    } catch (error) {
+        console.error('Export user report error:', error);
+        showMessage('❌ Error exporting user report', 'error');
+    }
+};
+
+window.exportBookingReport = async function() {
+    try {
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.getAllBookingsAdmin();
+        
+        if (result.success) {
+            exportToCSV(result.bookings, 'booking_report');
+            showMessage('✅ Booking report exported as CSV', 'success');
+        } else {
+            showMessage('❌ Failed to export booking report', 'error');
+        }
+    } catch (error) {
+        console.error('Export booking report error:', error);
+        showMessage('❌ Error exporting booking report', 'error');
+    }
+};
+
+window.exportBookingPDF = function() {
+    // Simple PDF implementation using browser print
+    showMessage('📄 Preparing PDF export...', 'info');
+    
+    setTimeout(() => {
+        const modal = document.querySelector('.admin-modal-container');
+        if (modal) {
+            const originalDisplay = modal.style.display;
+            modal.style.display = 'block';
+            
+            // Use browser print for simple PDF
+            window.print();
+            
+            modal.style.display = originalDisplay;
+            showMessage('✅ PDF ready! Use browser print to save as PDF.', 'success');
+        } else {
+            showMessage('❌ No booking data to export', 'error');
+        }
+    }, 1000);
+};
+
+// Atau disable PDF button dan kasih message
+// window.exportBookingPDF = function() {
+//     showMessage('📄 PDF export feature coming soon!', 'info');
+// };
+
+// ==================== EXPORT UTILITIES ====================
+function exportToCSV(data, filename) {
+    if (!data || data.length === 0) {
+        showMessage('❌ No data to export', 'error');
+        return;
+    }
+    
+    const headers = Object.keys(data[0]);
+    const csvContent = [
+        headers.join(','),
+        ...data.map(row => 
+            headers.map(header => {
+                const value = row[header];
+                // Handle nested objects (like Firebase timestamps)
+                if (value && typeof value === 'object') {
+                    if (value.seconds) {
+                        return new Date(value.seconds * 1000).toISOString();
+                    }
+                    return JSON.stringify(value);
+                }
+                return `"${String(value || '').replace(/"/g, '""')}"`;
+            }).join(',')
+        )
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
