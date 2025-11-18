@@ -1108,12 +1108,3 @@
 		transform: translateY(-2px);
 	}
     }
-/* ==================== HEADER LAYOUT FIX ==================== */
-.container > div:first-child {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start !important;
-    margin-bottom: 15px;
-    flex-wrap: nowrap;
-    gap: 10px;
-}
