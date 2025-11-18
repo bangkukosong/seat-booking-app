@@ -14,8 +14,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <!-- Tambahkan CSS -->
-  <link rel="stylesheet" href="css/admin-modals.css?v=1.0.8">
-  <link rel="stylesheet" href="css/styles.css?v=1.0.5">
+  <link rel="stylesheet" href="css/admin-modals.css?v=1.0.9">
+  <link rel="stylesheet" href="css/styles.css?v=1.0.6">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22> 🪑</text></svg>">
 </head>
 <body>
@@ -136,9 +136,9 @@
       <button class="control-btn" onclick="toggleHistorical()">
         📚 My History
       </button>
-      <button class="control-btn success admin-only" onclick="exportBookings()" id="exportBtn">
+       <!--<button class="control-btn success admin-only" onclick="exportBookings()" id="exportBtn">
         📤 Export Data
-      </button>
+      </button>-->
     </div>
   </div>
 
@@ -249,13 +249,13 @@
 <script type="module">
     import './js/firebase-config.js?v=1.0.0';
     import './js/constants.js?v=1.0.1';
-	import './js/firestore-api.js?v=1.0.4';
+	import './js/firestore-api.js?v=1.0.5';
     import './js/api-manager.js?v=1.0.1';
     import './js/utils.js?v=1.0.0';
     import './js/ui.js?v=1.0.0';
     import './js/auth.js?v=1.0.1';
     import './js/bookings.js?v=1.0.8';
-    import './js/admin-modals.js?v=1.0.4'; 
+    import './js/admin-modals.js?v=1.0.5'; 
     import './js/main.js?v=1.0.6';
 
     console.log('🎯 All modules loaded successfully!');
