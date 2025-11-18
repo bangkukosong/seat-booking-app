@@ -1,4 +1,4 @@
-// admin-modals.js - Professional Admin Modal Functions v1.0.6
+// admin-modals.js - Professional Admin Modal Functions v1.0.7
 export function showUserManagementModal(users) {
     console.log('🧑‍💼 User Management - Users:', users);
     
@@ -76,9 +76,9 @@ export function showAllBookingsModal(bookings) {
                 <button onclick="window.exportBookingReport()" class="btn btn-success">
                     📤 Export CSV Report
                 </button>
-                <button onclick="window.exportBookingPDF()" class="btn btn-primary">
+                <!--<button onclick="window.exportBookingPDF()" class="btn btn-primary">
                     📄 Export PDF
-                </button>
+                </button>-->
                 <button onclick="window.refreshAllBookings()" class="btn btn-secondary">
                     🔄 Refresh
                 </button>
