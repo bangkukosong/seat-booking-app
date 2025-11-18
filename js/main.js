@@ -1,4 +1,4 @@
-// main.js - FIXED VERSION (tanpa duplicate modal functions) v1.0.5
+// main.js - FIXED VERSION (tanpa duplicate modal functions) v1.0.6
 import { initializeAuth } from './auth.js';
 import { showLoader, showMessage } from './utils.js';
 import { state } from './constants.js';
@@ -176,19 +176,23 @@ function setupGlobalFunctions() {
         }
     };
     
-    window.showAddUserForm = function() {
-        const form = document.getElementById('addUserFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('newUserUsername').value = '';
-            document.getElementById('newUserPassword').value = '';
-            document.getElementById('newUserName').value = '';
-            document.getElementById('newUserRole').value = 'user';
-            
-            const messageEl = document.getElementById('addUserMessage');
-            if (messageEl) messageEl.innerHTML = '';
-        }
-    };
+window.showAddUserForm = function() {
+    const form = document.getElementById('addUserFormContainer');
+    if (form) {
+        // Close any existing admin modals first
+        document.querySelectorAll('.admin-modal').forEach(modal => modal.remove());
+        
+        form.style.display = 'block';
+        form.style.zIndex = '10002'; // Higher than admin modals
+        document.getElementById('newUserUsername').value = '';
+        document.getElementById('newUserPassword').value = '';
+        document.getElementById('newUserName').value = '';
+        document.getElementById('newUserRole').value = 'user';
+        
+        const messageEl = document.getElementById('addUserMessage');
+        if (messageEl) messageEl.innerHTML = '';
+    }
+};
     
     window.hideAddUserForm = function() {
         const form = document.getElementById('addUserFormContainer');

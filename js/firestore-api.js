@@ -1,5 +1,5 @@
 // js/firestore-api.js - COMPAT VERSION (PASTI WORK)
-//ver1.0.3
+//ver1.0.4
 import { db } from './firebase-config.js';
 
 export class FirestoreAPI {
@@ -377,7 +377,86 @@ export class FirestoreAPI {
             return { success: false, message: error.message };
         }
     }
-
+	
+	// ==================== EXPORT FUNCTIONS ====================
+	static async exportUserReport() {
+		try {
+			const result = await this.getAllUsers();
+			if (!result.success) {
+				return { success: false, message: 'Failed to fetch users for export' };
+			}
+	
+			const reportData = result.users.map(user => {
+				// Format dates properly
+				const createdDate = user.createdAt?.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
+				const lastLoginDate = user.lastLogin?.toDate ? user.lastLogin.toDate() : (user.lastLogin ? new Date(user.lastLogin) : null);
+				
+				const createdDisplay = createdDate instanceof Date && !isNaN(createdDate) 
+					? createdDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+					: 'Unknown';
+					
+				const lastLoginDisplay = lastLoginDate instanceof Date && !isNaN(lastLoginDate)
+					? lastLoginDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+					: 'Never';
+	
+				// Determine active status
+				const isActive = lastLoginDate ? 
+					(Date.now() - lastLoginDate.getTime() < 30 * 24 * 60 * 60 * 1000) : false;
+	
+				return {
+					'Username': user.username,
+					'Full Name': user.name,
+					'Role': user.role,
+					'Team': user.teamName,
+					'Status': isActive ? 'Active' : 'Inactive',
+					'Last Login': lastLoginDisplay,
+					'Created Date': createdDisplay,
+					'Permissions': user.permissions?.join(', ') || 'None'
+					// ✅ REMOVED SENSITIVE FIELDS: password, email, preferences, etc.
+				};
+			});
+	
+			return { success: true, data: reportData, filename: 'user_access_report' };
+		} catch (error) {
+			console.error('Firestore ExportUserReport Error:', error);
+			return { success: false, message: error.message };
+		}
+	}
+	
+	static async exportBookingReport() {
+		try {
+			const result = await this.getAllBookingsAdmin();
+			if (!result.success) {
+				return { success: false, message: 'Failed to fetch bookings for export' };
+			}
+	
+			const reportData = result.bookings.map(booking => {
+				const bookingDate = booking.bookingTime?.toDate ? booking.bookingTime.toDate() : new Date(booking.timestamp);
+				const bookingTimeDisplay = bookingDate instanceof Date && !isNaN(bookingDate)
+					? bookingDate.toLocaleString('en-US', { 
+						year: 'numeric', month: 'short', day: 'numeric',
+						hour: '2-digit', minute: '2-digit' 
+					})
+					: 'Unknown';
+	
+				return {
+					'Date': booking.bookingDate,
+					'Seat': booking.seat,
+					'User': booking.userName,
+					'Department': booking.seat?.split('-')[0] || 'Unknown',
+					'Booking Time': bookingTimeDisplay,
+					'Status': booking.status,
+					'Created': booking.createdAt?.toDate?.()?.toLocaleDateString?.() || 'Unknown'
+				};
+			});
+	
+			return { success: true, data: reportData, filename: 'booking_report' };
+		} catch (error) {
+			console.error('Firestore ExportBookingReport Error:', error);
+			return { success: false, message: error.message };
+		}
+	}
+	
     // ==================== HELPER FUNCTIONS ====================
     static async getUserTeam(username) {
         try {
