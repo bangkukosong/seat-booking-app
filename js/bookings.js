@@ -1,4 +1,4 @@
-// bookings.js - COMPLETE FIXED VERSION
+// bookings.js - COMPLETE FIXED VERSION v1.0.8
 import { state, TEAMS_CONFIG } from './constants.js';
 import { optimizedFetch, optimizedPost } from './api-manager.js';
 import { showLoader, showMessage, formatLocalDate, updateLastUpdate } from './utils.js';
@@ -94,9 +94,7 @@ export async function loadHistoricalBookings() {
     }
 }
 
-
-// DEBUG VERSION - untuk lihat format username sebenarnya
-// FIXED VERSION - Pakai nama team singkat saja
+// Seat Grid Rendering - ✅ FIXED VERSION dengan Department
 export function renderSeatGrid() {
     const grid = document.getElementById('seatGrid');
     if (!grid) return;
@@ -122,7 +120,7 @@ export function renderSeatGrid() {
                 const isMyBooking = booking.userName === state.currentUser.username;
                 seat.className = isMyBooking ? 'seat my-booking' : 'seat booked';
                 
-                // ✅ FIXED: Tampilkan tanggal & jam
+                // ✅ FIXED: Tampilkan tanggal & jam lengkap
                 let timeDisplay = 'Today';
                 const timestamp = booking.timestamp || booking.bookingTime || booking.createdAt;
                 
@@ -148,9 +146,9 @@ export function renderSeatGrid() {
                     }
                 }
                 
-                // ✅ FIXED: Ambil nama team singkat dari seat code
+                // ✅ FIXED: Ambil department dari seat code
                 let displayName = booking.userName || 'Unknown';
-                const teamNameFromSeat = seatCode.split('-')[0]; // Contoh: "ITPM-01" → "ITPM"
+                const teamNameFromSeat = seatCode.split('-')[0];
                 
                 seat.innerHTML = `
                     ${seatCode}

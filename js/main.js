@@ -1,6 +1,4 @@
-// main.js - FIXED VERSION (tanpa error syntax)
-// GANTI FILE MAIN.JS LO DENGAN YANG INI
-
+// main.js - FIXED VERSION (tanpa duplicate modal functions) v1.0.5
 import { initializeAuth } from './auth.js';
 import { showLoader, showMessage } from './utils.js';
 import { state } from './constants.js';
@@ -8,7 +6,7 @@ import { state } from './constants.js';
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Firebase Seat Booking App Loading...');
-    
+
     try {
         initializeApp();
     } catch (error) {
@@ -133,6 +131,8 @@ function setupGlobalFunctions() {
             }
 
             const { FirestoreAPI } = await import('./firestore-api.js');
+            const { showUserManagementModal } = await import('./admin-modals.js'); // ← IMPORT DARI FILE BARU
+            
             const result = await FirestoreAPI.getAllUsers();
             
             if (result.success) {
@@ -160,6 +160,8 @@ function setupGlobalFunctions() {
             }
 
             const { FirestoreAPI } = await import('./firestore-api.js');
+            const { showAllBookingsModal } = await import('./admin-modals.js'); // ← IMPORT DARI FILE BARU
+            
             const result = await FirestoreAPI.getAllBookingsAdmin();
             
             if (result.success) {
@@ -194,40 +196,45 @@ function setupGlobalFunctions() {
     };
     
     // ==================== PASSWORD CHANGE ====================
-window.showChangePasswordModal = async function() {
-    try {
-        const { state } = await import('./constants.js');
-        
-        if (!state.currentUser) {
-            showMessage('❌ Please login first', 'error');
-            return;
+    window.showChangePasswordModal = async function() {
+        try {
+            const { state } = await import('./constants.js');
+            
+            if (!state.currentUser) {
+                showMessage('❌ Please login first', 'error');
+                return;
+            }
+            
+            const modal = document.getElementById('changePasswordModal');
+            const usernameField = document.getElementById('changePasswordUsername');
+            
+            if (modal && usernameField) {
+                // ✅ FIX: PAKAI setTimeout BIAR PASTI DOM READY
+                setTimeout(() => {
+                    usernameField.value = state.currentUser.username;
+                    console.log('✅ Username set to:', usernameField.value);
+                }, 100);
+                
+                modal.style.display = 'block';
+                
+                // Reset other fields
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                
+                const messageEl = document.getElementById('changePasswordMessage');
+                if (messageEl) messageEl.innerHTML = '';
+            }
+        } catch (error) {
+            console.error('Error:', error);
         }
-        
-        const modal = document.getElementById('changePasswordModal');
-        const usernameField = document.getElementById('changePasswordUsername');
-        
-        if (modal && usernameField) {
-            // ✅ FIX: PAKAI setTimeout BIAR PASTI DOM READY
-            setTimeout(() => {
-                usernameField.value = state.currentUser.username;
-                console.log('✅ Username set to:', usernameField.value);
-            }, 100);
-            
-            modal.style.display = 'block';
-            
-            // Reset other fields
-            document.getElementById('currentPassword').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('confirmPassword').value = '';
-            
-            const messageEl = document.getElementById('changePasswordMessage');
-            if (messageEl) messageEl.innerHTML = '';
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
+    };
 
+    window.hideChangePasswordModal = function() {
+        const modal = document.getElementById('changePasswordModal');
+        if (modal) modal.style.display = 'none';
+    };
+    
     // Handle change password
     async function handleChangePassword() {
         try {
