@@ -1,5 +1,5 @@
 /* css/admin-modals.css - Professional Compact Admin Modal Styles */
-/* ver 1.0.4 - COMPACT VERSION */
+/* ver 1.0.5 - COMPACT VERSION */
 
 /* ==================== ADMIN MODAL OVERLAY ==================== */
 .modal-overlay.admin-modal {
@@ -30,14 +30,14 @@
 
 /* ==================== COMPACT MODAL CONTAINER ==================== */
 .admin-modal-container {
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(25px);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(30px);
     padding: 20px !important;
     border-radius: 16px !important;
     width: 92% !important;
-    max-width: 1100px !important;
+    max-width: 900px !important;
     max-height: 80vh !important;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
@@ -118,7 +118,7 @@
     grid-template-columns: 2fr 1fr 1fr 2fr;
     gap: 12px !important;
     padding: 12px 15px !important;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.08);
     border-radius: 10px;
     font-weight: bold;
     color: var(--gold);
@@ -135,7 +135,7 @@
     padding: 12px 15px !important;
     border-bottom: 1px solid rgba(255,255,255,0.1);
     align-items: center;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.04);
     border-radius: 8px;
     margin-bottom: 6px !important;
     transition: all 0.3s ease;
@@ -145,7 +145,7 @@
 }
 
 .grid-row:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.06);
     transform: translateY(-2px);
 }
 
@@ -408,7 +408,7 @@
 /* Maintain compatibility with existing modal classes */
 .admin-modal-content {
     border-radius: 16px;
-    max-width: 1100px;
+    max-width: 900px;
     max-height: 80vh;
     width: 92%;
     overflow: hidden;
