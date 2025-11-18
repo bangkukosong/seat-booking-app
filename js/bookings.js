@@ -94,7 +94,7 @@ export async function loadHistoricalBookings() {
     }
 }
 
-// Seat Grid Rendering - ✅ FIXED VERSION
+// Seat Grid Rendering - ✅ FIXED VERSION with Date Display
 export function renderSeatGrid() {
     const grid = document.getElementById('seatGrid');
     if (!grid) return;
@@ -120,14 +120,25 @@ export function renderSeatGrid() {
                 const isMyBooking = booking.userName === state.currentUser.username;
                 seat.className = isMyBooking ? 'seat my-booking' : 'seat booked';
                 
-                // ✅ FIXED: Date handling dengan error prevention
+                // ✅ FIXED: Date handling dengan error prevention - TAMPILKAN TANGGAL DAN JAM
                 let bookingTimeDisplay = 'Today';
+                let bookingDateDisplay = '';
+                
                 if (booking.bookingTime) {
                     try {
                         const bookingDate = booking.bookingTime?.toDate?.() || new Date(booking.bookingTime);
                         if (!isNaN(bookingDate.getTime())) {
+                            // Format tanggal
+                            bookingDateDisplay = bookingDate.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            });
+                            
+                            // Format waktu
                             bookingTimeDisplay = bookingDate.toLocaleTimeString('en-US', {
-                                'Today'
+                                hour: '2-digit',
+                                minute: '2-digit'
                             });
                         }
                     } catch (error) {
@@ -140,7 +151,8 @@ export function renderSeatGrid() {
                     <span class="tooltip">
                         <strong>${isMyBooking ? '📌 Your Booking' : 'Booked by:'}</strong><br>
                         ${booking.userName || 'Unknown'}<br>
-                        ${bookingTimeDisplay}
+                        📅 ${bookingDateDisplay}<br>
+                        ⏰ ${bookingTimeDisplay}
                     </span>
                 `;
                 
