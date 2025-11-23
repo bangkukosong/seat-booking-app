@@ -1,4 +1,4 @@
-// main.js - FIXED VERSION (tanpa duplicate modal functions) v1.0.6
+// main.js - FIXED VERSION (tanpa duplicate modal functions) v2.0
 import { initializeAuth } from './auth.js';
 import { showLoader, showMessage } from './utils.js';
 import { state } from './constants.js';
@@ -118,34 +118,62 @@ function setupGlobalFunctions() {
     };
     
     // ==================== ADMIN FUNCTIONS ====================
-    window.showUserManagement = async function() {
-        console.log('🎯 showUserManagement STARTED');
+// Di main.js - update admin functions
+window.showUserManagement = async function() {
+    console.log('🎯 showUserManagement - MODERN VERSION');
+    
+    try {
+        const { state } = await import('./constants.js');
         
-        try {
-            const { state } = await import('./constants.js');
-            
-            // Check user role
-            if (!state.currentUser || (state.currentUser.role !== 'admin' && state.currentUser.role !== 'super_admin')) {
-                showMessage('❌ Admin access required', 'error');
-                return;
-            }
-
-            const { FirestoreAPI } = await import('./firestore-api.js');
-            const { showUserManagementModal } = await import('./admin-modals.js'); // ← IMPORT DARI FILE BARU
-            
-            const result = await FirestoreAPI.getAllUsers();
-            
-            if (result.success) {
-                showUserManagementModal(result.users);
-            } else {
-                showMessage('❌ ' + (result.message || 'Failed to load users'), 'error');
-            }
-
-        } catch (error) {
-            console.error('🔥 showUserManagement ERROR:', error);
-            showMessage('❌ Error: ' + error.message, 'error');
+        if (!state.currentUser || (state.currentUser.role !== 'admin' && state.currentUser.role !== 'super_admin')) {
+            showMessage('❌ Admin access required', 'error');
+            return;
         }
-    };
+
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const { showUserManagementModal } = await import('./admin-modals.js');
+        
+        const result = await FirestoreAPI.getAllUsers();
+        
+        if (result.success) {
+            showUserManagementModal(result.users);
+        } else {
+            showMessage('❌ ' + (result.message || 'Failed to load users'), 'error');
+        }
+
+    } catch (error) {
+        console.error('🔥 showUserManagement ERROR:', error);
+        showMessage('❌ Error: ' + error.message, 'error');
+    }
+};
+
+window.showAllBookings = async function() {
+    console.log('🎯 showAllBookings - MODERN VERSION');
+    
+    try {
+        const { state } = await import('./constants.js');
+        
+        if (!state.currentUser || (state.currentUser.role !== 'admin' && state.currentUser.role !== 'super_admin')) {
+            showMessage('❌ Admin access required', 'error');
+            return;
+        }
+
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const { showAllBookingsModal } = await import('./admin-modals.js');
+        
+        const result = await FirestoreAPI.getAllBookingsAdmin();
+        
+        if (result.success) {
+            showAllBookingsModal(result.bookings);
+        } else {
+            showMessage('❌ ' + (result.message || 'Failed to load bookings'), 'error');
+        }
+
+    } catch (error) {
+        console.error('🔥 showAllBookings ERROR:', error);
+        showMessage('❌ Error: ' + error.message, 'error');
+    }
+};
     
     window.showAllBookings = async function() {
         console.log('🎯 showAllBookings STARTED');
@@ -177,20 +205,25 @@ function setupGlobalFunctions() {
     };
     
 window.showAddUserForm = function() {
+    console.log('🎯 showAddUserForm EXECUTING in Live Server');
+    console.log('📍 Called from:', new Error().stack);
+    
     const form = document.getElementById('addUserFormContainer');
+    console.log('🔍 Form element found:', form);
+    
     if (form) {
-        // Close any existing admin modals first
-        document.querySelectorAll('.admin-modal').forEach(modal => modal.remove());
-        
+        console.log('📋 Form display before:', form.style.display);
         form.style.display = 'block';
-        form.style.zIndex = '10002'; // Higher than admin modals
-        document.getElementById('newUserUsername').value = '';
-        document.getElementById('newUserPassword').value = '';
-        document.getElementById('newUserName').value = '';
-        document.getElementById('newUserRole').value = 'user';
+        console.log('📋 Form display after:', form.style.display);
+        console.log('🎨 Form z-index:', form.style.zIndex);
         
-        const messageEl = document.getElementById('addUserMessage');
-        if (messageEl) messageEl.innerHTML = '';
+        // Force reflow
+        form.offsetHeight;
+    } else {
+        console.error('❌ FORM CONTAINER NOT FOUND!');
+        console.log('🔍 Available elements:');
+        console.log('- addUserFormContainer:', document.getElementById('addUserFormContainer'));
+        console.log('- adminPanel:', document.getElementById('adminPanel'));
     }
 };
     
@@ -360,43 +393,44 @@ window.showAddUserForm = function() {
     }
     
     // Handle Add User
-    async function handleAddUser() {
-        try {
-            const username = document.getElementById('newUserUsername').value;
-            const password = document.getElementById('newUserPassword').value;
-            const name = document.getElementById('newUserName').value;
-            const role = document.getElementById('newUserRole').value;
+async function handleAddUser() {
+    try {
+        const username = document.getElementById('newUserUsername').value;
+        const password = document.getElementById('newUserPassword').value;
+        const name = document.getElementById('newUserName').value;
+        const team = document.getElementById('newUserTeam').value;
+        const role = document.getElementById('newUserRole').value;
 
-            if (!username || !password || !name) {
-                showAddUserMessage('❌ Please fill all fields', 'error');
-                return;
-            }
-
-            if (password.length < 6) {
-                showAddUserMessage('❌ Password must be at least 6 characters', 'error');
-                return;
-            }
-
-            showAddUserMessage('⏳ Adding user...', 'info');
-
-            const { FirestoreAPI } = await import('./firestore-api.js');
-            const result = await FirestoreAPI.addUser(username, password, name, role);
-
-            if (result.success) {
-                showAddUserMessage('✅ User added successfully!', 'success');
-                setTimeout(() => {
-                    hideAddUserForm();
-                    showMessage('✅ User added successfully', 'success');
-                }, 1500);
-            } else {
-                showAddUserMessage(`❌ ${result.message}`, 'error');
-            }
-
-        } catch (error) {
-            console.error('Add User Error:', error);
-            showAddUserMessage('❌ Error adding user', 'error');
+        if (!username || !password || !name || !team) {
+            showAddUserMessage('❌ Please fill all fields', 'error');
+            return;
         }
+
+        if (password.length < 6) {
+            showAddUserMessage('❌ Password must be at least 6 characters', 'error');
+            return;
+        }
+
+        showAddUserMessage('⏳ Adding user...', 'info');
+
+        const { FirestoreAPI } = await import('./firestore-api.js');
+        const result = await FirestoreAPI.addUser(username, password, name, role, team);
+
+        if (result.success) {
+            showAddUserMessage('✅ User added successfully!', 'success');
+            setTimeout(() => {
+                hideAddUserForm();
+                showMessage('✅ User added successfully', 'success');
+            }, 1500);
+        } else {
+            showAddUserMessage(`❌ ${result.message}`, 'error');
+        }
+
+    } catch (error) {
+        console.error('Add User Error:', error);
+        showAddUserMessage('❌ Error adding user', 'error');
     }
+}
     
     function showAddUserMessage(text, type) {
         const messageEl = document.getElementById('addUserMessage');
@@ -419,5 +453,4 @@ window.showAddUserForm = function() {
     // Initialize forms setelah delay
     setTimeout(initializeAllForms, 1000);
 }
-
 console.log('✅ Main.js loaded successfully');

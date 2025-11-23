@@ -49,7 +49,9 @@ function showMainApp() {
     
     const userInfo = document.getElementById('userInfo');
     if (userInfo && state.currentUser) {
-        userInfo.innerHTML = `🧑‍💻 <strong>${state.currentUser.name}</strong> | ${state.currentUser.teamName || state.currentUser.team}`;
+        // ✅ PAKAI TEAM ID (SHORT NAME) DARI constants.js
+        const teamId = state.currentUser.team || state.currentUser.teamName;
+        userInfo.innerHTML = `🧑‍💻 <strong>${state.currentUser.name}</strong> | ${teamId}`;
     }
     
     if (state.currentUser.role === 'admin' || state.currentUser.role === 'super_admin') {

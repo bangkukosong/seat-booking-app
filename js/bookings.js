@@ -1,4 +1,4 @@
-// bookings.js - COMPLETE FIXED VERSION v1.0.8
+// bookings.js - COMPLETE FIXED VERSION v1.0.9
 import { state, TEAMS_CONFIG } from './constants.js';
 import { optimizedFetch, optimizedPost } from './api-manager.js';
 import { showLoader, showMessage, formatLocalDate, updateLastUpdate } from './utils.js';
@@ -94,7 +94,7 @@ export async function loadHistoricalBookings() {
     }
 }
 
-// Seat Grid Rendering - ✅ FIXED VERSION dengan Department
+// Seat Grid Rendering - ✅ FIXED VERSION dengan User Team
 export function renderSeatGrid() {
     const grid = document.getElementById('seatGrid');
     if (!grid) return;
@@ -146,16 +146,16 @@ export function renderSeatGrid() {
                     }
                 }
                 
-                // ✅ FIXED: Ambil department dari seat code
+                // ✅ FIXED: Ambil userTeam dari booking data, bukan dari seat code
                 let displayName = booking.userName || 'Unknown';
-                const teamNameFromSeat = seatCode.split('-')[0];
-                
+                const userTeam = booking.userTeam || 'UNASSIGNED'; // ← INI PERBAIKAN UTAMA!
+
                 seat.innerHTML = `
                     ${seatCode}
                     <span class="tooltip">
                         <strong>${isMyBooking ? '📌 Your Booking' : 'Booked by:'}</strong><br>
                         ${displayName}<br>
-                        🏢 ${teamNameFromSeat}<br>
+                        🏢 ${userTeam}<br>
                         ${timeDisplay}
                     </span>
                 `;
@@ -245,6 +245,7 @@ export function showBookingForm(seatCode) {
             <h3 style="color: var(--primary-green); margin-bottom: 10px; text-align: center;">${seatCode}</h3>
             <p><strong>Booked by:</strong> ${state.currentUser.name}</p>
             <p><strong>User ID:</strong> ${state.currentUser.username}</p>
+            <p><strong>User Team:</strong> ${state.currentUser.teamId || 'UNASSIGNED'}</p>
             <p><strong>Status:</strong> <span style="color: var(--primary-green);">✅ Available</span></p>
         </div>
         <div class="btn-group">
@@ -277,6 +278,7 @@ export function showCancelBookingForm(seatCode) {
             <h3 style="color: #ff5555; margin-bottom: 10px; text-align: center;">${seatCode}</h3>
             <p><strong>Booked by:</strong> ${state.currentUser.name}</p>
             <p><strong>User ID:</strong> ${state.currentUser.username}</p>
+            <p><strong>User Team:</strong> ${state.currentUser.teamId || 'UNASSIGNED'}</p>
         </div>
         <p style="text-align: center; margin-bottom: 20px; color: #ff8888;">
             ⚠️ Are you sure you want to cancel this booking?
@@ -297,11 +299,16 @@ export async function processBooking(seatCode) {
     const day = formatLocalDate(state.currentDate);
     try {
         showFormMessage("⏳ Processing booking...", "info");
-        const result = await optimizedPost('submitBooking', { 
+        
+        // ✅ FIXED: Simpan userTeam dalam booking data
+        const bookingData = {
             seat: seatCode, 
-            userName: state.currentUser.username, 
+            userName: state.currentUser.username,
+            userTeam: state.currentUser.teamId || 'UNASSIGNED', // ← INI YANG DITAMBAH
             day 
-        });
+        };
+        
+        const result = await optimizedPost('submitBooking', bookingData);
         
         if (result.success) {
             showFormMessage("✅ Booking Successful!", "success");
@@ -341,9 +348,11 @@ export async function handleReplaceBooking(oldSeat, newSeat) {
             return;
         }
 
+        // ✅ FIXED: Simpan userTeam dalam booking data
         const bookingResult = await optimizedPost('submitBooking', { 
             seat: newSeat, 
-            userName: state.currentUser.username, 
+            userName: state.currentUser.username,
+            userTeam: state.currentUser.teamId || 'UNASSIGNED', // ← INI YANG DITAMBAH
             day 
         });
         

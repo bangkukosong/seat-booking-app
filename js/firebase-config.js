@@ -1,7 +1,7 @@
 // js/firebase-config.js - PASTI WORK VERSION
 // Firebase config
 const firebaseConfig = {
-    apiKey: "AIzaSyALdxLc87bsjCc4ZyQ_HWPuhE07p4jq54s",
+    apiKey: "AIzaSyAaD_5QxFFWOmOV1h_YewvRVxR0UlQFK_4",
     authDomain: "bangku-kosong.firebaseapp.com",
     projectId: "bangku-kosong",
     storageBucket: "bangku-kosong.firebasestorage.app",
@@ -13,7 +13,7 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
-
+    
 // Export services
 const db = firebase.firestore();
 const auth = firebase.auth();
