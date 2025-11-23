@@ -1,7 +1,4 @@
-/* css/styles.css - Professional Compact Admin Modal Styles */
-/* ver 1.0.7 - COMPACT VERSION */  
-
-  :root {
+    :root {
       --primary-green: #00ff80;
       --primary-red: #ff5555;
       --primary-blue: #0078d7;
@@ -19,26 +16,20 @@
     body { 
       margin: 0; 
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: url('https://bangkukosong.github.io/seat-booking-app/images/office-room-fx.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background: url('../images/office-room-fx.jpg') no-repeat center center fixed;
       color: #fff;
       min-height: 100vh;
     }
     
-/* TAMBAHKAN DI styles.css - FORCE BLUR */
-.overlay { 
-    background: rgba(0,0,0,0.2) !important; 
-    position: fixed !important; 
-    top: 0 !important; 
-    left: 0 !important; 
-    width: 100% !important; 
-    height: 100% !important; 
-    z-index: 0 !important; 
-    
-    /* FORCE BLUR EFFECT */
-    backdrop-filter: blur(3px) !important;
-    -webkit-backdrop-filter: blur(3px) !important;
-}
+    .overlay { 
+      background-color: rgba(0,0,0,0.3); 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      z-index: 0; 
+    }
     
     .container { 
       position: relative; 
@@ -46,7 +37,7 @@
       max-width: 500px; 
       margin: 20px auto; 
       padding: 20px; 
-      background: rgba(255,255,255,0.20); 
+      background: rgba(255,255,255,0.12); 
       backdrop-filter: blur(12px);
       border-radius: 20px; 
       color: #fff;
@@ -56,7 +47,7 @@
     .office-layout-container {
       max-width: 765px;
       margin: 20px auto;
-      background: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.12);
       backdrop-filter: blur(12px);
       border-radius: 20px;
       padding: 20px;
@@ -332,7 +323,7 @@
 		font-weight: bold;
 		margin: 10px 0;
 		color: var(--primary-green);
-		background: rgba(0,255,128,0.1);
+		background: rgba(0,255,128,0.15);
 		padding: 8px 12px;
 		border-radius: 8px;
 		border: 1px solid rgba(0,255,128,0.2);
@@ -492,27 +483,23 @@
       opacity: 1; 
     }
 
-	#bookingFormContainer { 
-		display: none; 
-		position: fixed; 
-		top: 50%; 
-		left: 50%; 
-		transform: translate(-50%, -50%); 
-		background: rgba(255,255,255,0.15); 
-		
-		/* TAMBAHKAN WEBKIT PREFIX */
-		backdrop-filter: blur(20px);
-		-webkit-backdrop-filter: blur(20px); /* ← INI YANG PERLU */
-		
-		padding: 25px; 
-		border-radius: 20px; 
-		box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
-		width: 90%;
-		max-width: 320px;
-		z-index: 20; 
-		color: #fff;
-		border: 1px solid rgba(255,255,255,0.2);
-	}
+    #bookingFormContainer { 
+      display: none; 
+      position: fixed; 
+      top: 50%; 
+      left: 50%; 
+      transform: translate(-50%, -50%); 
+      background: rgba(255,255,255,0.15); 
+      backdrop-filter: blur(20px);
+      padding: 25px; 
+      border-radius: 20px; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+      width: 90%;
+      max-width: 320px;
+      z-index: 20; 
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
 
     .btn-group {
       display: flex;
@@ -566,13 +553,13 @@
     }
 
     .btn-secondary {
-      background: rgba(255,0,0,0.2);
-      color: white;
+      background: rgba(255,0,0,0.3);
+      color: #ff7744;
       border: 1px solid rgba(255,0,0,0.3);
     }
 
     .btn-secondary:hover {
-      background: rgba(255,0,0,0.3);
+      background: rgba(255,0,0,0.5);
       transform: translateY(-2px);
     }
 
@@ -813,38 +800,11 @@
       font-size: 0.9rem;
     }
 
-	/* ==================== FIX MOBILE BUTTON ACTIVE STATES ==================== */
-	
-	/* Desktop - button active state (biru) */
-	.view-btn.active {
-		background: var(--primary-blue) !important;
-		border-color: var(--primary-blue) !important;
-		color: white !important;
-	}
-	
-	/* Mobile override - biar cuma border yang berubah */
-	@media (max-width: 768px) {
-		.view-btn.active {
-			background: rgba(255, 255, 255, 0.1) !important; /* ← tetep gelap */
-			border-color: var(--primary-blue) !important;    /* ← border biru */
-			color: var(--primary-blue) !important;           /* ← text biru */
-			box-shadow: 0 0 0 1px var(--primary-blue) !important; /* ← glow effect */
-		}
-		
-		/* Control buttons di mobile juga */
-		.control-btn:active,
-		.control-btn.active {
-			background: rgba(255, 255, 255, 0.1) !important;
-			border-color: var(--primary-blue) !important;
-			color: var(--primary-blue) !important;
-		}
-	}
-	
-	/* Optional: Tambah transition biar smooth */
-	.view-btn, .control-btn {
-		transition: all 0.3s ease !important;
-	}
-	
+    .view-btn.active {
+      background: var(--primary-blue);
+      border-color: var(--primary-blue);
+    }
+
     .view-btn:hover {
       background: rgba(255,255,255,0.2);
     }
@@ -957,7 +917,7 @@
       
 	  /* ========== HEADER STYLING FIX ========== */
 	  .container > div:first-child h1 {
-		font-size: 1.4rem;
+		font-size: 1.5rem;
 		font-weight: 700;
 		white-space: nowrap;
 		overflow: hidden;
@@ -967,8 +927,7 @@
 		flex-shrink: 1;
 		min-width: 0;
 		margin: 0;
-		line-height: 1.1;
-		margin-bottom: 5px !important;
+		line-height: 1.2;
 	  }
 	     
       #userInfo {
@@ -978,7 +937,80 @@
       .header-container {
         flex-wrap: nowrap !important;
       }
-	  
+/* ========== VIEW TOGGLE FIX FOR MOBILE ========== */
+.view-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.view-btn {
+  background: rgba(255,255,255,0.05);
+  color: white;
+  padding: 10px 8px !important; /* ↑ TAMBAHIN PADDING */
+  border: 1px solid rgba(255, 255, 255, 0.3) !important; /* ↑ BORDER LEBIH TEBAL */
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  font-weight: 600 !important; /* ↑ TEXT LEBIH BOLD */
+  backdrop-filter: blur(10px);
+  min-height: 50px; /* ↑ MINIMAL TINGGI BUAT MOBILE TOUCH */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.view-btn.active {
+  background: var(--primary-blue) !important;
+  border-color: var(--primary-blue) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(0, 120, 215, 0.4) !important;
+}
+
+.view-btn:not(.active):hover {
+  background: rgba(255,255,255,0.25) !important;
+  transform: translateY(-2px) !important;
+}
+
+.view-btn:active {
+  transform: scale(0.98) !important;
+}
+
+/* MOBILE SPECIFIC FIXES */
+@media (max-width: 480px) {
+  .view-toggle {
+    gap: 8px;
+    margin: 12px 0;
+  }
+  
+  .view-btn {
+    padding: 10px 8px !important; /* ↑ LEBIH BESAR DI MOBILE */
+    font-size: 0.85rem !important;
+    min-height: 40px !important; /* ↑ LEBIH TINGGI BUAT MOBILE */
+    border-width: 1.5px !important; /* ↑ BORDER LEBIH TEBAL */
+  }
+}
+
+/* TAMBAHIN STATE UNTUK FOCUS/TOUCH */
+.view-btn:focus-visible {
+  outline: 3px solid var(--gold) !important;
+  outline-offset: 2px;
+}
+
+/* BACKUP - JIKA MASIH KURANG SOLID */
+.view-btn {
+  /* Fallback untuk browser yang tidak support backdrop-filter */
+  background: rgba(70, 70, 70, 0.8) !important;
+}
+
+.view-btn.active {
+  /* Fallback untuk active state */
+  background: linear-gradient(135deg, #0078d7, #0066cc) !important;
+}
+
 		/* ==================== ADD USER MODAL ==================== */
 	.add-user-modal {
 		display: none;
@@ -986,13 +1018,13 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		background: rgba(255, 255, 255, 0.15);
+		background: rgba(128, 128, 128, 0.2);
 		backdrop-filter: blur(20px);
 		-webkit-backdrop-filter: blur(20px);
-		padding: 25px;
+		padding: 40px;
 		border-radius: 20px;
 		z-index: 1001;
-		width: 90%;
+		width: 85%;
 		max-width: 400px;
 		border: 1px solid rgba(255, 255, 255, 0.2);
 		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -1043,26 +1075,48 @@
 		color: rgba(255, 255, 255, 0.9);
 	}
 	
-	.add-user-modal input,
-	.add-user-modal select {
-		width: 100%;
-		padding: 14px 16px;
-		border: 1px solid rgba(255, 255, 255, 0.3);
-		border-radius: 10px;
-		background: rgba(255, 255, 255, 0.15);
-		color: white;
-		font-size: 16px;
-		transition: all 0.3s ease;
-	}
-	
-	.add-user-modal input:focus,
-	.add-user-modal select:focus {
-		outline: none;
-		border-color: var(--primary-blue);
-		background: rgba(255, 255, 255, 0.2);
-		box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.2);
-	}
-	
+.add-user-modal input,
+.add-user-modal select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(173, 216, 230, 0.8) !important; /* ← BACKGROUND blue light */
+    color: white !important;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    appearance: none !important; /* ← HAPUS DEFAULT STYLING */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    
+    /* ← TAMBAHIN DROPDOWN ARROW */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 16px !important;
+}
+
+/* ← TAMBAHIN FOCUS STATE YANG LEBIH BAIK */
+.add-user-modal input:focus,
+.add-user-modal select:focus {
+    outline: none;
+    border-color: rgba(0, 255, 128, 0.6);
+    background: rgba(30, 45, 80, 0.9) !important;
+    box-shadow: 
+        0 0 0 3px rgba(0, 255, 128, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ← TAMBAHIN STYLING UNTUK OPTIONS (kalo browser support) */
+.add-user-modal select option {
+    background: rgba(20, 30, 60, 0.95) !important;
+    color: white !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+}
 	.add-user-modal input::placeholder {
 		color: rgba(255, 255, 255, 0.6);
 	}
@@ -1071,19 +1125,27 @@
 	.add-user-modal .btn-group {
 		display: flex;
 		gap: 12px;
-		margin-top: 20px;
+		margin-top: 10px;
+    align-items: stretch; /* ← PASTIKAN TINGGI SAMA */
 	}
 	
 	.add-user-modal .btn {
-		flex: 1;
-		padding: 14px;
-		border: none;
-		border-radius: 10px;
-		font-size: 14px;
-		font-weight: 600;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		text-align: center;
+    flex: 1;
+    padding: 10px 12px !important; /* ← SAMAKAN PADDING */
+    border: none;
+    border-radius: 10px;
+    font-size: 14px !important; /* ← SAMAKAN FONT SIZE */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 45px; /* ← MINIMAL TINGGI SAMA */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1 !important; /* ← SAMAKAN LINE HEIGHT */
 	}
 	
 	.add-user-modal .btn-primary {
@@ -1098,13 +1160,55 @@
 	}
 	
 	.add-user-modal .btn-secondary {
-		background: rgba(255, 0, 0, 0.1);
-		color: white;
+		background: rgba(255, 0, 0, 0.18);
+		color: #ff7744;
 		border: 1px solid rgba(255, 0, 0, 0.3);
 	}
 	
 	.add-user-modal .btn-secondary:hover {
-		background: rgba(255, 0, 0, 0.2);
+		background: rgba(255, 0, 0, 0.25);
 		transform: translateY(-2px);
 	}
-    }
+  /* ==================== FIX ADMIN MODAL DROPDOWNS ==================== */
+.admin-modal select,
+.modal-overlay select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 10px !important;
+    background: rgba(20, 30, 60, 0.9) !important;
+    color: white !important;
+    font-size: 14px !important;
+    backdrop-filter: blur(10px) !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    
+    /* Custom dropdown arrow */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 16px !important;
+    background-color: rgba(20, 30, 60, 0.9) !important;
+}
+
+.admin-modal select:focus,
+.modal-overlay select:focus {
+    outline: none !important;
+    border-color: rgba(0, 255, 128, 0.6) !important;
+    background: rgba(30, 45, 80, 0.95) !important;
+    box-shadow: 0 0 0 3px rgba(0, 255, 128, 0.2) !important;
+}
+
+/* Force options styling */
+.admin-modal select option,
+.modal-overlay select option {
+    background: #1a237e !important;
+    color: white !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+}
+/* DI styles.css - AUTO LOWERCASE */
+#username {
+    text-transform: lowercase !important;
+}
