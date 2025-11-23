@@ -1,265 +1,290 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>Bangku Kosong – Seat Booking System</title>
+  <!DOCTYPE html>
+  <html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Bangku Kosong – Seat Booking System</title>
 
-  <!-- index.html verion 1.0.0 -->
+    <!-- index.html verion 1.0.0 -->
     <!-- ✅ FIREBASE SCRIPTS - LOAD DI HEADER -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-  <!-- Tambahkan CSS -->
-  <link rel="stylesheet" href="css/admin-modals.css?v=1.0.9">
-  <link rel="stylesheet" href="css/styles.css?v=1.0.7">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22> 🪑</text></svg>">
-</head>
-<body>
-  <div class="overlay"></div>
-  
-  <div id="globalLoader">
-    <div class="spinner"></div>
-    <div>Loading...</div>
-  </div>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <!-- Tambahkan CSS -->
+    <link rel="stylesheet" href="css/styles.css?v=1.0.8">
+    <link rel="stylesheet" href="css/admin-modals.css?v=2.8">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22> 🪑</text></svg>">
+  </head>
+  <body>
+    <div class="overlay"></div>
+    
+    <div id="globalLoader">
+      <div class="spinner"></div>
+      <div>Loading...</div>
+    </div>
 
-<!-- Login Form -->
-<div id="loginFormContainer">
-  <div class="login-box">
-    <h1>Bangku Kosong</h1>
-    <h2>💺 Seat Booking System</h2>
-    <form id="loginForm">
-		<div class="form-group">
-			<label>User ID</label>
-			<input type="text" id="username" required placeholder="Enter user ID">
-		</div>
-		<div class="form-group">
-				<label>Password</label>
-				<input type="password" id="password" required placeholder="Enter password">
-		</div>
-				<button type="submit" class="login-btn">
-					🔐 Log In
-				</button>
-	 </form>
-		<div id="loginMessage" class="login-message">
-			<div style="text-align: center; font-size: 0.7rem;">
-				⚠️ <strong>Important Notice</strong> <br> 
-				To ensure equitable seat allocation, please refrain from overbooking.
-				Coordinate your reservations with your team and limit bookings to one week at a time.
-				If you are unable to attend or expect to be on leave, please cancel your booking in advance.
-			</div>
-		</div>
-		<br>
-		<div style="text-align: center; font-size: 0.7rem;">© 2025 ⚙️IT-TPM</div>
-	</div>
-</div>
-
-  <!-- Main App -->
-  <div class="container" id="mainApp" style="display: none;">
-    <!-- Header -->
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: nowrap;">
-      <h1 style="white-space: nowrap; font-size: 1.5rem;">💺 Bangku Kosong</h1>
-      <div style="text-align: right; min-width: 150px;">
-        <div id="userInfo" style="font-size: 0.8rem; line-height: 1.2;"></div>
-        <button onclick="logout()" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.7rem; margin-top: 2.5px;">
-          Logout
+      <!-- Login Form -->
+      <div id="loginFormContainer">
+        <div class="login-box">
+          <h1>Bangku Kosong</h1>
+          <h2>💺 Seat Booking System</h2>
+        <form id="loginForm">
+        <div class="form-group">
+          <label>User ID</label>
+          <input type="text" id="username" required placeholder="Enter user ID" 
+                style="text-transform: lowercase;" 
+                oninput="this.value = this.value.toLowerCase()">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" required placeholder="Enter password">
+        </div>
+        <button type="submit" class="login-btn">
+          🔐 Log In
         </button>
+          </form>
+          <div id="loginMessage" class="login-message">
+          <div style="text-align: center; font-size: 0.7rem;">
+            ⚠️ <strong>Important Notice</strong> <br> 
+              To ensure equitable seat allocation, please refrain from overbooking.
+              Coordinate your reservations with your team and limit bookings to one week at a time.
+              If you are unable to attend or expect to be on leave, please cancel your booking in advance.
+            </div>
+          </div>
+          <br>
+          <div style="text-align: center; font-size: 0.7rem;">© 2025 ⚙️IT-TPM</div>
+        </div>
       </div>
-    </div>
-
-    <p class="subtitle" style="font-size: 0.9rem; margin-bottom: 10px;">Seat Booking System - Select Date</p>
-
-    <!-- Date Picker -->
-    <div class="date-picker">
-      <label>📅 Select Booking Date</label>
-      <input type="date" id="datePicker" style="width: 70%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.9); color: #000;">
-      <div class="date-display" id="selectedDateDisplay">Today</div>
-      <div class="date-navigation">
-        <button class="date-nav-btn" id="prevDayBtn" onclick="changeDate(-1)">⟵  Previous</button>
-        <button class="date-nav-btn" id="nextDayBtn" onclick="changeDate(1)">Next  ⟶</button>
-      </div>
-    </div>
-
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="admin-panel" style="display: none;">
-      <h3 style="color: var(--admin-purple); margin-bottom: 10px;">👨‍💼 Admin Panel</h3>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <button class="control-btn" onclick="showUserManagement()">📋 Manage Users</button>
-        <button class="control-btn" onclick="showAllBookings()">📊 View All Bookings</button>
-        <button class="control-btn" onclick="showAddUserForm()" style="grid-column: 1 / -1;">➕ Add User</button>
-      </div>
-    </div>
-
-    <!-- View Toggle -->
-    <div class="view-toggle">
-      <button class="view-btn active" id="gridViewBtn" onclick="showGridView()">💺 Seats View</button>
-      <button class="view-btn" id="mapViewBtn" onclick="showMapView()">🗺️ Office Layout</button>
-    </div>
-
-    <!-- Grid View -->
-    <div id="gridView">
-      <!-- Legend -->
-      <div class="legend">
-        <div><div class="box available-box"></div>Available</div>
-        <div><div class="box booked-box"></div>Booked</div>
-        <div><div class="box mybooking-box"></div>My Booking</div>
-      </div>
-
-      <!-- Seat Grid -->
-      <div id="seatGrid" class="seat-grid-container"></div>
-      
-      <!-- Status Bar -->
-      <div class="status-bar">
-        <div>Date: <span id="currentDate">-</span></div>
-        <div>Last update: <span id="lastUpdate">Never</span></div>
-        <div>Available: <span id="availableCount">-</span> / <span id="totalSeats">-</span></div>
-      </div>
-    </div>
-
-    <!-- Historical Bookings -->
-    <div id="historicalPanel" class="historical-panel" style="display: none;">
-      <h3 style="color: var(--gold); margin-bottom: 10px;">📚 My Booking History</h3>
-      <div id="historicalContent"></div>
-    </div>
-
-    <!-- Control Buttons -->
-    <div class="control-buttons">
-      <button class="control-btn" onclick="refreshBookings()">
-        🔄 Refresh
-      </button>
-	  <button class="control-btn" onclick="showChangePasswordModal()">
-		🔐 Change Password
-	  </button>
-      <button class="control-btn" onclick="toggleHistorical()">
-        📚 My History
-      </button>
-       <!--<button class="control-btn success admin-only" onclick="exportBookings()" id="exportBtn">
-        📤 Export Data
-      </button>-->
-    </div>
-  </div>
-
-  <!-- Office Layout View -->
-<div id="mapView" class="office-layout-container" style="display: none;">
-  <h3 style="color: var(--gold); margin-bottom: 15px; text-align: center;">🗺️ Office Layout</h3>
-  
-    <div class="office-image-wrapper">
-      <img src="images/Office-Layout-full.jpg" alt="Office Layout" class="office-image" style="max-width: 100%;">
-    </div>
-
-    <div style="text-align: center; margin: 15px 0; color: rgba(255,255,255,0.8);">
-      <div style="background: rgba(255,215,0,0.1); padding: 12px; border-radius: 8px; border-left: 4px solid var(--gold); font-size: 0.85rem;">
-        <strong>💡 Tips:</strong> Use <strong>the Seats View</strong> to book seats based on this layout.
-      </div>
-    </div>
-    <div class="map-legend">
-      <!--<div><div class="box available-box"></div>Available</div>
-      <div><div class="box booked-box"></div>Booked</div>
-      <div><div class="box mybooking-box"></div>My Booking</div> -->
-    </div>
-		<div style="text-align: center; margin-top: 15px;">
-		<button onclick="showGridView()" class="btn btn-primary" style="font-size: 0.9rem;">
-			💺 Open Seats View
-		</button>
-		</div>
-  </div>
-
-  <!-- Booking Form -->
-  <div id="bookingFormContainer"></div>
-
-  <!-- Add User Form -->
-<div id="addUserFormContainer" class="add-user-modal">
-    <button class="close-btn" onclick="hideAddUserForm()">&times;</button>
-    
-    <h3>➕ Add New User</h3>
-    
-    <form id="addUserForm">
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="newUserUsername" required placeholder="username">
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="newUserPassword" required placeholder="password (min. 6 Characters">
-        </div>
-        <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="newUserName" required placeholder="Full name">
-        </div>
-        <div class="form-group">
-            <label>Role</label>
-            <select id="newUserRole">
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select>
-        </div>
-        
-        <div class="btn-group">
-            <button type="submit" class="btn btn-primary">Add User</button>
-            <button type="button" class="btn btn-secondary" onclick="hideAddUserForm()">Cancel</button>
-        </div>
-    </form>
-    
-    <div id="addUserMessage"></div>
-</div>
-
-   <!-- ========== MODAL CHANGE PASSWORD ========== -->
-  <div id="changePasswordModal" class="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">🔐 Change Password</h3>
-        <button class="close-btn" onclick="hideChangePasswordModal()">&times;</button>
-      </div>
-      <form id="changePasswordForm">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="changePasswordUsername" readonly 
-                 style="background: rgba(255,255,255,0.15); color: #fff;">
-        </div>
-        <div class="form-group">
-          <label>Current Password</label>
-          <input type="password" id="currentPassword" required 
-                 placeholder="Enter current password">
-        </div>
-        <div class="form-group">
-          <label>New Password</label>
-          <input type="password" id="newPassword" required 
-                 placeholder="Enter new Password (min. 6 Characters)" minlength="6">
-        </div>
-        <div class="form-group">
-          <label>Confirm New Password</label>
-          <input type="password" id="confirmPassword" required 
-                 placeholder="Re-enter new password">
-        </div>
-        <div class="btn-group">
-          <button type="submit" class="btn btn-primary">Update Password</button>
-          <button type="button" class="btn btn-secondary" onclick="hideChangePasswordModal()">
-            Cancel
+    <!-- Main App -->
+    <div class="container" id="mainApp" style="display: none;">
+      <!-- Header -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; flex-wrap: nowrap;">
+        <h1 style="white-space: nowrap; font-size: 1.5rem;">💺 Bangku Kosong</h1>
+        <div style="text-align: right; min-width: 100px;">
+          <div id="userInfo" style="font-size: 0.5rem; line-height: 1;"></div>
+          <button onclick="logout()" class="btn btn-secondary" title="Log Out" style="padding: 3px 4px !important;
+          font-size: 0.6rem !important; margin-top: 2.5px;">
+              <img 
+          src='images/ios-log-out Vector I.png' 
+          style="width: 20px; height: 20px; object-fit: contain; filter: brightness(0) invert(1);
+              pointer-events: none; display: flex; align-items: center; justify-content: center;">
           </button>
         </div>
+      </div>
+
+      <p class="subtitle" style="font-size: 0.9rem; margin-bottom: 10px;">Seat Booking System - Select Date</p>
+
+      <!-- Date Picker -->
+      <div class="date-picker">
+        <label>📅 Select Booking Date</label>
+        <input type="date" id="datePicker" style="width: 70%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.9); color: #000;">
+        <div class="date-display" id="selectedDateDisplay">Today</div>
+        <div class="date-navigation">
+          <button class="date-nav-btn" id="prevDayBtn" onclick="changeDate(-1)">⟵  Previous</button>
+          <button class="date-nav-btn" id="nextDayBtn" onclick="changeDate(1)">Next  ⟶</button>
+        </div>
+      </div>
+
+      <!-- Admin Panel -->
+      <div id="adminPanel" class="admin-panel" style="display: none;">
+        <h3 style="color: var(--admin-purple); margin-bottom: 10px;">👨‍💼 Admin Panel</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <button class="control-btn" onclick="showUserManagement()">📋 Manage Users</button>
+          <button class="control-btn" onclick="showAllBookings()">📊 View All Bookings</button>
+          <button class="control-btn" onclick="showAddUserForm()" style="grid-column: 1 / -1;">➕ Add User</button>
+        </div>
+      </div>
+
+      <!-- View Toggle -->
+      <div class="view-toggle">
+        <button class="view-btn active" id="gridViewBtn" onclick="showGridView()">💺 Seats View</button>
+        <button class="view-btn" id="mapViewBtn" onclick="showMapView()">🗺️ Office Layout</button>
+      </div>
+
+      <!-- Office Layout View -->
+      <div id="mapView" class="office-layout-container" style="display: none;">
+      <h3 style="color: var(--gold); margin-bottom: 15px; text-align: center;">🗺️ Office Layout</h3>
+    
+        <div class="office-image-wrapper">
+          <img src="images/Office-Layout-full.jpg" alt="Office Layout" class="office-image" style="max-width: 100%;">
+          </div>
+
+          <div style="text-align: center; margin: 15px 0; color: rgba(255,255,255,0.8);">
+            <div style="background: rgba(255,215,0,0.1); padding: 12px; border-radius: 8px; border-left: 4px solid var(--gold); font-size: 0.85rem;">
+            <strong>💡 Tips:</strong> Use <strong>the Seats View</strong> to book seats based on this layout.
+          </div>
+          </div>
+          <div class="map-legend">
+            <!--<div><div class="box available-box"></div>Available</div>
+            <div><div class="box booked-box"></div>Booked</div>
+            <div><div class="box mybooking-box"></div>My Booking</div> -->
+          </div>
+      <div style="text-align: center; margin-top: 15px;">
+      <button onclick="showGridView()" class="btn btn-primary" style="font-size: 0.9rem;">
+        💺 Open Seats View
+      </button>
+      </div>
+      </div>
+
+      <!-- Grid View -->
+      <div id="gridView">
+        <!-- Legend -->
+        <div class="legend">
+          <div><div class="box available-box"></div>Available</div>
+          <div><div class="box booked-box"></div>Booked</div>
+          <div><div class="box mybooking-box"></div>My Booking</div>
+        </div>
+
+        <!-- Seat Grid -->
+        <div id="seatGrid" class="seat-grid-container"></div>
+        
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <div>Date: <span id="currentDate">-</span></div>
+          <div>Last update: <span id="lastUpdate">Never</span></div>
+          <div>Available: <span id="availableCount">-</span> / <span id="totalSeats">-</span></div>
+        </div>
+      </div>  <!-- ← TUTUP #gridView -->
+
+      <!-- Historical Bookings - DIPINDAHKAN KELUAR DARI gridView -->
+      <div id="historicalPanel" class="historical-panel" style="display: none;">
+        <h3 style="color: var(--gold); margin-bottom: 10px;">📚 My Booking History</h3>
+        <div id="historicalContent"></div>
+      </div>
+
+      <!-- Control Buttons -->
+      <div class="control-buttons">
+        <button class="control-btn" onclick="toggleHistorical()">
+          📚 My History
+        </button>
+        <button class="control-btn" onclick="refreshBookings()">
+          🔄 Refresh
+        </button>
+      <button class="control-btn" onclick="showChangePasswordModal()">
+      🔐 Change Password
+      </button>
+
+        <!--<button class="control-btn success admin-only" onclick="exportBookings()" id="exportBtn">
+          📤 Export Data
+        </button>-->
+      </div>
+    </div>  <!-- ← TUTUP #mainApp -->
+
+    <!-- Booking Form -->
+    <div id="bookingFormContainer"></div>
+
+    <!-- Add User Form -->
+  <div id="addUserFormContainer" class="add-user-modal" style="display: none;">
+      <button class="close-btn" onclick="hideAddUserForm()">&times;</button>
+      
+      <h3>➕ Add New User</h3>
+      
+      <form id="addUserForm">
+          <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="newUserUsername" required placeholder="username">
+          </div>
+          <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="newUserPassword" required placeholder="password (min. 6 Characters)">
+          </div>
+          <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="newUserName" required placeholder="Full name">
+          </div>
+          <div class="form-group">
+              <label>Team</label>
+              <select id="newUserTeam" required>
+                  <option value="">Select Team</option>
+                  <option value="ITPM">IT Project Management</option>
+                  <option value="CM">Change Management</option>
+                  <option value="R&C">Risk & Compliance</option>
+                  <option value="CTM">Country Technology Management</option>
+                  <option value="CISO">Chief Information Security Office</option>
+                  <option value="OTS">Operations Technology Support</option>
+                  <option value="CTOO">Chief Technology Office Operations</option>
+                  <option value="NFRR">Non-financial regulatory reporting</option>
+                  <option value="Resilience">Resilience Team</option>
+                  <option value="PSS">Product Support Services</option>
+                  <option value="BIFAST">BI Fast Team</option>
+                  <option value="ET">Enterprise Technology</option>
+                  <option value="EUS">End User Services</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label>Role</label>
+              <select id="newUserRole">
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+              </select>
+          </div>
+          
+          <div class="btn-group">
+              <button type="submit" class="btn btn-primary">Add User</button>
+              <button type="button" class="btn btn-secondary" onclick="hideAddUserForm()">Cancel</button>
+          </div>
       </form>
-      <div id="changePasswordMessage" style="text-align: center; margin-top: 10px;"></div>
-    </div>
+      
+      <div id="addUserMessage"></div>
   </div>
 
-  <!-- Load semua JavaScript modules -->
-<script type="module">
-    import './js/firebase-config.js?v=1.0.0';
-    import './js/constants.js?v=1.0.1';
-	import './js/firestore-api.js?v=1.0.5';
-    import './js/api-manager.js?v=1.0.1';
-    import './js/utils.js?v=1.0.0';
-    import './js/ui.js?v=1.0.0';
-    import './js/auth.js?v=1.0.1';
-    import './js/bookings.js?v=1.0.8';
-    import './js/admin-modals.js?v=1.0.7'; 
-    import './js/main.js?v=1.0.6';
+    <!-- ========== MODAL CHANGE PASSWORD ========== -->
+    <div id="changePasswordModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">🔐 Change Password</h3>
+          <button class="close-btn" onclick="hideChangePasswordModal()">&times;</button>
+        </div>
+        <form id="changePasswordForm">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="changePasswordUsername" readonly 
+                  style="background: rgba(255,255,255,0.15); color: #fff;">
+          </div>
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" id="currentPassword" required 
+                  placeholder="Enter current password">
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="newPassword" required 
+                  placeholder="Enter new Password (min. 6 Characters)" minlength="6">
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="confirmPassword" required 
+                  placeholder="Re-enter new password">
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Update Password</button>
+            <button type="button" class="btn btn-secondary" onclick="hideChangePasswordModal()">
+              Cancel
+            </button>
+          </div>
+        </form>
+        <div id="changePasswordMessage" style="text-align: center; margin-top: 10px;"></div>
+      </div>
+    </div>
 
-    console.log('🎯 All modules loaded successfully!');
-    console.log('🔥 Firestore integration: ACTIVE');
-</script>
-</body>
-</html>
+    <!-- Load semua JavaScript modules -->
+  <script type="module">
+      import './js/firebase-config.js?v=1.0.0';
+      import './js/constants.js?v=1.0.1';
+      import './js/firestore-api.js?v=1.1.1';
+      import './js/api-manager.js?v=1.0.1';
+      import './js/utils.js?v=1.0.0';
+      import './js/ui.js?v=1.0.0';
+      import './js/auth.js?v=1.0.2';
+      import './js/bookings.js?v=1.0.9';
+      import './js/admin-modals.js?v=4.4'; 
+      import './js/main.js?v=2.0';
+
+      console.log('🎯 All modules loaded successfully!');
+      console.log('🔥 Firestore integration: ACTIVE');
+  </script>
+  </body>
+  </html>
